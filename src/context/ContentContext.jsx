@@ -129,6 +129,18 @@ export const ContentProvider = ({ children }) => {
       return val;
     };
 
+    // Helper to fix corrupted arrays (e.g. if they were saved as objects)
+    const fixArray = (val) => {
+      if (val && typeof val === 'object' && !Array.isArray(val)) {
+        return Object.values(val);
+      }
+      return val;
+    };
+
+    // Fix specific known array sections
+    if (cleanData.instagramFeed) cleanData.instagramFeed = fixArray(cleanData.instagramFeed);
+    if (cleanData.pressCarousel) cleanData.pressCarousel = fixArray(cleanData.pressCarousel);
+
     const traverse = (obj) => {
       for (const key in obj) {
         if (typeof obj[key] === 'object' && obj[key] !== null) {

@@ -56,13 +56,18 @@ const ContentTab = () => {
 
   const [pressCarouselForm, setPressCarouselForm] = useState(content.pressCarousel || ["The Knot"]);
 
-  const [instagramFeedForm, setInstagramFeedForm] = useState(content.instagramFeed || [
-    { image: '/images/earring-1.jpg', link: '#' },
-    { image: '/images/earring-2.jpg', link: '#' },
-    { image: '/images/earring-3.jpg', link: '#' },
-    { image: '/images/earring-4.jpg', link: '#' },
-    { image: '/images/earring-5.jpg', link: '#' }
-  ]);
+  const [instagramFeedForm, setInstagramFeedForm] = useState(() => {
+    const feed = content.instagramFeed;
+    if (Array.isArray(feed)) return feed;
+    if (feed && typeof feed === 'object') return Object.values(feed);
+    return [
+      { image: '/images/earring-1.jpg', link: '#' },
+      { image: '/images/earring-2.jpg', link: '#' },
+      { image: '/images/earring-3.jpg', link: '#' },
+      { image: '/images/earring-4.jpg', link: '#' },
+      { image: '/images/earring-5.jpg', link: '#' }
+    ];
+  });
 
   const [footerForm, setFooterForm] = useState(content.footer || {
     logo: '/images/Home.png'
