@@ -7,18 +7,31 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const [message, setMessage] = useState('');
+  const [isLogin, setIsLogin] = useState(true);
+  const { login, signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setMessage('');
     
-    const result = await login(email, password);
-    if (result.success) {
-      navigate('/admin');
+    if (isLogin) {
+      const result = await login(email, password);
+      if (result.success) {
+        navigate('/admin');
+      } else {
+        setError(result.message);
+      }
     } else {
-      setError(result.message);
+      const result = await signup(email, password);
+      if (result.success) {
+        setMessage(result.message);
+        setIsLogin(true);
+      } else {
+        setError(result.message);
+      }
     }
   };
 
