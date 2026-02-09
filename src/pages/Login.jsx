@@ -68,9 +68,22 @@ const Login = () => {
             type="submit"
             className="w-full bg-[#5e2b31] text-white py-3 rounded-md uppercase tracking-widest text-xs font-medium hover:bg-[#4a2226] transition-colors"
           >
-            Sign In
+            {isLogin ? 'Sign In' : 'Create Account'}
           </button>
         </form>
+
+        <div className="mt-4 text-center">
+          <button 
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setError('');
+              setMessage('');
+            }}
+            className="text-xs text-gray-500 underline hover:text-[#5e2b31]"
+          >
+            {isLogin ? 'First time? Create an account' : 'Already have an account? Sign in'}
+          </button>
+        </div>
 
         <div className="mt-6 text-center border-t border-gray-100 pt-6">
           <Link 

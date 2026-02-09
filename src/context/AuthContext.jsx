@@ -41,6 +41,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signup = async (email, password) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+      
+      return { success: true, message: "Check your email for the confirmation link!" };
+    } catch (error) {
+      console.error("Signup error:", error.message);
+      return { success: false, message: error.message };
+    }
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
   };
@@ -67,6 +83,7 @@ export const AuthProvider = ({ children }) => {
     // Provide dummy list for UI compatibility if needed, or update UI to remove list
     admins: [], 
     login,
+    signup,
     logout,
     addAdmin,
     updateAdmin,
