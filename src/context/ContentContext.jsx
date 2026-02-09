@@ -165,7 +165,7 @@ export const ContentProvider = ({ children }) => {
   };
 
   return (
-    <ContentContext.Provider value={{ content, updateContent, updateCategoryImage, loading }}>
+    <ContentContext.Provider value={{ content, updateContent, updateCategoryImage, uploadContentImage, loading }}>
       {children}
     </ContentContext.Provider>
   );

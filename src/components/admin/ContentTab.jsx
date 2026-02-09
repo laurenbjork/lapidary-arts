@@ -3,10 +3,10 @@ import { useContent } from '../../context/ContentContext';
 import { Upload, Save } from 'lucide-react';
 
 const ContentTab = () => {
-  const { content, updateContent, updateCategoryImage } = useContent();
+  const { content, updateContent, updateCategoryImage, uploadContentImage } = useContent();
   const [activeSection, setActiveSection] = useState('hero'); // hero, announcement, categories
   
-  // Local state for forms to avoid constant context updates on every keystroke
+  // Local state for forms
   const [heroForm, setHeroForm] = useState(content.hero);
   const [announcementForm, setAnnouncementForm] = useState(content.announcement);
   const [categoriesForm, setCategoriesForm] = useState(content.categories);
@@ -29,9 +29,9 @@ const ContentTab = () => {
     linkText: "Explore Our Curated Selection",
     linkUrl: "/watches",
     items: [
-       { image: '/images/necklace-2.jpg', title: 'Lady Datejust', subtitle: 'Rolex Certified Pre-Owned' },
-       { image: '/images/necklace-3.jpg', title: 'Lady Datejust', subtitle: 'Rolex Certified Pre-Owned' },
-       { image: '/images/necklace-4.jpg', title: 'Lady Datejust', subtitle: 'Rolex Certified Pre-Owned' }
+      { image: '/images/necklace-2.jpg', title: 'Lady Datejust', subtitle: 'Rolex Certified Pre-Owned' },
+      { image: '/images/necklace-3.jpg', title: 'Lady Datejust', subtitle: 'Rolex Certified Pre-Owned' },
+      { image: '/images/necklace-4.jpg', title: 'Lady Datejust', subtitle: 'Rolex Certified Pre-Owned' }
     ]
   });
 
@@ -40,6 +40,9 @@ const ContentTab = () => {
     smallText: 'www.lapidaryart.com',
     largeText: 'Future heirlooms designed and crafted in Los Angeles.'
   });
+
+  // State to track files to upload
+  const [filesToUpload, setFilesToUpload] = useState({});
 
   const handleHeroChange = (e) => {
     const { name, value } = e.target;
@@ -90,6 +93,12 @@ const ContentTab = () => {
     const file = e.target.files[0];
     if (file) {
       const objectUrl = URL.createObjectURL(file);
+      
+      // Store file for later upload
+      // key format: section-field-index (or section-field if index is null)
+      const key = index !== null ? `${section}-${field}-${index}` : `${section}-${field}`;
+      setFilesToUpload(prev => ({ ...prev, [key]: file }));
+
       if (section === 'hero') {
         setHeroForm({ ...heroForm, [field]: objectUrl });
       } else if (section === 'categories') {
@@ -106,9 +115,63 @@ const ContentTab = () => {
     }
   };
 
-  const saveHero = (e) => {
+  const processUploads = async (section, currentData) => {
+    const updatedData = { ...currentData };
+    let hasUploads = false;
+
+    // Helper to upload and update field
+    const checkAndUpload = async (fieldKey, updateFn) => {
+      if (filesToUpload[fieldKey]) {
+        try {
+            const publicUrl = await uploadContentImage(filesToUpload[fieldKey]);
+            updateFn(publicUrl);
+            hasUploads = true;
+            // Clear from pending uploads
+            setFilesToUpload(prev => {
+                const newState = { ...prev };
+                delete newState[fieldKey];
+                return newState;
+            });
+        } catch (err) {
+            console.error("Upload failed for", fieldKey, err);
+            alert(`Failed to upload image for ${fieldKey}`);
+        }
+      }
+    };
+
+    if (section === 'hero') {
+        await checkAndUpload('hero-image', (url) => updatedData.image = url);
+    } else if (section === 'categories') {
+        // Categories uses specific keys like 'bracelets', 'rings', etc. passed as 'field'
+        // We need to iterate over potential keys or just check all
+        for (const key of Object.keys(filesToUpload)) {
+            if (key.startsWith('categories-')) {
+                const fieldName = key.replace('categories-', '');
+                await checkAndUpload(key, (url) => updatedData[fieldName] = url);
+            }
+        }
+    } else if (section === 'customDesign') {
+        await checkAndUpload('customDesign-image', (url) => updatedData.image = url);
+    } else if (section === 'brandStory') {
+        await checkAndUpload('brandStory-image', (url) => updatedData.image = url);
+    } else if (section === 'watches') {
+        // Watches has items array
+         for (const key of Object.keys(filesToUpload)) {
+            if (key.startsWith('watches-image-')) {
+                const index = parseInt(key.split('-').pop());
+                await checkAndUpload(key, (url) => updatedData.items[index].image = url);
+            }
+        }
+    }
+    
+    return updatedData;
+  };
+
+  const saveHero = async (e) => {
     e.preventDefault();
-    updateContent('hero', heroForm);
+    const dataToSave = await processUploads('hero', heroForm);
+    setHeroForm(dataToSave); // Update local state with real URL
+    updateContent('hero', dataToSave);
     alert('Hero section updated!');
   };
 
@@ -118,27 +181,35 @@ const ContentTab = () => {
     alert('Announcement bar updated!');
   };
 
-  const saveCategories = (e) => {
+  const saveCategories = async (e) => {
     e.preventDefault();
-    updateContent('categories', categoriesForm);
+    const dataToSave = await processUploads('categories', categoriesForm);
+    setCategoriesForm(dataToSave);
+    updateContent('categories', dataToSave);
     alert('Category images updated!');
   };
 
-  const saveCustomDesign = (e) => {
+  const saveCustomDesign = async (e) => {
     e.preventDefault();
-    updateContent('customDesign', customDesignForm);
+    const dataToSave = await processUploads('customDesign', customDesignForm);
+    setCustomDesignForm(dataToSave);
+    updateContent('customDesign', dataToSave);
     alert('Custom Design section updated!');
   };
 
-  const saveWatches = (e) => {
+  const saveWatches = async (e) => {
     e.preventDefault();
-    updateContent('watches', watchesForm);
+    const dataToSave = await processUploads('watches', watchesForm);
+    setWatchesForm(dataToSave);
+    updateContent('watches', dataToSave);
     alert('Watches section updated!');
   };
 
-  const saveBrandStory = (e) => {
+  const saveBrandStory = async (e) => {
     e.preventDefault();
-    updateContent('brandStory', brandStoryForm);
+    const dataToSave = await processUploads('brandStory', brandStoryForm);
+    setBrandStoryForm(dataToSave);
+    updateContent('brandStory', dataToSave);
     alert('Brand Story section updated!');
   };
 
