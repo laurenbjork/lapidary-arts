@@ -66,6 +66,34 @@ export const ContentProvider = ({ children }) => {
   const [content, setContent] = useState(initialContent);
   const [loading, setLoading] = useState(true);
 
+  // Helper to sanitize content and remove stale blob URLs
+  const sanitizeContent = (data) => {
+    if (!data) return data;
+    
+    // Deep clone to avoid mutating original
+    const cleanData = JSON.parse(JSON.stringify(data));
+    
+    const cleanValue = (val) => {
+      if (typeof val === 'string' && val.startsWith('blob:')) {
+        return ''; // Reset invalid blob URLs
+      }
+      return val;
+    };
+
+    const traverse = (obj) => {
+      for (const key in obj) {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          traverse(obj[key]);
+        } else {
+          obj[key] = cleanValue(obj[key]);
+        }
+      }
+    };
+
+    traverse(cleanData);
+    return cleanData;
+  };
+
   // Fetch content from Supabase on mount
   useEffect(() => {
     const fetchContent = async () => {
@@ -77,7 +105,7 @@ export const ContentProvider = ({ children }) => {
           // Fallback to localStorage if Supabase fails (e.g. invalid keys)
           const savedContent = localStorage.getItem('siteContent');
           if (savedContent) {
-            setContent(JSON.parse(savedContent));
+            setContent(sanitizeContent(JSON.parse(savedContent)));
           }
           return;
         }
@@ -89,12 +117,13 @@ export const ContentProvider = ({ children }) => {
               newContent[row.section_name] = row.content;
             }
           });
-          setContent(newContent);
+          // Also sanitize DB content just in case bad data got in
+          setContent(sanitizeContent(newContent));
         } else {
             // If DB is empty, try localStorage as secondary fallback
             const savedContent = localStorage.getItem('siteContent');
             if (savedContent) {
-                setContent(JSON.parse(savedContent));
+                setContent(sanitizeContent(JSON.parse(savedContent)));
             }
         }
       } catch (err) {
