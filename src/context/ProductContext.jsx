@@ -181,11 +181,13 @@ export const ProductProvider = ({ children }) => {
   };
 
   const getProductsByCategory = (category) => {
-    return products.filter((p) => p.category === category && p.is_visible);
+    return products.filter((p) => 
+      p.category?.toLowerCase() === category?.toLowerCase() && p.isVisible
+    );
   };
 
   const getNewArrivals = () => {
-    return products.filter((p) => p.is_new_arrival && p.is_visible);
+    return products.filter((p) => p.isNewArrival && p.isVisible);
   };
 
   return (

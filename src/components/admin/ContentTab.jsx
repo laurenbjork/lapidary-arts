@@ -347,80 +347,70 @@ const ContentTab = () => {
     setInstagramFeedForm(newItems);
   };
 
+  const menuGroups = [
+    {
+      title: 'Home Page',
+      items: [
+        { id: 'hero', label: 'Hero Section' },
+        { id: 'announcement', label: 'Announcement Bar' },
+        { id: 'categories', label: 'Category Images' },
+        { id: 'watches', label: 'Watches' },
+        { id: 'brandStory', label: 'Brand Story' },
+        { id: 'instagramFeed', label: 'Instagram Feed' },
+      ]
+    },
+    {
+      title: 'Pages',
+      items: [
+        { id: 'about', label: 'About Page' },
+        { id: 'customDesign', label: 'Custom Design' },
+      ]
+    },
+    {
+      title: 'Global',
+      items: [
+        { id: 'socials', label: 'Social Media' },
+        { id: 'footer', label: 'Footer Logo' },
+        { id: 'pressCarousel', label: 'Press Carousel' },
+      ]
+    }
+  ];
+
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-serif">Content Management</h2>
+    <div className="flex flex-col lg:flex-row gap-8">
+      {/* Sidebar Navigation */}
+      <div className="w-full lg:w-64 flex-shrink-0 space-y-8">
+        {menuGroups.map((group, groupIndex) => (
+          <div key={groupIndex}>
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-2">
+              {group.title}
+            </h3>
+            <div className="space-y-1">
+              {group.items.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-burgundy text-white shadow-sm'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="flex border-b border-gray-200 mb-6 overflow-x-auto">
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'hero' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('hero')}
-        >
-          Hero Section
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'announcement' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('announcement')}
-        >
-          Announcement Bar
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'categories' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('categories')}
-        >
-          Category Images
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'customDesign' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('customDesign')}
-        >
-          Custom Design
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'watches' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('watches')}
-        >
-          Watches
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'brandStory' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('brandStory')}
-        >
-          Brand Story
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'about' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('about')}
-        >
-          About Page
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'socials' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('socials')}
-        >
-          Social Media
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'pressCarousel' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('pressCarousel')}
-        >
-          Press Carousel
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'instagramFeed' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('instagramFeed')}
-        >
-          Instagram Feed
-        </button>
-        <button 
-          className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeSection === 'footer' ? 'text-burgundy border-b-2 border-burgundy' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveSection('footer')}
-        >
-          Footer Logo
-        </button>
-      </div>
+      {/* Content Area */}
+      <div className="flex-1 bg-white rounded-lg shadow-sm p-6 lg:p-8">
+        <div className="flex justify-between items-center mb-6 pb-6 border-b border-gray-100">
+          <h2 className="text-xl font-serif text-gray-900">
+            {menuGroups.flatMap(g => g.items).find(i => i.id === activeSection)?.label}
+          </h2>
+        </div>
 
       {activeSection === 'instagramFeed' && (
         <form onSubmit={saveInstagramFeed} className="space-y-6 max-w-2xl">
@@ -1112,6 +1102,7 @@ const ContentTab = () => {
             </button>
         </form>
       )}
+      </div>
     </div>
   );
 };
