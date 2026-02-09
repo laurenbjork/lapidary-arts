@@ -11,18 +11,32 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // 1. Check active session on startup
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setCurrentUser(session?.user ?? null);
-      setLoading(false);
-    });
+    const checkSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        setCurrentUser(data.session?.user ?? null);
+      } catch (err) {
+        console.error("Error checking session:", err.message);
+        setCurrentUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkSession();
 
     // 2. Listen for changes (login, logout, etc.)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       setCurrentUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      if (data && data.subscription) {
+        data.subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const login = async (email, password) => {
