@@ -73,7 +73,7 @@ const ProductsTab = () => {
         setPreviewImage(null);
         setIsEditing(false);
     } else {
-        alert('Failed to save product. Please try again.');
+        alert(`Failed to save product: ${result?.message || 'Unknown error'}`);
     }
   };
 
@@ -202,7 +202,7 @@ const ProductsTab = () => {
                     <Upload size={16} className="mr-2" /> Upload Image
                     <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                   </label>
-                  <p className="text-xs text-gray-500 mt-2">Recommended size: 1000x1250px (4:5 ratio)</p>
+                  <p className="text-[10px] text-gray-400 mt-1">Recommended: 1000 x 1250 px (4:5 Portrait)</p>
                 </div>
               </div>
             </div>

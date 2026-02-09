@@ -19,9 +19,21 @@ const initialContent = {
     isVisible: true
   },
   categories: {
-    bracelets: '/images/category-necklaces.jpg',
-    rings: '/images/category-rings.jpg',
-    earrings: '/images/category-earrings.jpg'
+    card1: {
+      name: 'Bracelets',
+      image: '/images/category-necklaces.jpg',
+      link: '/shop/bracelets'
+    },
+    card2: {
+      name: 'Rings',
+      image: '/images/category-rings.jpg',
+      link: '/shop/rings'
+    },
+    card3: {
+      name: 'Earrings',
+      image: '/images/category-earrings.jpg',
+      link: '/shop/earrings'
+    }
   },
   customDesign: {
     image: '/images/custom-design-feature.jpg',
@@ -59,6 +71,43 @@ const initialContent = {
     image: '/images/hero-bg.jpg',
     smallText: 'www.lapidaryart.com',
     largeText: 'Future heirlooms designed and crafted in Los Angeles.'
+  },
+  about: {
+    image: '/images/home-hero-model.jpg',
+    title: 'About Lapidary Art',
+    subtitle: 'A legacy of craftsmanship and passion for fine jewelry.',
+    paragraph1: "Lapidary Art Jewelry was founded with a simple mission: to create breathtaking jewelry that celebrates life's most precious moments. Our team of master jewelers and designers are dedicated to the highest standards of quality and artistry.",
+    paragraph2: "We believe that every piece of jewelry tells a story. Whether it's a custom engagement ring or a timeless necklace, we pour our heart and soul into every creation."
+  },
+  footer: {
+    logo: '/images/Home.png'
+  },
+  socials: {
+    instagram: 'https://www.instagram.com/lapidaryartsjewelry/',
+    facebook: 'https://facebook.com'
+  },
+  pressCarousel: [
+    "The Knot"
+  ],
+  instagramFeed: [
+    { image: '/images/earring-1.jpg', link: '#' },
+    { image: '/images/earring-2.jpg', link: '#' },
+    { image: '/images/earring-3.jpg', link: '#' },
+    { image: '/images/earring-4.jpg', link: '#' },
+    { image: '/images/earring-5.jpg', link: '#' },
+    { image: '/images/earring-6.jpg', link: '#' },
+    { image: '/images/earring-7.jpg', link: '#' },
+    { image: '/images/earring-8.jpg', link: '#' },
+    { image: '/images/earring-9.jpg', link: '#' },
+    { image: '/images/earring-10.jpg', link: '#' }
+  ],
+  consultations: [],
+  newsletterSignups: [],
+  newsletterPopup: {
+    leftImage: '/images/necklace-2.jpg',
+    leftTitle: 'LULU',
+    leftSubtitle: 'Los Angeles',
+    rightLogoImage: '' // If empty, shows text "LS"
   }
 };
 
@@ -103,7 +152,7 @@ export const ContentProvider = ({ children }) => {
         if (error) {
           console.warn('Supabase fetch error (using local defaults):', error.message);
           // Fallback to localStorage if Supabase fails (e.g. invalid keys)
-          const savedContent = localStorage.getItem('siteContent');
+          const savedContent = localStorage.getItem('siteContent_v2');
           if (savedContent) {
             setContent(sanitizeContent(JSON.parse(savedContent)));
           }
@@ -121,7 +170,7 @@ export const ContentProvider = ({ children }) => {
           setContent(sanitizeContent(newContent));
         } else {
             // If DB is empty, try localStorage as secondary fallback
-            const savedContent = localStorage.getItem('siteContent');
+            const savedContent = localStorage.getItem('siteContent_v2');
             if (savedContent) {
                 setContent(sanitizeContent(JSON.parse(savedContent)));
             }
@@ -138,7 +187,7 @@ export const ContentProvider = ({ children }) => {
 
   // Save to localStorage whenever content changes (as backup/cache)
   useEffect(() => {
-    localStorage.setItem('siteContent', JSON.stringify(content));
+    localStorage.setItem('siteContent_v2', JSON.stringify(content));
   }, [content]);
 
   const uploadContentImage = async (file) => {
@@ -218,8 +267,58 @@ export const ContentProvider = ({ children }) => {
     }
   };
 
+  const addConsultation = async (consultationData) => {
+    // 1. Get current list
+    const currentList = content.consultations || [];
+    const updatedList = [consultationData, ...currentList]; // Add to top
+
+    // 2. Optimistic Update
+    setContent((prev) => ({
+      ...prev,
+      consultations: updatedList
+    }));
+
+    // 3. Update Supabase
+    try {
+        const { error } = await supabase
+        .from('site_content')
+        .upsert({ 
+            section_name: 'consultations', 
+            content: updatedList 
+        }, { onConflict: 'section_name' });
+
+        if (error) throw error;
+    } catch (err) {
+        console.error('Error adding consultation:', err);
+        // Rollback?
+    }
+  };
+
+  const addNewsletterSignup = async (signupData) => {
+    const currentList = content.newsletterSignups || [];
+    const updatedList = [signupData, ...currentList];
+
+    setContent((prev) => ({
+      ...prev,
+      newsletterSignups: updatedList
+    }));
+
+    try {
+      const { error } = await supabase
+        .from('site_content')
+        .upsert({ 
+          section_name: 'newsletter_signups', 
+          content: updatedList 
+        }, { onConflict: 'section_name' });
+
+      if (error) throw error;
+    } catch (err) {
+      console.error('Error adding newsletter signup:', err);
+    }
+  };
+
   return (
-    <ContentContext.Provider value={{ content, updateContent, updateCategoryImage, uploadContentImage, loading }}>
+    <ContentContext.Provider value={{ content, updateContent, updateCategoryImage, uploadContentImage, addConsultation, addNewsletterSignup, loading }}>
       {children}
     </ContentContext.Provider>
   );

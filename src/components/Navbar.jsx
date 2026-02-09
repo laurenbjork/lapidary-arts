@@ -73,11 +73,11 @@ const Navbar = () => {
           </div>
 
           {/* Logo - Left Aligned on Desktop */}
-          <Link to="/" className="text-2xl font-serif tracking-tighter">
+          <Link to="/" className="flex items-center text-2xl font-serif tracking-tighter ml-[-165px]">
             <img 
               src={isDarkHeader ? "/images/logo.png" : "/images/Home.png"}
               alt="Lapidary Art" 
-              className="w-[130px] h-auto max-h-[45px] object-contain transition-all duration-300"
+              className="w-[600px] h-auto max-h-[50px] object-contain transition-all duration-300"
               onError={(e) => { 
                 const target = e.target;
                 if (target.src.includes('Home.png')) {
@@ -114,7 +114,8 @@ const Navbar = () => {
                 Gifting <ChevronDown size={12} className="ml-1" />
               </Link>
             </div>
-
+            
+            <Link to="/custom-design" className="hover:opacity-70 transition-opacity py-3">Custom Designs</Link>
 
             <Link to="/about" className="hover:opacity-70 transition-opacity py-3">About</Link>
           </div>
@@ -210,6 +211,7 @@ const Navbar = () => {
 
               <Link to="/designers" onClick={() => setIsMobileMenuOpen(false)}>Designers</Link>
               <Link to="/gifts" onClick={() => setIsMobileMenuOpen(false)}>Gifts</Link>
+              <Link to="/custom-design" onClick={() => setIsMobileMenuOpen(false)}>Custom Designs</Link>
               <Link to="/lifestyle" onClick={() => setIsMobileMenuOpen(false)}>Lifestyle</Link>
             </div>
           </motion.div>

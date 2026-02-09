@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FadeIn from '../components/FadeIn';
+import ConsultationModal from '../components/ConsultationModal';
 
 const CustomDesign = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
       <FadeIn className="text-center mb-16">
@@ -17,11 +20,16 @@ const CustomDesign = () => {
              <p className="text-gray-600 mb-6 leading-relaxed text-sm">
                 Our custom design process allows you to work one-on-one with our designers to create the jewelry of your dreams.
              </p>
-             <button className="bg-black text-white px-8 py-3 text-[10px] uppercase tracking-widest hover:bg-white hover:text-black border border-black transition-colors">
+             <button 
+               onClick={() => setIsModalOpen(true)}
+               className="bg-black text-white px-8 py-3 text-[10px] uppercase tracking-widest hover:bg-white hover:text-black border border-black transition-colors"
+             >
                 Book a Consultation
              </button>
           </FadeIn>
        </div>
+       
+       <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

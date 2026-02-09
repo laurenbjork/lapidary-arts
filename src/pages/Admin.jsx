@@ -8,7 +8,9 @@ import {
   Package, 
   Users, 
   Settings,
-  LogOut
+  LogOut,
+  MessageSquare,
+  Mail
 } from 'lucide-react';
 
 import DashboardTab from '../components/admin/DashboardTab';
@@ -17,6 +19,8 @@ import ContentTab from '../components/admin/ContentTab';
 import OrdersTab from '../components/admin/OrdersTab';
 import CustomersTab from '../components/admin/CustomersTab';
 import SettingsTab from '../components/admin/SettingsTab';
+import ConsultationsTab from '../components/admin/ConsultationsTab';
+import NewsletterTab from '../components/admin/NewsletterTab';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -32,6 +36,8 @@ const Admin = () => {
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { id: 'products', label: 'Products', icon: <Package size={20} /> },
     { id: 'orders', label: 'Orders', icon: <ShoppingBag size={20} /> },
+    { id: 'consultations', label: 'Consultations', icon: <MessageSquare size={20} /> },
+    { id: 'newsletter', label: 'Newsletter', icon: <Mail size={20} /> },
     { id: 'customers', label: 'Customers', icon: <Users size={20} /> },
     { id: 'content', label: 'Site Content', icon: <Image size={20} /> },
     { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },
@@ -42,6 +48,8 @@ const Admin = () => {
       case 'dashboard': return <DashboardTab />;
       case 'products': return <ProductsTab />;
       case 'orders': return <OrdersTab />;
+      case 'consultations': return <ConsultationsTab />;
+      case 'newsletter': return <NewsletterTab />;
       case 'customers': return <CustomersTab />;
       case 'content': return <ContentTab />;
       case 'settings': return <SettingsTab />;

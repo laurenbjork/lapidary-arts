@@ -29,6 +29,7 @@ import { CartProvider } from './context/CartContext';
 import Cart from './components/Cart';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
+import NewsletterPopup from './components/NewsletterPopup';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -59,6 +60,7 @@ function App() {
             <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
               <ScrollToTop />
               <Cart />
+              {!isAdmin && <NewsletterPopup />}
               {!isAdmin && <Navbar />}
               <main className="flex-grow">
                 <Routes>
