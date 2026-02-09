@@ -34,19 +34,23 @@ const ProductsTab = () => {
 
   const subcategories = {
     earrings: [
+      { value: 'hoops-&-huggies', label: 'Hoops & Huggies' },
       { value: 'studs', label: 'Studs' },
-      { value: 'hoops', label: 'Hoops' },
-      { value: 'drops', label: 'Drops' },
+      { value: 'ear-bands-&-cuffs', label: 'Ear Bands & Cuffs' },
     ],
     necklaces: [
-      { value: 'pendants', label: 'Pendants' },
-      { value: 'chains', label: 'Chains' },
       { value: 'chokers', label: 'Chokers' },
+      { value: 'pendant', label: 'Pendant' },
+      { value: 'tennis', label: 'Tennis' },
+      { value: 'lariat', label: 'Lariat' },
+      { value: 'disk-and-coins', label: 'Disk and Coins' },
     ],
     rings: [
-      { value: 'bands', label: 'Bands' },
-      { value: 'signet', label: 'Signet' },
-      { value: 'statement', label: 'Statement' },
+      { value: 'stacks-and-bands', label: 'Stacks and Bands' },
+      { value: 'dome-rings', label: 'Dome Rings' },
+      { value: 'double-band-rings', label: 'Double Band Rings' },
+      { value: 'diamond-bands', label: 'Diamond Bands' },
+      { value: 'bridal-&-engagement', label: 'Bridal & Engagement' },
     ],
     engagement: [
       { value: 'solitaire', label: 'Solitaire' },
@@ -54,6 +58,15 @@ const ProductsTab = () => {
       { value: 'vintage', label: 'Vintage' },
     ],
     diamonds: [
+      { value: 'emerald', label: 'Emerald' },
+      { value: 'topaz', label: 'Topaz' },
+      { value: 'sapphire', label: 'Sapphire' },
+      { value: 'spinel', label: 'Spinel' },
+      { value: 'pearl', label: 'Pearl' },
+      { value: 'opal', label: 'Opal' },
+      { value: 'tourmaline', label: 'Tourmaline' },
+      { value: 'ruby', label: 'Ruby' },
+      { value: 'garnet', label: 'Garnet' },
       { value: 'loose', label: 'Loose Diamonds' },
       { value: 'gemstones', label: 'Gemstones' },
     ],
