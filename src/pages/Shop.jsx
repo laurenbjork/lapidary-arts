@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 import FadeIn from '../components/FadeIn';
 import ProductCard from '../components/ProductCard';
@@ -7,32 +7,90 @@ import { Filter, ChevronDown } from 'lucide-react';
 
 const Shop = () => {
   const { category } = useParams();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get('search');
+  
   const { products } = useProducts();
   const [displayLimit, setDisplayLimit] = useState(12);
   
   // Reset limit on category change
   useEffect(() => {
     setDisplayLimit(12);
-  }, [category]);
+  }, [category, searchQuery]);
 
-  // Filter products based on category or stone
-  const filteredProducts = category 
-    ? products.filter(p => {
-        const cat = category.toLowerCase();
-        const pCat = p.category.toLowerCase();
-        // Check if category matches or if product name/desc includes the category (for stones like 'emerald')
-        return pCat === cat || 
-               p.name.toLowerCase().includes(cat) || 
-               (p.description && p.description.toLowerCase().includes(cat));
-      })
-    : products;
+  // Filter products based on category or search query
+  const filteredProducts = products.filter(p => {
+    if (!p.isVisible) return false;
+
+    // Search Query Logic
+    if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        return p.name.toLowerCase().includes(q) || 
+               (p.description && p.description.toLowerCase().includes(q)) ||
+               (p.category && p.category.toLowerCase().includes(q));
+    }
+
+    // Category Logic
+    if (category) {
+        let searchCat = category.toLowerCase();
+        
+        // Handle "all-" prefix (e.g. "all-earrings" -> "earrings")
+        if (searchCat.startsWith('all-')) {
+            searchCat = searchCat.replace('all-', '');
+        }
+
+        // Category Aliases (URL slug -> DB Category Value)
+        const categoryAliases = {
+            'bridal-&-engagement': 'engagement',
+            'diamonds-&-gemstones': 'diamonds',
+            'watches': 'watches' 
+        };
+
+        const mappedCategory = categoryAliases[searchCat] || searchCat;
+        const pCat = p.category ? p.category.toLowerCase() : '';
+        
+        // Exact category match (checks both original slug and mapped category)
+        if (pCat === searchCat || pCat === mappedCategory) return true;
+
+        // For subcategories, check name/description for keywords
+        const normalizedSearch = searchCat.replace(/-/g, ' ');
+        const keywords = normalizedSearch.split(' ').filter(k => k.length > 2 && k !== 'and' && k !== '&');
+        
+        if (keywords.length > 0) {
+          return keywords.some(k => {
+            const lowerName = p.name.toLowerCase();
+            const lowerDesc = p.description ? p.description.toLowerCase() : '';
+            
+            // Check exact keyword
+            if (lowerName.includes(k) || lowerDesc.includes(k)) return true;
+
+            // Check singular form (e.g. "hoops" -> "hoop")
+            if (k.endsWith('s')) {
+                const singular = k.slice(0, -1);
+                if (singular.length > 2 && (lowerName.includes(singular) || lowerDesc.includes(singular))) return true;
+            }
+            
+            return false;
+          });
+        }
+        
+        // Fallback for simple string match
+        return p.name.toLowerCase().includes(normalizedSearch) || 
+               (p.description && p.description.toLowerCase().includes(normalizedSearch));
+    }
+
+    return true;
+  });
 
   const visibleProducts = filteredProducts.slice(0, displayLimit);
   const totalProducts = filteredProducts.length;
 
-  const displayTitle = category 
-    ? category.replace(/-/g, ' ') 
-    : 'Shop All';
+  const displayTitle = searchQuery
+    ? `Search Results for "${searchQuery}"`
+    : category 
+        ? category.replace(/-/g, ' ') 
+        : 'Shop All';
 
   return (
     <div key={category || 'shop-all'} className="pt-32 pb-20 px-4 md:px-12 max-w-[1920px] mx-auto">

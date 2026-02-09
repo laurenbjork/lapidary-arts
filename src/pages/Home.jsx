@@ -31,21 +31,21 @@ const Home = () => {
       ];
   }, [instagramFeed]);
       
-  // Effect to cycle through feed items if there are more than 5
+  // Effect to cycle through feed items if there are more than 2
   useEffect(() => {
-    if (feedItems.length <= 5) return;
+    if (feedItems.length <= 2) return;
 
     const interval = setInterval(() => {
-      setCurrentFeedIndex((prevIndex) => (prevIndex + 5) % feedItems.length);
+      setCurrentFeedIndex((prevIndex) => (prevIndex + 2) % feedItems.length);
     }, 4000); // Switch every 4 seconds
 
     return () => clearInterval(interval);
   }, [feedItems.length]);
 
-  // Get current batch of 5 items, wrapping around if needed
+  // Get current batch of 4 items, wrapping around if needed
   const getVisibleFeedItems = () => {
     const items = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 4; i++) {
         const index = (currentFeedIndex + i) % feedItems.length;
         items.push(feedItems[index]);
     }
@@ -98,7 +98,7 @@ const Home = () => {
             { ...categories.card2, delay: 0.2 },
             { ...categories.card3, delay: 0.4 }
           ].map((category, index) => (
-            <FadeIn key={index} delay={category.delay} className="relative group h-[600px] overflow-hidden cursor-pointer">
+            <FadeIn key={index} delay={category.delay} className="relative group h-[450px] md:h-[600px] overflow-hidden cursor-pointer">
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                 style={{ backgroundImage: `url('${category.image}')` }}
@@ -294,12 +294,12 @@ const Home = () => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.8, ease: "easeInOut" }}
-                    className="grid grid-cols-2 md:grid-cols-5 gap-0"
+                    className="grid grid-cols-2 md:grid-cols-4 gap-0"
                 >
                     {visibleFeedItems.map((item, i) => (
                         <div key={i} className="aspect-square bg-gray-100 overflow-hidden group relative">
                             <img 
-                                src={item.image} 
+                                src={item?.image} 
                                 alt="Instagram" 
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                             />

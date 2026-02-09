@@ -9,6 +9,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [shippingMethod, setShippingMethod] = useState('standard');
+  const [taxRate, setTaxRate] = useState(0); // Default to 0 until zip is entered
   
   // Form State
   const [formData, setFormData] = useState({
@@ -90,11 +91,41 @@ const Checkout = () => {
   };
 
   const shippingCost = shippingMethod === 'standard' ? 0 : 25;
-  const tax = cartTotal * 0.08; // 8% tax
+  const tax = cartTotal * taxRate;
   
   const calculateTotal = () => {
     return cartTotal + shippingCost + tax;
   };
+
+  // Mock Tax Estimation Logic
+  // In a real application, this would call an API like Stripe Tax, Avalara, or TaxJar
+  useEffect(() => {
+    const estimateTaxRate = (zip) => {
+        // Clean zip
+        const cleanZip = zip?.replace(/\D/g, '');
+        if (!cleanZip || cleanZip.length < 5) {
+            setTaxRate(0); // No tax if no valid zip
+            return;
+        }
+        
+        const zipPrefix = parseInt(cleanZip.substring(0, 3));
+        
+        // NY (100-149)
+        if (zipPrefix >= 100 && zipPrefix <= 149) { setTaxRate(0.08875); return; }
+        // CA (900-961)
+        if (zipPrefix >= 900 && zipPrefix <= 961) { setTaxRate(0.095); return; }
+        // TX (750-799)
+        if (zipPrefix >= 750 && zipPrefix <= 799) { setTaxRate(0.0825); return; }
+        // FL (320-349)
+        if (zipPrefix >= 320 && zipPrefix <= 349) { setTaxRate(0.07); return; }
+        // IL (600-629)
+        if (zipPrefix >= 600 && zipPrefix <= 629) { setTaxRate(0.1025); return; }
+        
+        setTaxRate(0.06); // National Average Fallback
+    };
+
+    estimateTaxRate(formData.zipCode);
+  }, [formData.zipCode]);
 
   return (
     <div className="min-h-screen bg-gray-50 pt-32 pb-20">
@@ -420,7 +451,7 @@ const Checkout = () => {
                         <span>{shippingMethod === 'standard' ? 'Free' : `$${shippingCost.toFixed(2)}`}</span>
                     </div>
                     <div className="flex justify-between text-gray-600">
-                        <span>Estimated Tax</span>
+                        <span>Estimated Tax {taxRate > 0 && <span className="text-[10px] text-gray-400">({(taxRate * 100).toFixed(2)}%)</span>}</span>
                         <span>${tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                 </div>

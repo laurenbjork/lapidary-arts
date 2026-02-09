@@ -111,10 +111,12 @@ const NewsletterPopup = () => {
              )}
           </div>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-burgundy italic mb-4">Don't miss a thing</h2>
+          <h2 className="font-serif text-2xl md:text-3xl text-burgundy italic mb-4">
+              {newsletterPopup?.popupTitle || "Don't miss a thing"}
+          </h2>
           
           <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-8 leading-relaxed px-4">
-            Sign up for new arrivals, exclusive offers, events and more.
+            {newsletterPopup?.popupDescription || "Sign up for new arrivals, exclusive offers, events and more."}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-xs mx-auto">

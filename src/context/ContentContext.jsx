@@ -107,7 +107,9 @@ const initialContent = {
     leftImage: '/images/necklace-2.jpg',
     leftTitle: 'LULU',
     leftSubtitle: 'Los Angeles',
-    rightLogoImage: '' // If empty, shows text "LS"
+    rightLogoImage: '', // If empty, shows text "LS"
+    popupTitle: "Don't miss a thing",
+    popupDescription: "Sign up for new arrivals, exclusive offers, events and more."
   }
 };
 

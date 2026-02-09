@@ -8,11 +8,14 @@ const NewsletterTab = () => {
   const [activeSubTab, setActiveSubTab] = useState('signups'); // 'signups' or 'settings'
 
   // Settings State
-  const [popupForm, setPopupForm] = useState(content.newsletterPopup || {
+  const [popupForm, setPopupForm] = useState({
     leftImage: '/images/necklace-2.jpg',
     leftTitle: 'LULU',
     leftSubtitle: 'Los Angeles',
-    rightLogoImage: ''
+    rightLogoImage: '',
+    popupTitle: "Don't miss a thing",
+    popupDescription: "Sign up for new arrivals, exclusive offers, events and more.",
+    ...(content.newsletterPopup || {})
   });
   const [filesToUpload, setFilesToUpload] = useState({});
 
@@ -167,6 +170,30 @@ const NewsletterTab = () => {
                                 <p className="text-xs text-gray-400 mt-2">Replaces the "LS" text at the top of the form.</p>
                             </div>
                         </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Main Title</label>
+                        <input 
+                            type="text" 
+                            name="popupTitle"
+                            value={popupForm.popupTitle} 
+                            onChange={handlePopupChange}
+                            className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                            placeholder="e.g. Don't miss a thing"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Description Text</label>
+                        <textarea 
+                            name="popupDescription"
+                            value={popupForm.popupDescription} 
+                            onChange={handlePopupChange}
+                            rows={3}
+                            className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                            placeholder="e.g. Sign up for new arrivals..."
+                        />
                     </div>
                 </div>
             </div>
