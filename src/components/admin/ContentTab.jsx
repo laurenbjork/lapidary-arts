@@ -134,7 +134,7 @@ const ContentTab = () => {
             });
         } catch (err) {
             console.error("Upload failed for", fieldKey, err);
-            alert(`Failed to upload image for ${fieldKey}`);
+            alert(`Failed to upload image for ${fieldKey}: ${err.message}`);
         }
       }
     };
