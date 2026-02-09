@@ -420,7 +420,7 @@ const ContentTab = () => {
       {activeSection === 'instagramFeed' && (
         <form onSubmit={saveInstagramFeed} className="space-y-6 max-w-2xl">
           <div className="space-y-4">
-            {instagramFeedForm.map((item, index) => (
+            {Array.isArray(instagramFeedForm) && instagramFeedForm.map((item, index) => (
               <div key={index} className="bg-gray-50 p-4 rounded-md relative">
                 <button 
                   type="button"

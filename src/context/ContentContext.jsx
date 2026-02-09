@@ -216,7 +216,10 @@ export const ContentProvider = ({ children }) => {
   };
 
   const updateContent = async (section, data) => {
-    const updatedSection = { ...content[section], ...data };
+    // Check if we're updating an array directly (like instagramFeed)
+    const isArraySection = Array.isArray(data) || (Array.isArray(content[section]) && Array.isArray(data));
+    
+    const updatedSection = isArraySection ? data : { ...content[section], ...data };
     
     // 1. Optimistic Update
     setContent((prev) => ({
