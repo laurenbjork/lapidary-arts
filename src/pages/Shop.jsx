@@ -53,7 +53,11 @@ const Shop = () => {
         // Exact category match (checks both original slug and mapped category)
         if (pCat === searchCat || pCat === mappedCategory) return true;
 
-        // For subcategories, check name/description for keywords
+        // Subcategory Logic (Check explicitly defined subcategory field first)
+        const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
+        if (pSub && (pSub === searchCat || pSub === mappedCategory)) return true;
+
+        // For subcategories (legacy/fallback), check name/description for keywords
         const normalizedSearch = searchCat.replace(/-/g, ' ');
         const keywords = normalizedSearch.split(' ').filter(k => k.length > 2 && k !== 'and' && k !== '&');
         

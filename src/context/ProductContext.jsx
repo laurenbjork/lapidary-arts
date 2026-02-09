@@ -27,7 +27,8 @@ export const ProductProvider = ({ children }) => {
         ...p,
         discountPrice: p.discount_price,
         isVisible: p.is_visible,
-        isNewArrival: p.is_new_arrival
+        isNewArrival: p.is_new_arrival,
+        subcategory: p.subcategory // Ensure subcategory is mapped if it exists in DB
       }));
       
       setProducts(mappedProducts);
@@ -87,6 +88,7 @@ export const ProductProvider = ({ children }) => {
       const dbProduct = {
         name: cleanProduct.name,
         category: cleanProduct.category,
+        subcategory: cleanProduct.subcategory || null, // Add subcategory support
         price: cleanProduct.price,
         discount_price: cleanProduct.discount_price,
         description: cleanProduct.description,
@@ -131,6 +133,7 @@ export const ProductProvider = ({ children }) => {
       const dbUpdate = {
         name: updatedProduct.name,
         category: updatedProduct.category,
+        subcategory: updatedProduct.subcategory || null, // Add subcategory support
         price: parseFloat(updatedProduct.price),
         discount_price: updatedProduct.discountPrice ? parseFloat(updatedProduct.discountPrice) : null,
         description: updatedProduct.description,

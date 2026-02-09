@@ -452,7 +452,12 @@ const Checkout = () => {
                     </div>
                     <div className="flex justify-between text-gray-600">
                         <span>Estimated Tax {taxRate > 0 && <span className="text-[10px] text-gray-400">({(taxRate * 100).toFixed(2)}%)</span>}</span>
-                        <span>${tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        <span>
+                            {formData.zipCode && formData.zipCode.replace(/\D/g, '').length >= 5 
+                                ? `$${tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+                                : <span className="text-xs italic">Calculated at checkout</span>
+                            }
+                        </span>
                     </div>
                 </div>
 

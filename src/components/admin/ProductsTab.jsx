@@ -11,6 +11,7 @@ const ProductsTab = () => {
   const initialFormState = {
     name: '',
     category: 'earrings',
+    subcategory: '',
     price: '',
     discountPrice: '',
     description: '',
@@ -30,6 +31,41 @@ const ProductsTab = () => {
     { value: 'watches', label: 'Watches' },
     { value: 'collections', label: 'Collections' },
   ];
+
+  const subcategories = {
+    earrings: [
+      { value: 'studs', label: 'Studs' },
+      { value: 'hoops', label: 'Hoops' },
+      { value: 'drops', label: 'Drops' },
+    ],
+    necklaces: [
+      { value: 'pendants', label: 'Pendants' },
+      { value: 'chains', label: 'Chains' },
+      { value: 'chokers', label: 'Chokers' },
+    ],
+    rings: [
+      { value: 'bands', label: 'Bands' },
+      { value: 'signet', label: 'Signet' },
+      { value: 'statement', label: 'Statement' },
+    ],
+    engagement: [
+      { value: 'solitaire', label: 'Solitaire' },
+      { value: 'halo', label: 'Halo' },
+      { value: 'vintage', label: 'Vintage' },
+    ],
+    diamonds: [
+      { value: 'loose', label: 'Loose Diamonds' },
+      { value: 'gemstones', label: 'Gemstones' },
+    ],
+    watches: [
+      { value: 'men', label: 'Men' },
+      { value: 'women', label: 'Women' },
+    ],
+    collections: [
+      { value: 'new', label: 'New Collection' },
+      { value: 'classic', label: 'Classic Collection' },
+    ]
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -81,6 +117,7 @@ const ProductsTab = () => {
     setFormData({
       name: product.name,
       category: product.category,
+      subcategory: product.subcategory || '',
       price: product.price,
       discountPrice: product.discountPrice || '',
       description: product.description || '',
@@ -140,11 +177,30 @@ const ProductsTab = () => {
               <select 
                 name="category" 
                 value={formData.category} 
-                onChange={handleInputChange} 
+                onChange={(e) => {
+                    handleInputChange(e);
+                    // Reset subcategory when category changes
+                    setFormData(prev => ({ ...prev, category: e.target.value, subcategory: '' }));
+                }} 
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
               >
                 {categories.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Subcategory (Optional)</label>
+              <select 
+                name="subcategory" 
+                value={formData.subcategory} 
+                onChange={handleInputChange} 
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+              >
+                <option value="">None</option>
+                {subcategories[formData.category]?.map(sub => (
+                  <option key={sub.value} value={sub.value}>{sub.label}</option>
                 ))}
               </select>
             </div>
