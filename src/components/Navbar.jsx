@@ -77,7 +77,7 @@ const Navbar = () => {
             <img 
               src={isDarkHeader ? "/images/logo.png" : "/images/Home.png"}
               alt="Lapidary Art" 
-              className="w-[224px] h-auto object-contain transition-all duration-300"
+              className="w-[160px] h-auto object-contain transition-all duration-300"
               onError={(e) => { 
                 const target = e.target;
                 if (target.src.includes('Home.png')) {
