@@ -77,7 +77,7 @@ const Navbar = () => {
             <img 
               src={isDarkHeader ? "/images/logo.png" : "/images/Home.png"}
               alt="Lapidary Art" 
-              className="w-[160px] h-auto object-contain transition-all duration-300"
+              className="w-[130px] h-auto max-h-[45px] object-contain transition-all duration-300"
               onError={(e) => { 
                 const target = e.target;
                 if (target.src.includes('Home.png')) {
@@ -91,18 +91,18 @@ const Navbar = () => {
 
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex items-center space-x-8 text-[11px] font-medium uppercase tracking-[0.15em] h-full">
-            <Link to="/new-arrivals" className="hover:opacity-70 transition-opacity py-4">New Arrivals</Link>
+            <Link to="/new-arrivals" className="hover:opacity-70 transition-opacity py-3">New Arrivals</Link>
             
             <div 
               className="relative h-full flex items-center"
               onMouseEnter={() => handleMouseEnter('shop')}
             >
-              <Link to="/shop" className="hover:opacity-70 transition-opacity py-4 flex items-center">
+              <Link to="/shop" className="hover:opacity-70 transition-opacity py-3 flex items-center">
                 Shop <ChevronDown size={12} className="ml-1" />
               </Link>
             </div>
 
-            <Link to="/watches" className="hover:opacity-70 transition-opacity py-4">Watches</Link>
+            <Link to="/watches" className="hover:opacity-70 transition-opacity py-3">Watches</Link>
             
 
 
@@ -110,13 +110,13 @@ const Navbar = () => {
               className="relative h-full flex items-center"
               onMouseEnter={() => handleMouseEnter('gifting')}
             >
-              <Link to="/gifts" className="hover:opacity-70 transition-opacity py-4 flex items-center">
+              <Link to="/gifts" className="hover:opacity-70 transition-opacity py-3 flex items-center">
                 Gifting <ChevronDown size={12} className="ml-1" />
               </Link>
             </div>
 
 
-            <Link to="/about" className="hover:opacity-70 transition-opacity py-4">About</Link>
+            <Link to="/about" className="hover:opacity-70 transition-opacity py-3">About</Link>
           </div>
 
           {/* Icons - Right Aligned */}
