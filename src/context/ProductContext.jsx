@@ -21,7 +21,16 @@ export const ProductProvider = ({ children }) => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setProducts(data || []);
+      
+      // Map DB snake_case to frontend camelCase
+      const mappedProducts = (data || []).map(p => ({
+        ...p,
+        discountPrice: p.discount_price,
+        isVisible: p.is_visible,
+        isNewArrival: p.is_new_arrival
+      }));
+      
+      setProducts(mappedProducts);
     } catch (error) {
       console.error('Error fetching products:', error.message);
     } finally {
@@ -29,18 +38,49 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
+  const uploadProductImage = async (file) => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error.message);
+      throw error;
+    }
+  };
+
   const addProduct = async (product) => {
     try {
-      // Remove temporary ID if present and ensure numbers are numbers
-      const { id, ...productData } = product;
+      let imageUrl = product.image;
+
+      // Upload image if it's a File object (not a string URL)
+      if (product.imageFile) {
+        imageUrl = await uploadProductImage(product.imageFile);
+      }
+
+      // Remove temporary ID/file if present
+      const { id, imageFile, ...productData } = product;
+      
       const cleanProduct = {
         ...productData,
         price: parseFloat(productData.price),
         discount_price: productData.discountPrice ? parseFloat(productData.discountPrice) : null,
+        description: productData.description,
+        image: imageUrl,
         is_visible: productData.isVisible ?? true,
         is_new_arrival: productData.isNewArrival ?? false,
-        // Map frontend camelCase to snake_case if needed, but for now we'll match DB columns
-        // Actually, let's map it properly to match the DB schema I just wrote
       };
 
       // We need to map camelCase (frontend) to snake_case (DB)
@@ -62,7 +102,16 @@ export const ProductProvider = ({ children }) => {
         .single();
 
       if (error) throw error;
-      setProducts((prev) => [data, ...prev]);
+
+      // Map back to camelCase for state
+      const newProduct = {
+        ...data,
+        discountPrice: data.discount_price,
+        isVisible: data.is_visible,
+        isNewArrival: data.is_new_arrival
+      };
+
+      setProducts((prev) => [newProduct, ...prev]);
       return { success: true };
     } catch (error) {
       console.error('Error adding product:', error.message);
@@ -72,13 +121,20 @@ export const ProductProvider = ({ children }) => {
 
   const updateProduct = async (id, updatedProduct) => {
     try {
+      let imageUrl = updatedProduct.image;
+
+      // Upload image if it's a File object
+      if (updatedProduct.imageFile) {
+        imageUrl = await uploadProductImage(updatedProduct.imageFile);
+      }
+
       const dbUpdate = {
         name: updatedProduct.name,
         category: updatedProduct.category,
         price: parseFloat(updatedProduct.price),
         discount_price: updatedProduct.discountPrice ? parseFloat(updatedProduct.discountPrice) : null,
         description: updatedProduct.description,
-        image: updatedProduct.image,
+        image: imageUrl,
         is_visible: updatedProduct.isVisible,
         is_new_arrival: updatedProduct.isNewArrival
       };
@@ -91,7 +147,16 @@ export const ProductProvider = ({ children }) => {
         .single();
 
       if (error) throw error;
-      setProducts((prev) => prev.map((p) => (p.id === id ? data : p)));
+
+      // Map back to camelCase for state
+      const mappedData = {
+        ...data,
+        discountPrice: data.discount_price,
+        isVisible: data.is_visible,
+        isNewArrival: data.is_new_arrival
+      };
+
+      setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p)));
       return { success: true };
     } catch (error) {
       console.error('Error updating product:', error.message);

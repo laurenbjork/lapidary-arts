@@ -44,11 +44,15 @@ const ProductsTab = () => {
     if (file) {
       const objectUrl = URL.createObjectURL(file);
       setPreviewImage(objectUrl);
-      setFormData({ ...formData, image: objectUrl });
+      setFormData({ 
+        ...formData, 
+        image: objectUrl, // Keep for preview
+        imageFile: file   // Store actual file for upload
+      });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const productData = {
       ...formData,
@@ -56,16 +60,21 @@ const ProductsTab = () => {
       discountPrice: formData.discountPrice ? parseFloat(formData.discountPrice) : null,
     };
 
+    let result;
     if (editingId) {
-      updateProduct(editingId, productData);
+      result = await updateProduct(editingId, productData);
       setEditingId(null);
     } else {
-      addProduct(productData);
+      result = await addProduct(productData);
     }
     
-    setFormData(initialFormState);
-    setPreviewImage(null);
-    setIsEditing(false);
+    if (result && result.success) {
+        setFormData(initialFormState);
+        setPreviewImage(null);
+        setIsEditing(false);
+    } else {
+        alert('Failed to save product. Please try again.');
+    }
   };
 
   const handleEdit = (product) => {
