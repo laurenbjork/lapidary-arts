@@ -34,10 +34,16 @@ const Login = () => {
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md mb-6 border border-red-100 text-center">
-            {error}
-          </div>
-        )}
+            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md mb-6 border border-red-100 text-center">
+              {error}
+            </div>
+          )}
+
+          {message && (
+            <div className="bg-green-50 text-green-600 text-sm p-3 rounded-md mb-6 border border-green-100 text-center">
+              {message}
+            </div>
+          )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
