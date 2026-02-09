@@ -190,7 +190,7 @@ const Navbar = () => {
                     
                     {/* Search Suggestions */}
                     {suggestions.length > 0 && (
-                        <div className="absolute top-full left-0 w-full bg-white/90 backdrop-blur-md text-gray-900 border border-gray-100 shadow-lg mt-1 max-h-[300px] overflow-y-auto z-50">
+                        <div className="absolute top-full left-0 w-full bg-white/70 backdrop-blur-md text-gray-900 border border-gray-100/50 shadow-lg mt-1 max-h-[300px] overflow-y-auto z-50">
                             {suggestions.map((product) => (
                                 <div 
                                     key={product.id}
@@ -238,7 +238,7 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full bg-white/90 backdrop-blur-md text-gray-900 border-t border-gray-100 shadow-lg py-12 px-6 z-50"
+              className="absolute top-full left-0 w-full bg-white/70 backdrop-blur-md text-gray-900 border-t border-gray-100/50 shadow-lg py-12 px-6 z-50"
               onMouseEnter={() => handleMouseEnter('shop')}
               onMouseLeave={handleMouseLeave}
             >
@@ -273,7 +273,7 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-[50%] transform -translate-x-1/2 bg-white/90 backdrop-blur-md text-gray-900 border-t border-gray-100 shadow-lg py-6 px-8 z-50 min-w-[250px]"
+              className="absolute top-full left-[50%] transform -translate-x-1/2 bg-white/70 backdrop-blur-md text-gray-900 border-t border-gray-100/50 shadow-lg py-6 px-8 z-50 min-w-[250px]"
               onMouseEnter={() => handleMouseEnter('gifting')}
               onMouseLeave={handleMouseLeave}
             >
