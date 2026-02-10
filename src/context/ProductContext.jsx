@@ -39,7 +39,8 @@ export const ProductProvider = ({ children }) => {
         stockNumber: p.stock_number,
         gallery: p.gallery || [],
         availabilityStatus: p.availability_status || 'available',
-        subcategory: p.subcategory // Ensure subcategory is mapped if it exists in DB
+        subcategory: p.subcategory, // Ensure subcategory is mapped if it exists in DB
+        secondaryDescription: p.secondary_description
       }));
       
       setProducts(mappedProducts);
@@ -137,9 +138,10 @@ export const ProductProvider = ({ children }) => {
         sub_title: cleanProduct.sub_title,
         details: cleanProduct.details,
         in_store: cleanProduct.in_store,
-        stock_number: cleanProduct.stock_number,
-        gallery: cleanProduct.gallery,
-        availability_status: cleanProduct.availability_status
+        stock_number: newProduct.stockNumber,
+        gallery: galleryUrls,
+        availability_status: newProduct.availabilityStatus,
+        secondary_description: newProduct.secondaryDescription
       };
 
       const { data, error } = await supabase
@@ -151,7 +153,7 @@ export const ProductProvider = ({ children }) => {
       if (error) throw error;
 
       // Map back to camelCase for state
-      const newProduct = {
+      const mappedData = {
         ...data,
         discountPrice: data.discount_price,
         isVisible: data.is_visible,
@@ -166,10 +168,11 @@ export const ProductProvider = ({ children }) => {
         inStore: data.in_store,
         stockNumber: data.stock_number,
         gallery: data.gallery || [],
-        availabilityStatus: data.availability_status
+        availabilityStatus: data.availability_status,
+        secondaryDescription: data.secondary_description
       };
 
-      setProducts((prev) => [newProduct, ...prev]);
+      setProducts((prev) => [mappedData, ...prev]);
       return { success: true };
     } catch (error) {
       console.error('Error adding product:', error.message);
@@ -221,7 +224,8 @@ export const ProductProvider = ({ children }) => {
         in_store: updatedProduct.inStore,
         stock_number: updatedProduct.stockNumber,
         gallery: galleryUrls,
-        availability_status: updatedProduct.availabilityStatus
+        availability_status: updatedProduct.availabilityStatus,
+        secondary_description: updatedProduct.secondaryDescription
       };
 
       const { data, error } = await supabase
@@ -249,7 +253,8 @@ export const ProductProvider = ({ children }) => {
         inStore: data.in_store,
         stockNumber: data.stock_number,
         gallery: data.gallery || [],
-        availabilityStatus: data.availability_status
+        availabilityStatus: data.availability_status,
+        secondaryDescription: data.secondary_description
       };
 
       setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p)));

@@ -26,6 +26,7 @@ import { ProductProvider } from './context/ProductContext';
 import { ContentProvider } from './context/ContentContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AppointmentProvider } from './context/AppointmentContext';
+import { CustomerProvider } from './context/CustomerContext';
 import NewsletterPopup from './components/NewsletterPopup';
 import FAQ from './pages/FAQ';
 import SizeGuide from './pages/SizeGuide';
@@ -63,6 +64,7 @@ function App() {
     <AuthProvider>
       <ProductProvider>
         <ContentProvider>
+          <CustomerProvider>
             <AppointmentProvider>
             <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
               <ScrollToTop />
@@ -111,6 +113,7 @@ function App() {
               {!isAdmin && <Footer />}
             </div>
             </AppointmentProvider>
+          </CustomerProvider>
         </ContentProvider>
       </ProductProvider>
     </AuthProvider>

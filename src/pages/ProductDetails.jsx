@@ -53,7 +53,11 @@ const ProductDetails = () => {
     setBookingStatus('submitting');
     
     const result = await createAppointment({
-        ...bookingForm,
+        name: bookingForm.name,
+        email: bookingForm.email,
+        phone: bookingForm.phone,
+        description: bookingForm.description,
+        preferred_time: bookingForm.preferredTime,
         product_id: product.id,
         product_name: product.name,
         stock_number: product.stockNumber
@@ -83,7 +87,7 @@ const ProductDetails = () => {
     <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 mb-20">
         {/* Image Gallery Section */}
-        <FadeIn className="space-y-4">
+        <FadeIn className="space-y-4 max-w-xl mx-auto w-full">
           <div className="aspect-square bg-gray-50 overflow-hidden rounded-sm relative group">
              <img src={activeImage || product.image} alt={product.name} className="w-full h-full object-cover" />
              <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
@@ -177,10 +181,10 @@ const ProductDetails = () => {
         <div className="text-center text-sm text-gray-600 leading-relaxed min-h-[200px]">
             {activeTab === 'description' && (
                 <FadeIn>
-                    <p>
-                        Every piece in our collection is a testament to the artistry of fine jewelry making. 
-                        Hand-selected gemstones are set in precious metals by our master artisans in Los Angeles.
-                        This piece specifically embodies the balance between timeless elegance and modern design.
+                    <p className="whitespace-pre-line">
+                        {product.secondaryDescription || (
+                          "Every piece in our collection is a testament to the artistry of fine jewelry making. Hand-selected gemstones are set in precious metals by our master artisans in Los Angeles. This piece specifically embodies the balance between timeless elegance and modern design."
+                        )}
                     </p>
                 </FadeIn>
             )}

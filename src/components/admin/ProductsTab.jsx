@@ -15,6 +15,7 @@ const ProductsTab = () => {
     price: '',
     discountPrice: '',
     description: '',
+    secondaryDescription: '',
     image: '',
     isVisible: true,
     isNewArrival: false,
@@ -152,7 +153,7 @@ const ProductsTab = () => {
   };
 
   const downloadCSV = () => {
-    const headers = ['ID', 'Name', 'Category', 'Subcategory', 'Price', 'Discount Price', 'Brand', 'Model Name', 'Model Number', 'Sub Title', 'Visible', 'Show On Home', 'New Arrival', 'Hide Price'];
+    const headers = ['ID', 'Name', 'Category', 'Subcategory', 'Price', 'Discount Price', 'Brand', 'Model Name', 'Model Number', 'Sub Title', 'Visible', 'Show On Home', 'New Arrival', 'Hide Price', 'Stock Number', 'Availability Status', 'Main Description', 'Secondary Description'];
     
     const csvContent = [
       headers.join(','),
@@ -170,7 +171,11 @@ const ProductsTab = () => {
         p.isVisible,
         p.showOnHome,
         p.isNewArrival,
-        p.hidePrice
+        p.hidePrice,
+        `"${(p.stockNumber || '').replace(/"/g, '""')}"`,
+        p.availabilityStatus,
+        `"${(p.description || '').replace(/"/g, '""')}"`,
+        `"${(p.secondaryDescription || '').replace(/"/g, '""')}"`
       ].join(','))
     ].join('\n');
 
@@ -389,14 +394,27 @@ const ProductsTab = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Description</label>
+              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Main Description</label>
               <textarea 
                 name="description" 
                 value={formData.description} 
                 onChange={handleInputChange} 
+                rows="4"
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-                rows="3"
-              />
+                required 
+              ></textarea>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Secondary Description (Displayed in "Description" tab)</label>
+              <textarea 
+                name="secondaryDescription" 
+                value={formData.secondaryDescription} 
+                onChange={handleInputChange} 
+                rows="4"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                placeholder="Content for the 'Description' tab next to 'Details'..."
+              ></textarea>
             </div>
 
             <div className="md:col-span-2 bg-white p-4 rounded-md border border-gray-200">
@@ -652,9 +670,11 @@ const ProductsTab = () => {
             <thead>
               <tr className="border-b border-gray-200">
                 <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Image</th>
+                <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Stock #</th>
                 <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Name</th>
                 <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Category</th>
                 <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Price</th>
+                <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Availability</th>
                 <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Status</th>
                 <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium text-right">Actions</th>
               </tr>
@@ -667,6 +687,7 @@ const ProductsTab = () => {
                       <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                     </div>
                   </td>
+                  <td className="py-3 px-4 text-xs text-gray-500">{product.stockNumber}</td>
                   <td className="py-3 px-4 font-medium">{product.name}</td>
                   <td className="py-3 px-4 capitalize text-gray-500">{product.category}</td>
                   <td className="py-3 px-4">
@@ -678,6 +699,9 @@ const ProductsTab = () => {
                     ) : (
                       <span>${product.price}</span>
                     )}
+                  </td>
+                  <td className="py-3 px-4 text-xs capitalize text-gray-600">
+                    {(product.availabilityStatus || 'Available').replace(/_/g, ' ')}
                   </td>
                   <td className="py-3 px-4">
                     <span className={`px-2 py-1 rounded-full text-[10px] uppercase tracking-wide ${product.isVisible ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
