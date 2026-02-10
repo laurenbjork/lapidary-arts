@@ -176,6 +176,12 @@ export const ContentProvider = ({ children }) => {
             .select('*')
             .order('created_at', { ascending: false });
 
+        // 3. Fetch Newsletter Signups (separate table)
+        const { data: newsletterData, error: newsletterError } = await supabase
+            .from('newsletter_signups')
+            .select('*')
+            .order('created_at', { ascending: false });
+
         if (error) {
           console.warn('Supabase fetch error (using local defaults):', error.message);
           // Fallback to localStorage if Supabase fails
@@ -208,6 +214,14 @@ export const ContentProvider = ({ children }) => {
                 imageUrl: c.image_url,
                 submittedAt: c.created_at,
                 status: c.status
+            }));
+          }
+
+          // Merge newsletter signups if available
+          if (newsletterData) {
+            newContent.newsletterSignups = newsletterData.map(item => ({
+              ...item,
+              signedUpAt: item.created_at
             }));
           }
 
@@ -355,25 +369,34 @@ export const ContentProvider = ({ children }) => {
   };
 
   const addNewsletterSignup = async (signupData) => {
+    // 1. Optimistic Update
     const currentList = content.newsletterSignups || [];
-    const updatedList = [signupData, ...currentList];
+    // Ensure we have a consistent structure for optimistic UI
+    const optimisticItem = {
+        ...signupData,
+        signedUpAt: new Date().toISOString()
+    };
+    const updatedList = [optimisticItem, ...currentList];
 
     setContent((prev) => ({
       ...prev,
       newsletterSignups: updatedList
     }));
 
+    // 2. Update Supabase (New Table)
     try {
       const { error } = await supabase
-        .from('site_content')
-        .upsert({ 
-          section_name: 'newsletter_signups', 
-          content: updatedList 
-        }, { onConflict: 'section_name' });
+        .from('newsletter_signups')
+        .insert([{ 
+          email: signupData.email,
+          phone: signupData.phone || null,
+          country: signupData.country || 'US'
+        }]);
 
       if (error) throw error;
     } catch (err) {
       console.error('Error adding newsletter signup:', err);
+      // alert('Failed to save signup');
     }
   };
 

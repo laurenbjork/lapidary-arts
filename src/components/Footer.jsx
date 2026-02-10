@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Mail, CreditCard } from 'lucide-react';
+import { Instagram, Facebook, Mail, CreditCard, Loader } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
 
 const Footer = () => {
-  const { content } = useContent();
+  const { content, addNewsletterSignup } = useContent();
   const { socials, footer } = content;
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('idle'); // idle, submitting, success, error
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setStatus('submitting');
+    try {
+      await addNewsletterSignup({ email, country: 'US' });
+      setStatus('success');
+      setEmail('');
+      setTimeout(() => setStatus('idle'), 3000);
+    } catch (error) {
+      console.error('Footer signup error:', error);
+      setStatus('error');
+    }
+  };
 
   return (
     <footer className="bg-black text-white border-t border-gray-900 py-2">
@@ -79,14 +97,22 @@ const Footer = () => {
           <div className="lg:col-span-2 space-y-6 mt-10">
             <div>
               <h4 className="text-[10px] font-bold uppercase tracking-widest text-white mb-4">Newsletter</h4>
-              <form className="flex border-b border-white/20">
+              <form onSubmit={handleSubmit} className="flex border-b border-white/20">
                 <input 
                   type="email" 
-                  placeholder="EMAIL" 
-                  className="bg-transparent w-full py-2 text-[10px] uppercase tracking-widest text-white placeholder-white/40 focus:outline-none"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={status === 'success' ? 'SIGNED UP!' : 'EMAIL'}
+                  disabled={status === 'submitting' || status === 'success'}
+                  className="bg-transparent w-full py-2 text-[10px] uppercase tracking-widest text-white placeholder-white/40 focus:outline-none disabled:opacity-50"
                 />
-                <button className="text-[10px] uppercase tracking-widest text-white/60 hover:text-white transition-colors ml-2">
-                  →
+                <button 
+                  type="submit"
+                  disabled={status === 'submitting' || status === 'success'}
+                  className="text-[10px] uppercase tracking-widest text-white/60 hover:text-white transition-colors ml-2 disabled:opacity-50"
+                >
+                  {status === 'submitting' ? <Loader size={12} className="animate-spin" /> : '→'}
                 </button>
               </form>
             </div>
