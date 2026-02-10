@@ -242,8 +242,8 @@ const Home = () => {
                                     />
                                 </div>
                                 <div className="absolute bottom-4 left-4 text-white">
-                                    <h3 className="font-bold text-sm uppercase tracking-wider">{product.name}</h3>
-                                    <p className="text-[10px] opacity-80">${product.price.toLocaleString()}</p>
+                                    <h3 className="font-bold text-sm uppercase tracking-wider">{product.brand || product.name}</h3>
+                                    <p className="text-[10px] opacity-80">{product.modelName || product.category}</p>
                                 </div>
                             </Link>
                         </FadeIn>

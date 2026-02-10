@@ -19,6 +19,8 @@ const ProductsTab = () => {
     isVisible: true,
     isNewArrival: false,
     showOnHome: false,
+    brand: '',
+    modelName: '',
   };
   const [formData, setFormData] = useState(initialFormState);
   const [previewImage, setPreviewImage] = useState(null);
@@ -135,6 +137,8 @@ const ProductsTab = () => {
       isVisible: product.isVisible,
       isNewArrival: product.isNewArrival || false,
       showOnHome: product.showOnHome || false,
+      brand: product.brand || '',
+      modelName: product.modelName || '',
     });
     setPreviewImage(product.image);
     setEditingId(product.id);
@@ -298,16 +302,46 @@ const ProductsTab = () => {
               </label>
 
               {formData.category === 'watches' && (
-                <label className="flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    name="showOnHome" 
-                    checked={formData.showOnHome} 
-                    onChange={handleInputChange} 
-                    className="mr-2"
-                  />
-                  <span className="text-sm text-gray-700">Show in Home Page "Watches" Section</span>
-                </label>
+                <>
+                  <label className="flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      name="showOnHome" 
+                      checked={formData.showOnHome} 
+                      onChange={handleInputChange} 
+                      className="mr-2"
+                    />
+                    <span className="text-sm text-gray-700">Show in Home Page "Watches" Section</span>
+                  </label>
+
+                  <div className="w-full mt-4 border-t border-gray-200 pt-4">
+                    <h3 className="text-sm font-bold text-gray-700 mb-4">Watch Specific Details</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Brand</label>
+                        <input 
+                          type="text" 
+                          name="brand" 
+                          value={formData.brand} 
+                          onChange={handleInputChange} 
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                          placeholder="e.g. Rolex"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Model Name</label>
+                        <input 
+                          type="text" 
+                          name="modelName" 
+                          value={formData.modelName} 
+                          onChange={handleInputChange} 
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                          placeholder="e.g. Lady Datejust"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>

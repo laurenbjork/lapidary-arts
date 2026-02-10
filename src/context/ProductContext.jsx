@@ -29,6 +29,8 @@ export const ProductProvider = ({ children }) => {
         isVisible: p.is_visible,
         isNewArrival: p.is_new_arrival,
         showOnHome: p.show_on_home, // Map new field
+        brand: p.brand,
+        modelName: p.model_name,
         subcategory: p.subcategory // Ensure subcategory is mapped if it exists in DB
       }));
       
@@ -84,6 +86,8 @@ export const ProductProvider = ({ children }) => {
         is_visible: productData.isVisible ?? true,
         is_new_arrival: productData.isNewArrival ?? false,
         show_on_home: productData.showOnHome ?? false,
+        brand: productData.brand || null,
+        model_name: productData.modelName || null,
       };
 
       // We need to map camelCase (frontend) to snake_case (DB)
@@ -97,7 +101,9 @@ export const ProductProvider = ({ children }) => {
         image: cleanProduct.image,
         is_visible: cleanProduct.is_visible,
         is_new_arrival: cleanProduct.is_new_arrival,
-        show_on_home: cleanProduct.show_on_home
+        show_on_home: cleanProduct.show_on_home,
+        brand: cleanProduct.brand,
+        model_name: cleanProduct.model_name
       };
 
       const { data, error } = await supabase
@@ -114,7 +120,9 @@ export const ProductProvider = ({ children }) => {
         discountPrice: data.discount_price,
         isVisible: data.is_visible,
         isNewArrival: data.is_new_arrival,
-        showOnHome: data.show_on_home
+        showOnHome: data.show_on_home,
+        brand: data.brand,
+        modelName: data.model_name
       };
 
       setProducts((prev) => [newProduct, ...prev]);
@@ -144,7 +152,9 @@ export const ProductProvider = ({ children }) => {
         image: imageUrl,
         is_visible: updatedProduct.isVisible,
         is_new_arrival: updatedProduct.isNewArrival,
-        show_on_home: updatedProduct.showOnHome
+        show_on_home: updatedProduct.showOnHome,
+        brand: updatedProduct.brand,
+        model_name: updatedProduct.modelName
       };
 
       const { data, error } = await supabase
@@ -162,7 +172,9 @@ export const ProductProvider = ({ children }) => {
         discountPrice: data.discount_price,
         isVisible: data.is_visible,
         isNewArrival: data.is_new_arrival,
-        showOnHome: data.show_on_home
+        showOnHome: data.show_on_home,
+        brand: data.brand,
+        modelName: data.model_name
       };
 
       setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p)));
