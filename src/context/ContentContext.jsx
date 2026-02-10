@@ -167,11 +167,18 @@ export const ContentProvider = ({ children }) => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
+        // 1. Fetch Site Content
         const { data, error } = await supabase.from('site_content').select('*');
         
+        // 2. Fetch Consultations (separate table)
+        const { data: consultationsData, error: consultError } = await supabase
+            .from('consultations')
+            .select('*')
+            .order('created_at', { ascending: false });
+
         if (error) {
           console.warn('Supabase fetch error (using local defaults):', error.message);
-          // Fallback to localStorage if Supabase fails (e.g. invalid keys)
+          // Fallback to localStorage if Supabase fails
           const savedContent = localStorage.getItem('siteContent_v2');
           if (savedContent) {
             setContent(sanitizeContent(JSON.parse(savedContent)));
@@ -186,6 +193,24 @@ export const ContentProvider = ({ children }) => {
               newContent[row.section_name] = row.content;
             }
           });
+          
+          // Merge consultations if available
+          if (consultationsData) {
+            // Map snake_case DB columns to camelCase frontend props if needed
+            // But currently frontend uses: name, email, phone, description, imageUrl, submittedAt/created_at
+            newContent.consultations = consultationsData.map(c => ({
+                id: c.id,
+                name: c.name,
+                email: c.email,
+                phone: c.phone,
+                description: c.description,
+                preferredTime: c.preferred_time,
+                imageUrl: c.image_url,
+                submittedAt: c.created_at,
+                status: c.status
+            }));
+          }
+
           // Also sanitize DB content just in case bad data got in
           setContent(sanitizeContent(newContent));
         } else {
@@ -291,9 +316,16 @@ export const ContentProvider = ({ children }) => {
   };
 
   const addConsultation = async (consultationData) => {
-    // 1. Get current list
+    // 1. Get current list (for optimistic update)
     const currentList = content.consultations || [];
-    const updatedList = [consultationData, ...currentList]; // Add to top
+    // Frontend uses camelCase, DB uses snake_case. 
+    // We'll keep optimistic state matching frontend structure.
+    const optimisticItem = {
+        ...consultationData,
+        submittedAt: new Date().toISOString()
+    };
+    
+    const updatedList = [optimisticItem, ...currentList]; 
 
     // 2. Optimistic Update
     setContent((prev) => ({
@@ -301,19 +333,24 @@ export const ContentProvider = ({ children }) => {
       consultations: updatedList
     }));
 
-    // 3. Update Supabase
+    // 3. Update Supabase (New Table)
     try {
         const { error } = await supabase
-        .from('site_content')
-        .upsert({ 
-            section_name: 'consultations', 
-            content: updatedList 
-        }, { onConflict: 'section_name' });
+        .from('consultations')
+        .insert([{
+            name: consultationData.name,
+            email: consultationData.email,
+            phone: consultationData.phone,
+            description: consultationData.description,
+            preferred_time: consultationData.preferredTime,
+            image_url: consultationData.imageUrl
+        }]);
 
         if (error) throw error;
     } catch (err) {
         console.error('Error adding consultation:', err);
-        // Rollback?
+        // We should probably revert state here, but for now we'll log it
+        // alert('Failed to save consultation to database');
     }
   };
 
