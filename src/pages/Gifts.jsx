@@ -1,28 +1,58 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import FadeIn from '../components/FadeIn';
+import { useProducts } from '../context/ProductContext';
+import ProductCard from '../components/ProductCard';
 
 const Gifts = () => {
   const { guide } = useParams();
+  const { products } = useProducts();
 
   const giftGuides = [
-    "Valentine's Day Gift Guide", 'Daughters', 'Lovers', 'Friend', 'Mamas', 'The Minimalist', 'The Maximalist',
-    'Second Skin', 'Bridal Jewelry', 'Best Sellers', '$500 and under', 'LS HOME', 'LS x Amber Lewis Gift Sets'
+    'Daughters', 'Lovers', 'Friend', 'Mamas', 'The Minimalist', 'The Maximalist',
+    'Bridal Jewelry', 'Best Sellers', '$500 and under'
   ];
 
   if (guide) {
     const displayTitle = guide.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    
+    // Filter products for this guide
+    const guideProducts = products.filter(p => {
+      if (!p.isVisible) return false;
+      
+      // If "All Gifting", show all products in 'gifting' category
+      if (guide === 'all-gifting') {
+        return p.category === 'gifting';
+      }
+
+      // Otherwise match category 'gifting' AND subcategory matches guide
+      // OR check if subcategory matches guide regardless of category (flexible)
+      return (p.category === 'gifting' && p.subcategory === guide) || 
+             (p.subcategory === guide);
+    });
+
     return (
-      <div key={guide} className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
+      <div key={guide} className="pt-32 pb-20 px-4 max-w-[1920px] mx-auto">
         <FadeIn className="text-center mb-16">
           <h1 className="font-serif text-4xl md:text-5xl text-gray-900 mb-6 italic">{displayTitle}</h1>
           <p className="text-gray-500 text-xs uppercase tracking-widest max-w-2xl mx-auto">
             Gift Guide
           </p>
         </FadeIn>
-        <FadeIn className="text-center py-20 border-t border-gray-100">
-            <p className="text-gray-500 font-serif italic text-xl">Curated gifts for {displayTitle} coming soon.</p>
-        </FadeIn>
+        
+        {guideProducts.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-12 mb-20">
+            {guideProducts.map((product, index) => (
+              <FadeIn key={product.id} delay={index * 0.05}>
+                <ProductCard product={product} />
+              </FadeIn>
+            ))}
+          </div>
+        ) : (
+           <FadeIn className="text-center py-20 border-t border-gray-100">
+              <p className="text-gray-500 font-serif italic text-xl">Curated gifts for {displayTitle} coming soon.</p>
+           </FadeIn>
+        )}
       </div>
     );
   }
@@ -39,10 +69,12 @@ const Gifts = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {giftGuides.map((g, index) => (
           <FadeIn key={index} delay={index * 0.05} className="group cursor-pointer">
-             <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden flex items-center justify-center p-8 text-center">
-               <div className="absolute inset-0 bg-[#f9f5f3] group-hover:bg-[#f0ebe9] transition-colors duration-500"></div>
-               <h3 className="relative z-10 font-serif text-xl italic text-gray-900">{g}</h3>
-            </div>
+             <Link to={`/gifts/${g.toLowerCase().replace(/ /g, '-')}`} className="block h-full">
+                <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden flex items-center justify-center p-8 text-center h-full">
+                  <div className="absolute inset-0 bg-[#f9f5f3] group-hover:bg-[#f0ebe9] transition-colors duration-500"></div>
+                  <h3 className="relative z-10 font-serif text-xl italic text-gray-900">{g}</h3>
+                </div>
+             </Link>
           </FadeIn>
         ))}
       </div>

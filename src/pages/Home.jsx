@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Gem, PenTool, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,7 +12,58 @@ const Home = () => {
   const { hero, categories, customDesign, watches, brandStory, pressCarousel, socials, instagramFeed } = content;
   const { getNewArrivals } = useProducts();
   const newArrivals = getNewArrivals();
+  
+  // Infinite Scroll Logic
+  const scrollContainerRef = useRef(null);
+
+  // Create 3 sets for infinite illusion
+  const infiniteArrivals = useMemo(() => {
+      if (newArrivals.length === 0) return [];
+      return [...newArrivals, ...newArrivals, ...newArrivals];
+  }, [newArrivals]);
+
+  // Handle infinite scroll wrapping
+  const handleScroll = () => {
+     const container = scrollContainerRef.current;
+     if (!container || newArrivals.length === 0) return;
+
+     const totalWidth = container.scrollWidth;
+     const oneSetWidth = totalWidth / 3;
+     const currentScroll = container.scrollLeft;
+     
+     // Loop back to middle set when reaching edges
+     // Buffer of 10px to ensure we catch it
+     if (currentScroll <= 10) {
+         container.scrollLeft = oneSetWidth + currentScroll;
+     } else if (currentScroll >= (2 * oneSetWidth) - 10) {
+         container.scrollLeft = currentScroll - oneSetWidth;
+     }
+  };
+
+  // Initial scroll position to middle set
+  useEffect(() => {
+      const container = scrollContainerRef.current;
+      if (container && newArrivals.length > 0) {
+          // Use requestAnimationFrame to ensure layout is ready
+          requestAnimationFrame(() => {
+             const oneSetWidth = container.scrollWidth / 3;
+             container.scrollLeft = oneSetWidth;
+          });
+      }
+  }, [newArrivals]);
+
   const [currentFeedIndex, setCurrentFeedIndex] = useState(0);
+
+  const scroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const { current } = scrollContainerRef;
+      const scrollAmount = current.offsetWidth;
+      current.scrollBy({ 
+        left: direction === 'left' ? -scrollAmount : scrollAmount, 
+        behavior: 'smooth' 
+      });
+    }
+  };
 
   // Ensure instagramFeed has data, otherwise use fallback
   const feedItems = useMemo(() => {
@@ -127,9 +178,18 @@ const Home = () => {
         
         {/* Simplified Product Grid for "Carousel" look */}
         {newArrivals.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-7xl mx-auto">
-             {newArrivals.slice(0, 4).map((product, index) => (
-               <FadeIn key={product.id} delay={0.1 * (index + 1)}>
+          <div 
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 max-w-7xl mx-auto [&::-webkit-scrollbar]:hidden"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+             {infiniteArrivals.map((product, index) => (
+               <FadeIn 
+                    key={`${product.id}-${index}`} 
+                    delay={0.1 * (index % 4)}
+                    className="w-[calc(50%-8px)] md:w-[calc(25%-12px)] snap-start flex-none"
+               >
                   <ProductCard product={product} />
                </FadeIn>
              ))}
@@ -139,8 +199,8 @@ const Home = () => {
         )}
         
         <FadeIn delay={0.5} className="flex justify-center mt-8 space-x-4">
-             <button className="text-gray-400 hover:text-black"><ChevronLeft size={20} /></button>
-             <button className="text-gray-400 hover:text-black"><ChevronRight size={20} /></button>
+             <button onClick={() => scroll('left')} className="text-gray-400 hover:text-black transition-colors"><ChevronLeft size={20} /></button>
+             <button onClick={() => scroll('right')} className="text-gray-400 hover:text-black transition-colors"><ChevronRight size={20} /></button>
         </FadeIn>
       </section>
 

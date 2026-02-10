@@ -25,11 +25,12 @@ import ProductDetails from './pages/ProductDetails';
 import { ProductProvider } from './context/ProductContext';
 import { ContentProvider } from './context/ContentContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
-import Cart from './components/Cart';
-import Checkout from './pages/Checkout';
-import OrderConfirmation from './pages/OrderConfirmation';
 import NewsletterPopup from './components/NewsletterPopup';
+import FAQ from './pages/FAQ';
+import SizeGuide from './pages/SizeGuide';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import Accessibility from './pages/Accessibility';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -41,7 +42,12 @@ const ScrollToTop = () => {
 };
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  
+  if (loading) {
+    return <div>Loading...</div>; // Or a proper loading spinner
+  }
+  
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
   }
@@ -56,10 +62,8 @@ function App() {
     <AuthProvider>
       <ProductProvider>
         <ContentProvider>
-          <CartProvider>
             <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
               <ScrollToTop />
-              <Cart />
               {!isAdmin && <NewsletterPopup />}
               {!isAdmin && <Navbar />}
               <main className="flex-grow">
@@ -87,8 +91,6 @@ function App() {
                 <Route path="/new-arrivals" element={<NewArrivals />} />
                 <Route path="/shop" element={<Shop />} />
                 <Route path="/shop/:category" element={<Shop />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/order-confirmation" element={<OrderConfirmation />} />
                 <Route path="/watches" element={<Watches />} />
                 <Route path="/collections" element={<Collections />} />
                 <Route path="/collections/:collection" element={<Collections />} />
@@ -97,6 +99,11 @@ function App() {
                 <Route path="/gifts/:guide" element={<Gifts />} />
                 <Route path="/lifestyle" element={<Lifestyle />} />
                 <Route path="/pop-ups" element={<PopUps />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/size-guide" element={<SizeGuide />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/accessibility" element={<Accessibility />} />
 
                 {/* Fallback for other routes */}
                 <Route path="*" element={<Home />} />
@@ -104,7 +111,6 @@ function App() {
             </main>
             {!isAdmin && <Footer />}
           </div>
-          </CartProvider>
         </ContentProvider>
       </ProductProvider>
     </AuthProvider>

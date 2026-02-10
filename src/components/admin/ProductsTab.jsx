@@ -23,41 +23,30 @@ const ProductsTab = () => {
   const [previewImage, setPreviewImage] = useState(null);
 
   const categories = [
-    { value: 'earrings', label: 'Earrings' },
-    { value: 'necklaces', label: 'Necklaces' },
     { value: 'rings', label: 'Rings' },
-    { value: 'engagement', label: 'Engagement Rings' },
-    { value: 'diamonds', label: 'Diamonds & Gemstones' },
+    { value: 'necklaces', label: 'Necklaces' },
+    { value: 'earrings', label: 'Earrings' },
+    { value: 'stones', label: 'Stones' },
     { value: 'watches', label: 'Watches' },
-    { value: 'collections', label: 'Collections' },
+    { value: 'gifting', label: 'Gifting' },
   ];
 
   const subcategories = {
-    earrings: [
-      { value: 'hoops-&-huggies', label: 'Hoops & Huggies' },
-      { value: 'studs', label: 'Studs' },
-      { value: 'ear-bands-&-cuffs', label: 'Ear Bands & Cuffs' },
-    ],
-    necklaces: [
-      { value: 'chokers', label: 'Chokers' },
-      { value: 'pendant', label: 'Pendant' },
-      { value: 'tennis', label: 'Tennis' },
-      { value: 'lariat', label: 'Lariat' },
-      { value: 'disk-and-coins', label: 'Disk and Coins' },
-    ],
     rings: [
       { value: 'stacks-and-bands', label: 'Stacks and Bands' },
-      { value: 'dome-rings', label: 'Dome Rings' },
-      { value: 'double-band-rings', label: 'Double Band Rings' },
       { value: 'diamond-bands', label: 'Diamond Bands' },
       { value: 'bridal-&-engagement', label: 'Bridal & Engagement' },
     ],
-    engagement: [
-      { value: 'solitaire', label: 'Solitaire' },
-      { value: 'halo', label: 'Halo' },
-      { value: 'vintage', label: 'Vintage' },
+    necklaces: [
+      { value: 'pendant', label: 'Pendant' },
+      { value: 'disk-and-coins', label: 'Disk and Coins' },
     ],
-    diamonds: [
+    earrings: [
+      { value: 'hoops-&-huggies', label: 'Hoops & Huggies' },
+      { value: 'studs', label: 'Studs' },
+      { value: 'drop-earrings', label: 'Drop Earrings' },
+    ],
+    stones: [
       { value: 'emerald', label: 'Emerald' },
       { value: 'topaz', label: 'Topaz' },
       { value: 'sapphire', label: 'Sapphire' },
@@ -67,16 +56,23 @@ const ProductsTab = () => {
       { value: 'tourmaline', label: 'Tourmaline' },
       { value: 'ruby', label: 'Ruby' },
       { value: 'garnet', label: 'Garnet' },
-      { value: 'loose', label: 'Loose Diamonds' },
-      { value: 'gemstones', label: 'Gemstones' },
+      { value: 'zircon', label: 'Zircon' },
+      { value: 'tanzanite', label: 'Tanzanite' },
     ],
     watches: [
       { value: 'men', label: 'Men' },
       { value: 'women', label: 'Women' },
     ],
-    collections: [
-      { value: 'new', label: 'New Collection' },
-      { value: 'classic', label: 'Classic Collection' },
+    gifting: [
+      { value: 'daughters', label: 'Daughters' },
+      { value: 'lovers', label: 'Lovers' },
+      { value: 'friend', label: 'Friend' },
+      { value: 'mamas', label: 'Mamas' },
+      { value: 'the-minimalist', label: 'The Minimalist' },
+      { value: 'the-maximalist', label: 'The Maximalist' },
+      { value: 'bridal-jewelry', label: 'Bridal Jewelry' },
+      { value: 'best-sellers', label: 'Best Sellers' },
+      { value: '$500-and-under', label: '$500 and under' },
     ]
   };
 

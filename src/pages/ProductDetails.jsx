@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
-import { useCart } from '../context/CartContext';
-import { ChevronLeft, ChevronRight, Star, Truck, ShieldCheck, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, MapPin, Phone, Clock } from 'lucide-react';
 import FadeIn from '../components/FadeIn';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const { products } = useProducts();
-  const { addToCart } = useCart();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('description');
   
@@ -22,10 +20,6 @@ const ProductDetails = () => {
       </div>
     );
   }
-
-  const handleAddToCart = () => {
-    addToCart(product);
-  };
 
   return (
     <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
@@ -67,12 +61,6 @@ const ProductDetails = () => {
           </p>
 
           <div className="space-y-6 mb-8 border-t border-b border-gray-100 py-8">
-            <button 
-                onClick={handleAddToCart}
-                className="w-full bg-burgundy text-white py-4 uppercase tracking-widest text-xs font-semibold hover:bg-burgundy-light transition-colors"
-            >
-                Add to Cart
-            </button>
             <button className="w-full border border-gray-900 text-gray-900 py-4 uppercase tracking-widest text-xs font-semibold hover:bg-black hover:text-white transition-colors">
                 Book a Virtual Appointment
             </button>
@@ -80,16 +68,16 @@ const ProductDetails = () => {
 
           <div className="space-y-4 text-xs text-gray-500">
             <div className="flex items-center space-x-3">
-                <Truck size={16} />
-                <span>Free shipping on all orders over $500</span>
+                <MapPin size={16} />
+                <span>Available for in-store pickup at our downtown location.</span>
             </div>
             <div className="flex items-center space-x-3">
-                <ShieldCheck size={16} />
-                <span>Lifetime warranty & authenticity guarantee</span>
+                <Phone size={16} />
+                <span>Call us to confirm availability: (123) 456-7890</span>
             </div>
             <div className="flex items-center space-x-3">
                 <Clock size={16} />
-                <span>Made to order: Ships in 2-3 weeks</span>
+                <span>Store hours: Mon-Sat 10 AM - 6 PM</span>
             </div>
           </div>
         </FadeIn>
@@ -98,7 +86,7 @@ const ProductDetails = () => {
       {/* Details Tabs */}
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-center space-x-8 border-b border-gray-200 mb-10">
-            {['description', 'details', 'shipping'].map((tab) => (
+            {['description', 'details', 'in-store'].map((tab) => (
                 <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -129,15 +117,6 @@ const ProductDetails = () => {
                         <li>• Handcrafted in Los Angeles</li>
                         <li>• Total Carat Weight: 1.2ct</li>
                     </ul>
-                </FadeIn>
-            )}
-            {activeTab === 'shipping' && (
-                <FadeIn>
-                    <p>
-                        We offer complimentary insured shipping on all domestic orders. 
-                        International shipping is available to select countries.
-                        All items are shipped in discreet packaging to ensure the surprise is kept safe.
-                    </p>
                 </FadeIn>
             )}
         </div>

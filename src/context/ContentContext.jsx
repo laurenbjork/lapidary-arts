@@ -56,6 +56,12 @@ const initialContent = {
       }
     ]
   },
+  customDesignPage: {
+    image: '/images/custom-design-feature.jpg',
+    title: 'Custom Design',
+    description: 'Our custom design process allows you to work one-on-one with our designers to create the jewelry of your dreams.',
+    buttonText: 'Book a Consultation'
+  },
   watches: {
     title: "Watches",
     description: "Lapidary Art presents a curated collection of Vintage Rolex Timepieces, selected for their heritage, craftsmanship, and enduring significance.",

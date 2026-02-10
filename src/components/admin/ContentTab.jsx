@@ -23,6 +23,13 @@ const ContentTab = () => {
     ]
   });
 
+  const [customDesignPageForm, setCustomDesignPageForm] = useState(content.customDesignPage || {
+    image: '/images/custom-design-feature.jpg',
+    title: 'Custom Design',
+    description: 'Our custom design process allows you to work one-on-one with our designers to create the jewelry of your dreams.',
+    buttonText: 'Book a Consultation'
+  });
+
   const [watchesForm, setWatchesForm] = useState(content.watches || {
     title: "Watches",
     description: "Lapidary Art presents a curated collection of Vintage Rolex Timepieces, selected for their heritage, craftsmanship, and enduring significance.",
@@ -106,6 +113,11 @@ const ContentTab = () => {
     setCustomDesignForm({ ...customDesignForm, [name]: value });
   };
 
+  const handleCustomDesignPageChange = (e) => {
+    const { name, value } = e.target;
+    setCustomDesignPageForm({ ...customDesignPageForm, [name]: value });
+  };
+
   const handleCustomDesignFeatureChange = (index, field, value) => {
     const newFeatures = [...customDesignForm.features];
     newFeatures[index] = { ...newFeatures[index], [field]: value };
@@ -170,6 +182,8 @@ const ContentTab = () => {
         }));
       } else if (section === 'customDesign') {
         setCustomDesignForm({ ...customDesignForm, [field]: objectUrl });
+      } else if (section === 'customDesignPage') {
+        setCustomDesignPageForm({ ...customDesignPageForm, [field]: objectUrl });
       } else if (section === 'watches') {
          const newItems = [...watchesForm.items];
          newItems[index] = { ...newItems[index], [field]: objectUrl };
@@ -224,6 +238,8 @@ const ContentTab = () => {
         }
     } else if (section === 'customDesign') {
         await checkAndUpload('customDesign-image', (url) => updatedData.image = url);
+    } else if (section === 'customDesignPage') {
+        await checkAndUpload('customDesignPage-image', (url) => updatedData.image = url);
     } else if (section === 'brandStory') {
         await checkAndUpload('brandStory-image', (url) => updatedData.image = url);
     } else if (section === 'about') {
@@ -277,7 +293,15 @@ const ContentTab = () => {
     const dataToSave = await processUploads('customDesign', customDesignForm);
     setCustomDesignForm(dataToSave);
     updateContent('customDesign', dataToSave);
-    alert('Custom Design section updated!');
+    alert('Home Custom Design section updated!');
+  };
+
+  const saveCustomDesignPage = async (e) => {
+    e.preventDefault();
+    const dataToSave = await processUploads('customDesignPage', customDesignPageForm);
+    setCustomDesignPageForm(dataToSave);
+    updateContent('customDesignPage', dataToSave);
+    alert('Custom Design Page updated!');
   };
 
   const saveWatches = async (e) => {
@@ -354,6 +378,7 @@ const ContentTab = () => {
         { id: 'hero', label: 'Hero Section' },
         { id: 'announcement', label: 'Announcement Bar' },
         { id: 'categories', label: 'Category Images' },
+        { id: 'customDesign', label: 'Home - Custom Design' },
         { id: 'watches', label: 'Watches' },
         { id: 'brandStory', label: 'Brand Story' },
         { id: 'instagramFeed', label: 'Instagram Feed' },
@@ -363,7 +388,7 @@ const ContentTab = () => {
       title: 'Pages',
       items: [
         { id: 'about', label: 'About Page' },
-        { id: 'customDesign', label: 'Custom Design' },
+        { id: 'customDesignPage', label: 'Custom Design Page' },
       ]
     },
     {
@@ -478,6 +503,70 @@ const ContentTab = () => {
         </form>
       )}
 
+      {activeSection === 'customDesignPage' && (
+        <form onSubmit={saveCustomDesignPage} className="space-y-6 max-w-2xl">
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Page Title</label>
+            <input 
+              type="text" 
+              name="title" 
+              value={customDesignPageForm.title} 
+              onChange={handleCustomDesignPageChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Description</label>
+            <textarea 
+              name="description" 
+              value={customDesignPageForm.description} 
+              onChange={handleCustomDesignPageChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+              rows="4"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Button Text</label>
+            <input 
+              type="text" 
+              name="buttonText" 
+              value={customDesignPageForm.buttonText} 
+              onChange={handleCustomDesignPageChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Feature Image</label>
+            <div className="flex items-center space-x-4">
+              <div className="relative overflow-hidden w-32 h-32 bg-gray-200 rounded-md flex justify-center items-center">
+                 {customDesignPageForm.image ? (
+                  <img src={customDesignPageForm.image} alt="Custom Design" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-gray-400 text-xs">No Image</span>
+                )}
+              </div>
+              <div className="flex-1">
+                <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors inline-flex items-center">
+                  <Upload size={16} className="mr-2" /> Upload Image
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'customDesignPage')} className="hidden" />
+                </label>
+                <p className="text-[10px] text-gray-400 mt-1">Recommended: 1200 x 800 px (Landscape)</p>
+              </div>
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            className="px-6 py-2 bg-burgundy text-white rounded-md text-xs uppercase tracking-widest hover:bg-burgundy-light flex items-center"
+          >
+            <Save size={16} className="mr-2" /> Save Changes
+          </button>
+        </form>
+      )}
+
       {activeSection === 'footer' && (
         <form onSubmit={saveFooter} className="space-y-6 max-w-2xl">
           <div>
@@ -564,6 +653,66 @@ const ContentTab = () => {
               onChange={handleAboutChange} 
               className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
               rows="4"
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="px-6 py-2 bg-burgundy text-white rounded-md text-xs uppercase tracking-widest hover:bg-burgundy-light flex items-center"
+          >
+            <Save size={16} className="mr-2" /> Save Changes
+          </button>
+        </form>
+      )}
+
+      {activeSection === 'customDesignPage' && (
+        <form onSubmit={saveCustomDesignPage} className="space-y-6 max-w-2xl">
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Page Image</label>
+            <div className="flex items-center space-x-4">
+              <div className="relative overflow-hidden w-48 h-32 bg-gray-200 rounded-md">
+                <img src={customDesignPageForm.image} alt="Custom Design Page" className="w-full h-full object-cover" />
+              </div>
+              <div className="flex-1">
+                <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors inline-flex items-center">
+                  <Upload size={16} className="mr-2" /> Change Image
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'customDesignPage')} className="hidden" />
+                </label>
+                <p className="text-[10px] text-gray-400 mt-1">Recommended: 1200 x 800 px</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Page Title</label>
+            <input 
+              type="text" 
+              name="title" 
+              value={customDesignPageForm.title} 
+              onChange={handleCustomDesignPageChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Description</label>
+            <textarea 
+              name="description" 
+              value={customDesignPageForm.description} 
+              onChange={handleCustomDesignPageChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+              rows="4"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Button Text</label>
+            <input 
+              type="text" 
+              name="buttonText" 
+              value={customDesignPageForm.buttonText} 
+              onChange={handleCustomDesignPageChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
             />
           </div>
 
@@ -904,6 +1053,7 @@ const ContentTab = () => {
                         <Upload size={16} className="mr-2" /> Change Image
                         <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'customDesign')} className="hidden" />
                         </label>
+                        <p className="text-[10px] text-gray-400 mt-1">Recommended: 1200 x 800 px</p>
                     </div>
                     </div>
                 </div>

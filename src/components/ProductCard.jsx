@@ -22,14 +22,8 @@ const ProductCard = ({ product }) => {
                 onClick={() => setIsQuickViewOpen(true)}
                 className="bg-white text-gray-900 px-4 py-2 text-xs uppercase tracking-widest font-semibold hover:bg-burgundy hover:text-white transition-colors flex items-center"
              >
-                <Eye size={14} className="mr-2" /> Quick View
+                <Eye size={14} className="mr-2" /> View Details
              </button>
-             <Link 
-                to={`/product/${product.id}`}
-                className="bg-transparent border border-white text-white px-4 py-2 text-xs uppercase tracking-widest font-semibold hover:bg-white hover:text-gray-900 transition-colors flex items-center"
-             >
-                <ShoppingBag size={14} className="mr-2" /> View
-             </Link>
           </div>
           
           {product.isNewArrival && (

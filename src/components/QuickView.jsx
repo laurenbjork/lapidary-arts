@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
 import { X, Star, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const QuickView = ({ product, isOpen, onClose }) => {
-  const { addToCart } = useCart();
 
   useEffect(() => {
     if (isOpen) {
@@ -77,20 +75,10 @@ const QuickView = ({ product, isOpen, onClose }) => {
             </p>
 
             <div className="space-y-4 mt-auto">
-              <button 
-                onClick={() => {
-                    addToCart(product);
-                    onClose();
-                }}
-                className="w-full bg-burgundy text-white py-4 uppercase tracking-widest text-xs font-semibold hover:bg-burgundy-light transition-colors"
-              >
-                Add to Cart
-              </button>
-              
               <Link 
                 to={`/product/${product.id}`}
                 onClick={onClose}
-                className="flex items-center justify-center w-full border border-gray-200 text-gray-600 py-4 uppercase tracking-widest text-xs font-semibold hover:border-black hover:text-black transition-colors"
+                className="flex items-center justify-center w-full bg-burgundy text-white py-4 uppercase tracking-widest text-xs font-semibold hover:bg-burgundy-light transition-colors"
               >
                 View Full Details <ArrowRight size={14} className="ml-2" />
               </Link>

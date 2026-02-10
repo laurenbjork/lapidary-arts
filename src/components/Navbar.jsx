@@ -3,21 +3,20 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Search, Menu, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnnouncementBar from './AnnouncementBar';
-import { useCart } from '../context/CartContext';
 import { useProducts } from '../context/ProductContext';
 
 const shopMenu = {
-  RINGS: ['All Rings', 'Stacks and Bands', 'Dome Rings', 'Double Band Rings', 'Diamond Bands', 'Bridal & Engagement'],
-  NECKLACES: ['All Necklaces', 'Chokers', 'Pendant', 'Tennis', 'Lariat', 'Disk and Coins'],
-  EARRINGS: ['All Earrings', 'Hoops & Huggies', 'Studs', 'Ear Bands & Cuffs'],
-  STONE: ['Emerald', 'Topaz', 'Sapphire', 'Spinel', 'Pearl', 'Opal', 'Tourmaline', 'Ruby', 'Garnet']
+  RINGS: ['All Rings', 'Stacks and Bands', 'Diamond Bands', 'Bridal & Engagement'],
+  NECKLACES: ['All Necklaces', 'Pendant', 'Disk and Coins'],
+  EARRINGS: ['All Earrings', 'Hoops & Huggies', 'Studs', 'Drop Earrings'],
+  STONE: ['Emerald', 'Topaz', 'Sapphire', 'Spinel', 'Pearl', 'Opal', 'Tourmaline', 'Ruby', 'Garnet', 'Zircon', 'Tanzanite']
 };
 
 
 
 const giftingMenu = [
-  "Valentine's Day Gift Guide", 'Daughters', 'Lovers', 'Friend', 'Mamas', 'The Minimalist', 'The Maximalist',
-  'Second Skin', 'Bridal Jewelry', 'Best Sellers', '$500 and under', 'LS HOME', 'LS x Amber Lewis Gift Sets'
+  'All Gifting', 'Daughters', 'Lovers', 'Friend', 'Mamas', 'The Minimalist', 'The Maximalist',
+  'Bridal Jewelry', 'Best Sellers', '$500 and under'
 ];
 
 const Navbar = () => {
@@ -30,7 +29,6 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
-  const { setIsCartOpen, cartCount } = useCart();
   const { products } = useProducts();
   const location = useLocation();
   const isHome = location.pathname === '/';
@@ -223,14 +221,6 @@ const Navbar = () => {
                 className="cursor-pointer hover:opacity-70 transition-opacity" 
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
             />
-            {/* User Icon Removed */}
-            <div 
-              className="relative cursor-pointer hover:opacity-70 transition-opacity"
-              onClick={() => setIsCartOpen(true)}
-            >
-              <ShoppingBag size={20} />
-              <span className="absolute -top-1 -right-1 bg-[#bfa095] text-white text-[9px] w-3 h-3 flex items-center justify-center rounded-full">{cartCount}</span>
-            </div>
           </div>
         </div>
 
@@ -252,9 +242,9 @@ const Navbar = () => {
             >
               <div className="max-w-7xl mx-auto grid grid-cols-4 gap-8">
                 {Object.entries(shopMenu).map(([category, items]) => (
-                  <div key={category} className="space-y-4">
+                  <div key={category} className={`space-y-4 ${category === 'STONE' ? 'col-span-1' : ''}`}>
                     <h3 className="text-xs font-semibold uppercase tracking-[0.15em] mb-4">{category}</h3>
-                    <ul className="space-y-2">
+                    <ul className={`space-y-2 ${category === 'STONE' ? 'grid grid-cols-2 gap-x-8 gap-y-2 space-y-0' : ''}`}>
                       {items.map((item) => (
                         <li key={item}>
                           <Link 

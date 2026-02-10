@@ -57,6 +57,10 @@ const Shop = () => {
         const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
         if (pSub && (pSub === searchCat || pSub === mappedCategory)) return true;
 
+        // STRICT MODE: If we are searching for a main category, don't do fuzzy search
+        const mainCategories = ['rings', 'earrings', 'necklaces', 'watches', 'stones', 'gifting'];
+        if (mainCategories.includes(searchCat) || mainCategories.includes(mappedCategory)) return false;
+
         // For subcategories (legacy/fallback), check name/description for keywords
         const normalizedSearch = searchCat.replace(/-/g, ' ');
         const keywords = normalizedSearch.split(' ').filter(k => k.length > 2 && k !== 'and' && k !== '&');
