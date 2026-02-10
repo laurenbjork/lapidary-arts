@@ -113,7 +113,7 @@ const ProductDetails = () => {
             <h2 className="text-lg text-gray-500 font-light mb-2">{product.subTitle}</h2>
           )}
           {product.stockNumber && (
-            <div className="text-lg text-gray-400 font-thin mb-4">Stock #: {product.stockNumber}</div>
+            <div className="text-xs text-gray-400 font-thin mb-4">Stock #: {product.stockNumber}</div>
           )}
           
           <div className="flex items-center space-x-4 mb-6">
