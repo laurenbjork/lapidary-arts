@@ -29,6 +29,7 @@ const ProductsTab = () => {
     stockNumber: '',
     gallery: [],
     galleryFiles: [],
+    availabilityStatus: 'available', // 'available', 'special_order', 'out_of_stock'
   };
   const [formData, setFormData] = useState(initialFormState);
   const [previewImage, setPreviewImage] = useState(null);
@@ -510,6 +511,45 @@ const ProductsTab = () => {
               </div>
             </div>
 
+            <div className="md:col-span-2">
+                <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Availability Status</label>
+                <div className="flex space-x-6">
+                    <label className="flex items-center cursor-pointer">
+                        <input 
+                            type="radio" 
+                            name="availabilityStatus" 
+                            value="available"
+                            checked={formData.availabilityStatus === 'available'} 
+                            onChange={handleInputChange} 
+                            className="mr-2"
+                        />
+                        <span className="text-sm text-gray-700">Available</span>
+                    </label>
+                    <label className="flex items-center cursor-pointer">
+                        <input 
+                            type="radio" 
+                            name="availabilityStatus" 
+                            value="special_order"
+                            checked={formData.availabilityStatus === 'special_order'} 
+                            onChange={handleInputChange} 
+                            className="mr-2"
+                        />
+                        <span className="text-sm text-gray-700">Special Order</span>
+                    </label>
+                    <label className="flex items-center cursor-pointer">
+                        <input 
+                            type="radio" 
+                            name="availabilityStatus" 
+                            value="out_of_stock"
+                            checked={formData.availabilityStatus === 'out_of_stock'} 
+                            onChange={handleInputChange} 
+                            className="mr-2"
+                        />
+                        <span className="text-sm text-gray-700">Out of Stock</span>
+                    </label>
+                </div>
+            </div>
+
             <div className="md:col-span-2 flex space-x-6">
               <label className="flex items-center cursor-pointer">
                 <input 
@@ -533,16 +573,6 @@ const ProductsTab = () => {
                 <span className="text-sm text-gray-700">Show in "New Arrivals"</span>
               </label>
 
-              <label className="flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  name="inStore" 
-                  checked={formData.inStore} 
-                  onChange={handleInputChange} 
-                  className="mr-2"
-                />
-                <span className="text-sm text-gray-700">Available In Store</span>
-              </label>
 
               {formData.category === 'watches' && (
                 <>

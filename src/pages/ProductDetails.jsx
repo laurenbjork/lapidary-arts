@@ -148,20 +148,15 @@ const ProductDetails = () => {
           <div className="space-y-4 text-xs text-gray-500">
             <div className="flex items-center space-x-3">
                 <MapPin size={16} />
-                <span>
-                    {product.inStore 
-                        ? "Available In Store" 
-                        : "Available for special order"
-                    }
-                </span>
+                <span>Available for in-store pickup at our downtown location.</span>
             </div>
             <div className="flex items-center space-x-3">
                 <Phone size={16} />
-                <span>Call us to confirm availability: (123) 456-7890</span>
+                <span>Call us to confirm availability: (972) 964-1090</span>
             </div>
             <div className="flex items-center space-x-3">
                 <Clock size={16} />
-                <span>Store hours: Mon-Sat 10 AM - 6 PM</span>
+                <span>Store hours: Mon-Fri 10-6 • Sat 10-4</span>
             </div>
           </div>
         </FadeIn>
@@ -213,26 +208,37 @@ const ProductDetails = () => {
             )}
             {activeTab === 'in-store' && (
                 <FadeIn>
-                    {product.inStore ? (
-                        <div className="space-y-4">
-                            <p className="font-serif text-lg text-burgundy">Available for Immediate Pickup</p>
-                            <div className="text-gray-600 space-y-1">
-                                <p className="font-semibold">Lapidary Arts Jewelry</p>
-                                <p>3400 Preston Rd #250</p>
-                                <p>Plano, TX 75093</p>
-                                <a href="tel:9729641090" className="block hover:text-burgundy mt-2">(972) 964-1090</a>
-                            </div>
-                            <div className="text-gray-500 text-xs pt-2">
-                                <p>Mon-Fri 10-6 • Sat 10-4</p>
-                                <p>Sun Closed</p>
-                            </div>
+                    <div className="space-y-4">
+                        {(!product.availabilityStatus || product.availabilityStatus === 'available') && (
+                            <>
+                                <p className="font-serif text-lg text-burgundy">This item is currently available.</p>
+                                <p className="text-gray-600">Please contact us to verify availability and schedule a viewing.</p>
+                            </>
+                        )}
+                        {product.availabilityStatus === 'special_order' && (
+                            <>
+                                <p className="font-serif text-lg text-burgundy">This item is special order only.</p>
+                                <p className="text-gray-600">Please contact us for special orders.</p>
+                            </>
+                        )}
+                        {product.availabilityStatus === 'out_of_stock' && (
+                            <>
+                                <p className="font-serif text-lg text-gray-500">This item is out of stock.</p>
+                                <p className="text-gray-600">Please contact us for more options.</p>
+                            </>
+                        )}
+
+                        <div className="text-gray-600 space-y-1 mt-6 border-t border-gray-100 pt-6">
+                            <p className="font-semibold">Lapidary Arts Jewelry</p>
+                            <p>3400 Preston Rd #250</p>
+                            <p>Plano, TX 75093</p>
+                            <a href="tel:9729641090" className="block hover:text-burgundy mt-2">(972) 964-1090</a>
                         </div>
-                    ) : (
-                        <div className="space-y-4">
-                             <p className="italic">This item is currently available for special order.</p>
-                             <p>Please contact us to schedule a viewing or to place an order.</p>
+                        <div className="text-gray-500 text-xs pt-2">
+                            <p>Mon-Fri 10-6 • Sat 10-4</p>
+                            <p>Sun Closed</p>
                         </div>
-                    )}
+                    </div>
                 </FadeIn>
             )}
         </div>

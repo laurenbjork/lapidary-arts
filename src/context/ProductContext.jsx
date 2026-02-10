@@ -38,6 +38,7 @@ export const ProductProvider = ({ children }) => {
         inStore: p.in_store,
         stockNumber: p.stock_number,
         gallery: p.gallery || [],
+        availabilityStatus: p.availability_status || 'available',
         subcategory: p.subcategory // Ensure subcategory is mapped if it exists in DB
       }));
       
@@ -114,6 +115,7 @@ export const ProductProvider = ({ children }) => {
         in_store: productData.inStore ?? false,
         stock_number: productData.stockNumber || null,
         gallery: galleryUrls,
+        availability_status: productData.availabilityStatus || 'available',
       };
 
       // We need to map camelCase (frontend) to snake_case (DB)
@@ -136,7 +138,8 @@ export const ProductProvider = ({ children }) => {
         details: cleanProduct.details,
         in_store: cleanProduct.in_store,
         stock_number: cleanProduct.stock_number,
-        gallery: cleanProduct.gallery
+        gallery: cleanProduct.gallery,
+        availability_status: cleanProduct.availability_status
       };
 
       const { data, error } = await supabase
@@ -162,7 +165,8 @@ export const ProductProvider = ({ children }) => {
         details: data.details || [],
         inStore: data.in_store,
         stockNumber: data.stock_number,
-        gallery: data.gallery || []
+        gallery: data.gallery || [],
+        availabilityStatus: data.availability_status
       };
 
       setProducts((prev) => [newProduct, ...prev]);
@@ -216,7 +220,8 @@ export const ProductProvider = ({ children }) => {
         details: updatedProduct.details,
         in_store: updatedProduct.inStore,
         stock_number: updatedProduct.stockNumber,
-        gallery: galleryUrls
+        gallery: galleryUrls,
+        availability_status: updatedProduct.availabilityStatus
       };
 
       const { data, error } = await supabase
@@ -243,7 +248,8 @@ export const ProductProvider = ({ children }) => {
         details: data.details || [],
         inStore: data.in_store,
         stockNumber: data.stock_number,
-        gallery: data.gallery || []
+        gallery: data.gallery || [],
+        availabilityStatus: data.availability_status
       };
 
       setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p)));
