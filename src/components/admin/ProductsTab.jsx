@@ -18,6 +18,7 @@ const ProductsTab = () => {
     image: '',
     isVisible: true,
     isNewArrival: false,
+    showOnHome: false,
   };
   const [formData, setFormData] = useState(initialFormState);
   const [previewImage, setPreviewImage] = useState(null);
@@ -133,6 +134,7 @@ const ProductsTab = () => {
       image: product.image,
       isVisible: product.isVisible,
       isNewArrival: product.isNewArrival || false,
+      showOnHome: product.showOnHome || false,
     });
     setPreviewImage(product.image);
     setEditingId(product.id);
@@ -294,6 +296,19 @@ const ProductsTab = () => {
                 />
                 <span className="text-sm text-gray-700">Show in "New Arrivals"</span>
               </label>
+
+              {formData.category === 'watches' && (
+                <label className="flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    name="showOnHome" 
+                    checked={formData.showOnHome} 
+                    onChange={handleInputChange} 
+                    className="mr-2"
+                  />
+                  <span className="text-sm text-gray-700">Show in Home Page "Watches" Section</span>
+                </label>
+              )}
             </div>
           </div>
 

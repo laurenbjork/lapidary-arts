@@ -503,69 +503,7 @@ const ContentTab = () => {
         </form>
       )}
 
-      {activeSection === 'customDesignPage' && (
-        <form onSubmit={saveCustomDesignPage} className="space-y-6 max-w-2xl">
-          <div>
-            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Page Title</label>
-            <input 
-              type="text" 
-              name="title" 
-              value={customDesignPageForm.title} 
-              onChange={handleCustomDesignPageChange} 
-              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-            />
-          </div>
 
-          <div>
-            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Description</label>
-            <textarea 
-              name="description" 
-              value={customDesignPageForm.description} 
-              onChange={handleCustomDesignPageChange} 
-              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-              rows="4"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Button Text</label>
-            <input 
-              type="text" 
-              name="buttonText" 
-              value={customDesignPageForm.buttonText} 
-              onChange={handleCustomDesignPageChange} 
-              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Feature Image</label>
-            <div className="flex items-center space-x-4">
-              <div className="relative overflow-hidden w-32 h-32 bg-gray-200 rounded-md flex justify-center items-center">
-                 {customDesignPageForm.image ? (
-                  <img src={customDesignPageForm.image} alt="Custom Design" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-gray-400 text-xs">No Image</span>
-                )}
-              </div>
-              <div className="flex-1">
-                <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors inline-flex items-center">
-                  <Upload size={16} className="mr-2" /> Upload Image
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'customDesignPage')} className="hidden" />
-                </label>
-                <p className="text-[10px] text-gray-400 mt-1">Recommended: 1200 x 800 px (Landscape)</p>
-              </div>
-            </div>
-          </div>
-
-          <button 
-            type="submit" 
-            className="px-6 py-2 bg-burgundy text-white rounded-md text-xs uppercase tracking-widest hover:bg-burgundy-light flex items-center"
-          >
-            <Save size={16} className="mr-2" /> Save Changes
-          </button>
-        </form>
-      )}
 
       {activeSection === 'footer' && (
         <form onSubmit={saveFooter} className="space-y-6 max-w-2xl">

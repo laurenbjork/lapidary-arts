@@ -10,8 +10,13 @@ import { useProducts } from '../context/ProductContext';
 const Home = () => {
   const { content } = useContent();
   const { hero, categories, customDesign, watches, brandStory, pressCarousel, socials, instagramFeed } = content;
-  const { getNewArrivals } = useProducts();
+  const { getNewArrivals, products } = useProducts();
   const newArrivals = getNewArrivals();
+
+  // Filter watches to show on home page
+  const featuredWatches = useMemo(() => {
+    return products.filter(p => p.category === 'watches' && p.showOnHome && p.isVisible);
+  }, [products]);
   
   // Infinite Scroll Logic
   const scrollContainerRef = useRef(null);
@@ -224,21 +229,41 @@ const Home = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {(watches?.items || [1, 2, 3]).map((item, index) => (
-                    <FadeIn key={index} delay={index * 0.1} className="relative group">
-                        <div className="aspect-[4/5] bg-gray-200 overflow-hidden">
-                             <img 
-                                src={item.image || `/images/necklace-${index+1}.jpg`} 
-                                alt={item.title || "Watch"} 
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                             />
-                        </div>
-                        <div className="absolute bottom-4 left-4 text-white">
-                            <h3 className="font-bold text-sm uppercase tracking-wider">{item.title || 'Lady Datejust'}</h3>
-                            <p className="text-[10px] opacity-80">{item.subtitle || 'Rolex Certified Pre-Owned'}</p>
-                        </div>
-                    </FadeIn>
-                ))}
+                {featuredWatches.length > 0 ? (
+                    featuredWatches.map((product) => (
+                        <FadeIn key={product.id} delay={0.1} className="relative group">
+                            <Link to={`/product/${product.id}`} className="block h-full">
+                                <div className="aspect-[4/5] bg-gray-200 overflow-hidden">
+                                    <img 
+                                        src={product.image} 
+                                        alt={product.name} 
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                    />
+                                </div>
+                                <div className="absolute bottom-4 left-4 text-white">
+                                    <h3 className="font-bold text-sm uppercase tracking-wider">{product.name}</h3>
+                                    <p className="text-[10px] opacity-80">${product.price.toLocaleString()}</p>
+                                </div>
+                            </Link>
+                        </FadeIn>
+                    ))
+                ) : (
+                    (watches?.items || [1, 2, 3]).map((item, index) => (
+                        <FadeIn key={index} delay={index * 0.1} className="relative group">
+                            <div className="aspect-[4/5] bg-gray-200 overflow-hidden">
+                                <img 
+                                    src={item.image || `/images/necklace-${index+1}.jpg`} 
+                                    alt={item.title || "Watch"} 
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                />
+                            </div>
+                            <div className="absolute bottom-4 left-4 text-white">
+                                <h3 className="font-bold text-sm uppercase tracking-wider">{item.title || 'Lady Datejust'}</h3>
+                                <p className="text-[10px] opacity-80">{item.subtitle || 'Rolex Certified Pre-Owned'}</p>
+                            </div>
+                        </FadeIn>
+                    ))
+                )}
             </div>
         </div>
       </section>
