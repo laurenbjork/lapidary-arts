@@ -147,10 +147,6 @@ const ProductDetails = () => {
 
           <div className="space-y-4 text-xs text-gray-500">
             <div className="flex items-center space-x-3">
-                <MapPin size={16} />
-                <span>Available for in-store pickup at our downtown location.</span>
-            </div>
-            <div className="flex items-center space-x-3">
                 <Phone size={16} />
                 <span>Call us to confirm availability: (972) 964-1090</span>
             </div>
