@@ -65,17 +65,13 @@ const ProductDetails = () => {
 
     if (result.success) {
         setBookingStatus('success');
-        setTimeout(() => {
-            setIsBookingOpen(false);
-            setBookingStatus('idle');
-            setBookingForm({
-                name: '',
-                email: '',
-                phone: '',
-                description: '',
-                preferredTime: 'morning'
-            });
-        }, 3000);
+        setBookingForm({
+            name: '',
+            email: '',
+            phone: '',
+            description: '',
+            preferredTime: 'morning'
+        });
     } else {
         setBookingStatus('error');
     }
@@ -266,6 +262,15 @@ const ProductDetails = () => {
                         <p className="text-gray-600 text-sm">
                             Someone will reach out during normal business hours within 24 hours!
                         </p>
+                        <button 
+                            onClick={() => {
+                                setIsBookingOpen(false);
+                                setBookingStatus('idle');
+                            }}
+                            className="mt-6 bg-black text-white px-8 py-2 text-xs uppercase tracking-widest rounded hover:bg-gray-800 transition-colors"
+                        >
+                            Close
+                        </button>
                     </div>
                 ) : (
                     <form onSubmit={handleBookingSubmit} className="space-y-4">
