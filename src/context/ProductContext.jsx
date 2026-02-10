@@ -31,6 +31,7 @@ export const ProductProvider = ({ children }) => {
         showOnHome: p.show_on_home, // Map new field
         brand: p.brand,
         modelName: p.model_name,
+        modelNumber: p.model_number,
         subcategory: p.subcategory // Ensure subcategory is mapped if it exists in DB
       }));
       
@@ -88,6 +89,7 @@ export const ProductProvider = ({ children }) => {
         show_on_home: productData.showOnHome ?? false,
         brand: productData.brand || null,
         model_name: productData.modelName || null,
+        model_number: productData.modelNumber || null,
       };
 
       // We need to map camelCase (frontend) to snake_case (DB)
@@ -103,7 +105,8 @@ export const ProductProvider = ({ children }) => {
         is_new_arrival: cleanProduct.is_new_arrival,
         show_on_home: cleanProduct.show_on_home,
         brand: cleanProduct.brand,
-        model_name: cleanProduct.model_name
+        model_name: cleanProduct.model_name,
+        model_number: cleanProduct.model_number
       };
 
       const { data, error } = await supabase
@@ -122,7 +125,8 @@ export const ProductProvider = ({ children }) => {
         isNewArrival: data.is_new_arrival,
         showOnHome: data.show_on_home,
         brand: data.brand,
-        modelName: data.model_name
+        modelName: data.model_name,
+        modelNumber: data.model_number
       };
 
       setProducts((prev) => [newProduct, ...prev]);
@@ -154,7 +158,8 @@ export const ProductProvider = ({ children }) => {
         is_new_arrival: updatedProduct.isNewArrival,
         show_on_home: updatedProduct.showOnHome,
         brand: updatedProduct.brand,
-        model_name: updatedProduct.modelName
+        model_name: updatedProduct.modelName,
+        model_number: updatedProduct.modelNumber
       };
 
       const { data, error } = await supabase
@@ -174,7 +179,8 @@ export const ProductProvider = ({ children }) => {
         isNewArrival: data.is_new_arrival,
         showOnHome: data.show_on_home,
         brand: data.brand,
-        modelName: data.model_name
+        modelName: data.model_name,
+        modelNumber: data.model_number
       };
 
       setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p)));

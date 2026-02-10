@@ -379,7 +379,6 @@ const ContentTab = () => {
         { id: 'announcement', label: 'Announcement Bar' },
         { id: 'categories', label: 'Category Images' },
         { id: 'customDesign', label: 'Home - Custom Design' },
-        { id: 'watches', label: 'Watches' },
         { id: 'brandStory', label: 'Brand Story' },
         { id: 'instagramFeed', label: 'Instagram Feed' },
       ]

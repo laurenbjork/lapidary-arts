@@ -21,6 +21,7 @@ const ProductsTab = () => {
     showOnHome: false,
     brand: '',
     modelName: '',
+    modelNumber: '',
   };
   const [formData, setFormData] = useState(initialFormState);
   const [previewImage, setPreviewImage] = useState(null);
@@ -337,6 +338,17 @@ const ProductsTab = () => {
                           onChange={handleInputChange} 
                           className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
                           placeholder="e.g. Lady Datejust"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Model Number</label>
+                        <input 
+                          type="text" 
+                          name="modelNumber" 
+                          value={formData.modelNumber} 
+                          onChange={handleInputChange} 
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                          placeholder="e.g. 126234"
                         />
                       </div>
                     </div>
