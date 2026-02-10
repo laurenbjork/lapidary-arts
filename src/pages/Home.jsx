@@ -243,7 +243,7 @@ const Home = () => {
                                 </div>
                                 <div className="absolute bottom-4 left-4 text-white">
                                     <h3 className="font-bold text-sm uppercase tracking-wider">{product.brand}</h3>
-                                    <p className="text-[10px] opacity-80">{product.modelNumber}</p>
+                                    <p className="text-[10px] opacity-80 mt-1">{product.modelName}</p>
                                 </div>
                             </Link>
                         </FadeIn>
