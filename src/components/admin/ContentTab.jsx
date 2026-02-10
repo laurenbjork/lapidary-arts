@@ -1087,51 +1087,7 @@ const ContentTab = () => {
              </div>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg mb-6">
-             <h3 className="text-sm font-bold uppercase tracking-wider text-gray-700 mb-4 border-b border-gray-200 pb-2">Items (3 Items)</h3>
-             <div className="space-y-6">
-                {watchesForm.items?.map((item, index) => (
-                    <div key={index} className="border-b border-gray-200 pb-4 last:border-0">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Item {index + 1} Image</label>
-                                <div className="flex items-center space-x-4">
-                                    <div className="relative overflow-hidden w-24 h-32 bg-gray-200 rounded-md">
-                                        <img src={item.image} alt={`Item ${index+1}`} className="w-full h-full object-cover" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors inline-flex items-center">
-                                            <Upload size={16} className="mr-2" /> Change Image
-                                            <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'watches', 'image', index)} className="hidden" />
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Title</label>
-                                    <input 
-                                    type="text" 
-                                    value={item.title} 
-                                    onChange={(e) => handleWatchesItemChange(index, 'title', e.target.value)} 
-                                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Subtitle</label>
-                                    <input 
-                                    type="text" 
-                                    value={item.subtitle} 
-                                    onChange={(e) => handleWatchesItemChange(index, 'subtitle', e.target.value)} 
-                                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-             </div>
-          </div>
+
 
           <button 
             type="submit" 
