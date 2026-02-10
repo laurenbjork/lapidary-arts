@@ -401,7 +401,6 @@ const ProductsTab = () => {
                 onChange={handleInputChange} 
                 rows="4"
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-                required 
               ></textarea>
             </div>
 
