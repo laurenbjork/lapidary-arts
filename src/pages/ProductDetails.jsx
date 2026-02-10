@@ -262,9 +262,9 @@ const ProductDetails = () => {
 
                 {bookingStatus === 'success' ? (
                     <div className="text-center py-8">
-                        <div className="text-green-600 text-lg mb-2">Request Sent!</div>
+                        <div className="text-green-600 text-lg mb-2">Success!</div>
                         <p className="text-gray-600 text-sm">
-                            Someone will reach out soon during business hours to confirm your appointment.
+                            Someone will reach out during normal business hours within 24 hours!
                         </p>
                     </div>
                 ) : (
@@ -303,7 +303,7 @@ const ProductDetails = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Preferred Time</label>
+                            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Preferred Time to Reach Out</label>
                             <select 
                                 name="preferredTime"
                                 value={bookingForm.preferredTime}

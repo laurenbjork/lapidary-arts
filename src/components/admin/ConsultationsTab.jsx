@@ -26,8 +26,9 @@ const ConsultationsTab = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Example</th>
               </tr>
@@ -39,6 +40,9 @@ const ConsultationsTab = () => {
                     <div className="flex items-center">
                       <Calendar size={14} className="mr-2" />
                       {new Date(inquiry.submittedAt).toLocaleDateString()}
+                      <span className="ml-2 text-xs text-gray-400">
+                        {new Date(inquiry.submittedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -47,6 +51,18 @@ const ConsultationsTab = () => {
                       <a href={`mailto:${inquiry.email}`} className="text-sm text-burgundy hover:underline">
                         {inquiry.email}
                       </a>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex flex-col">
+                        {inquiry.phone && (
+                            <a href={`tel:${inquiry.phone}`} className="text-sm text-gray-600 hover:text-gray-900 mb-1">
+                                {inquiry.phone}
+                            </a>
+                        )}
+                        <span className="text-xs text-gray-400 capitalize">
+                            Pref: {inquiry.preferredTime || 'Anytime'}
+                        </span>
                     </div>
                   </td>
                   <td className="px-6 py-4">

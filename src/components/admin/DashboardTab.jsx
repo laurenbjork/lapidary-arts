@@ -117,7 +117,7 @@ const DashboardTab = () => {
                     <div className="flex justify-between">
                       <p className="text-sm font-medium text-gray-900">{apt.name}</p>
                       <span className="text-xs text-gray-400">
-                        {new Date(apt.created_at).toLocaleDateString()}
+                        {new Date(apt.created_at).toLocaleDateString()} • {new Date(apt.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                       </span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
@@ -127,6 +127,9 @@ const DashboardTab = () => {
                       <Clock size={12} className="mr-1" />
                       <span className="capitalize">{apt.preferred_time}</span>
                     </div>
+                    {apt.phone && (
+                      <p className="text-xs text-gray-500 mt-1">{apt.phone}</p>
+                    )}
                   </div>
                 </div>
               ))
@@ -156,15 +159,20 @@ const DashboardTab = () => {
                     <div className="flex justify-between">
                       <p className="text-sm font-medium text-gray-900">{consult.name}</p>
                       <span className="text-xs text-gray-400">
-                        {new Date(consult.submittedAt).toLocaleDateString()}
+                        {new Date(consult.submittedAt).toLocaleDateString()} • {new Date(consult.submittedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                       </span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1 line-clamp-2">
                       {consult.description}
                     </p>
-                    <a href={`mailto:${consult.email}`} className="text-xs text-burgundy mt-1 block hover:underline">
-                      {consult.email}
-                    </a>
+                    <div className="flex flex-col mt-1">
+                      <a href={`mailto:${consult.email}`} className="text-xs text-burgundy hover:underline">
+                        {consult.email}
+                      </a>
+                      {consult.phone && (
+                        <span className="text-xs text-gray-500">{consult.phone}</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))

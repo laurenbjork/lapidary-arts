@@ -7,11 +7,14 @@ const ConsultationModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     description: '',
+    preferredTime: 'morning',
     image: null
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   if (!isOpen) return null;
 
@@ -42,6 +45,8 @@ const ConsultationModal = ({ isOpen, onClose }) => {
         id: Date.now().toString(),
         name: formData.name,
         email: formData.email,
+        phone: formData.phone,
+        preferredTime: formData.preferredTime,
         description: formData.description,
         imageUrl: imageUrl,
         submittedAt: new Date().toISOString()
@@ -49,11 +54,14 @@ const ConsultationModal = ({ isOpen, onClose }) => {
 
       await addConsultation(newConsultation);
       
-      // Reset and close
-      setFormData({ name: '', email: '', description: '', image: null });
+      setSuccess(true);
+      // Reset form but keep success message for a moment or until closed
+      setFormData({ name: '', email: '', phone: '', description: '', preferredTime: 'morning', image: null });
       setImagePreview(null);
-      onClose();
-      alert('Thank you! Your consultation request has been received.');
+      // setTimeout(() => {
+      //    onClose();
+      //    setSuccess(false);
+      // }, 3000);
     } catch (error) {
       console.error('Submission error:', error);
       alert('Failed to submit request. Please try again.');
@@ -82,6 +90,20 @@ const ConsultationModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Form */}
+        {success ? (
+            <div className="p-12 text-center">
+                <div className="text-green-600 text-xl font-serif mb-4">Success!</div>
+                <p className="text-gray-600">
+                    Someone will reach out during normal business hours within 24 hours!
+                </p>
+                <button 
+                    onClick={() => { setSuccess(false); onClose(); }}
+                    className="mt-8 bg-black text-white px-8 py-2 text-xs uppercase tracking-widest rounded hover:bg-gray-800 transition-colors"
+                >
+                    Close
+                </button>
+            </div>
+        ) : (
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -107,6 +129,34 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
                 placeholder="jane@example.com"
               />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Phone</label>
+              <input
+                type="tel"
+                name="phone"
+                required
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                placeholder="(555) 123-4567"
+              />
+            </div>
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Preferred Time to Reach Out</label>
+              <select
+                name="preferredTime"
+                value={formData.preferredTime}
+                onChange={handleChange}
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm bg-white"
+              >
+                <option value="morning">Morning (9AM - 12PM)</option>
+                <option value="afternoon">Afternoon (12PM - 3PM)</option>
+                <option value="evening">Evening (3PM - 6PM)</option>
+              </select>
             </div>
           </div>
 
@@ -156,7 +206,11 @@ const ConsultationModal = ({ isOpen, onClose }) => {
                 'Submit Request'
             )}
           </button>
+          <p className="text-[10px] text-center text-gray-400 mt-2">
+            Someone will reach out soon during business hours.
+          </p>
         </form>
+        )}
       </div>
     </div>
   );
