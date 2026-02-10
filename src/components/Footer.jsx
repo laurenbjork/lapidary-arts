@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Mail, CreditCard, Loader } from 'lucide-react';
+import { Instagram, Facebook, Mail, CreditCard, Loader, X } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
 
 const Footer = () => {
@@ -8,16 +8,27 @@ const Footer = () => {
   const { socials, footer } = content;
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, submitting, success, error
+  
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const [consent, setConsent] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleInitialSubmit = (e) => {
     e.preventDefault();
     if (!email) return;
-    
+    setShowConsentModal(true);
+  };
+
+  const handleConfirmedSubmit = async () => {
+    if (!consent) return;
+
     setStatus('submitting');
+    setShowConsentModal(false);
+    
     try {
       await addNewsletterSignup({ email, country: 'US' });
       setStatus('success');
       setEmail('');
+      setConsent(false);
       setTimeout(() => setStatus('idle'), 3000);
     } catch (error) {
       console.error('Footer signup error:', error);
@@ -97,7 +108,7 @@ const Footer = () => {
           <div className="lg:col-span-2 space-y-6 mt-10">
             <div>
               <h4 className="text-[10px] font-bold uppercase tracking-widest text-white mb-4">Newsletter</h4>
-              <form onSubmit={handleSubmit} className="flex border-b border-white/20">
+              <form onSubmit={handleInitialSubmit} className="flex border-b border-white/20">
                 <input 
                   type="email" 
                   required
@@ -149,6 +160,55 @@ const Footer = () => {
         </div>
 
       </div>
+
+      {/* Consent Modal */}
+      {showConsentModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div 
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
+                onClick={() => setShowConsentModal(false)}
+            />
+            <div className="relative bg-white p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-200">
+                <button 
+                    onClick={() => setShowConsentModal(false)}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-black"
+                >
+                    <X size={20} />
+                </button>
+                
+                <h3 className="text-xl font-serif mb-2">Almost there</h3>
+                <p className="text-sm text-gray-600 mb-6">
+                    Please confirm your subscription to our newsletter.
+                </p>
+
+                <div className="flex items-start space-x-3 mb-6">
+                    <input
+                        type="checkbox"
+                        id="footer-consent"
+                        checked={consent}
+                        onChange={(e) => setConsent(e.target.checked)}
+                        className="mt-1 h-4 w-4 rounded border-gray-300 text-burgundy focus:ring-burgundy"
+                    />
+                    <label htmlFor="footer-consent" className="text-xs text-gray-500 leading-relaxed">
+                        I agree to receive marketing emails from Lapidary Arts. I understand I can unsubscribe at any time. 
+                        By signing up, you agree to our <Link to="/privacy" className="underline hover:text-black">Privacy Policy</Link>.
+                    </label>
+                </div>
+
+                <button
+                    onClick={handleConfirmedSubmit}
+                    disabled={!consent}
+                    className={`w-full py-3 text-xs font-bold uppercase tracking-widest transition-colors ${
+                        !consent 
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                        : 'bg-black text-white hover:bg-gray-800'
+                    }`}
+                >
+                    Confirm Subscription
+                </button>
+            </div>
+        </div>
+      )}
     </footer>
   );
 };

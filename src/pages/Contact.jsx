@@ -1,7 +1,46 @@
-import React from 'react';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Loader, CheckCircle } from 'lucide-react';
+import { useContent } from '../context/ContentContext';
 
 const Contact = () => {
+  const { addConsultation } = useContent();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [status, setStatus] = useState('idle'); // idle, submitting, success, error
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('submitting');
+
+    try {
+        // We reuse the consultation structure but mark it as a general inquiry in the description
+        const inquiryData = {
+            id: Date.now().toString(),
+            name: formData.name,
+            email: formData.email,
+            phone: '', // Optional/Not collected in this simple form
+            preferredTime: 'Anytime',
+            description: `GENERAL INQUIRY: ${formData.message}`,
+            imageUrl: '',
+            submittedAt: new Date().toISOString()
+        };
+
+        await addConsultation(inquiryData);
+        setStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+        console.error('Contact form error:', error);
+        setStatus('error');
+    }
+  };
+
   return (
     <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
       <div className="text-center mb-16">
@@ -15,38 +54,85 @@ const Contact = () => {
             <div className="space-y-6">
                 <div className="flex items-center text-gray-600">
                     <Mail className="mr-4 text-burgundy" />
-                    <span>hello@lapidaryart.com</span>
+                    <a href="mailto:info@lapidaryarts.com" className="hover:text-black">info@lapidaryarts.com</a>
                 </div>
                 <div className="flex items-center text-gray-600">
                     <Phone className="mr-4 text-burgundy" />
-                    <span>(555) 123-4567</span>
+                    <a href="tel:9729641090" className="hover:text-black">(972) 964-1090</a>
                 </div>
                 <div className="flex items-center text-gray-600">
                     <MapPin className="mr-4 text-burgundy" />
-                    <span>123 Luxury Lane, Jewelry District, NY</span>
+                    <span>3400 Preston Rd #250, Plano, TX 75093</span>
+                </div>
+            </div>
+            
+            <div className="mt-8 pt-8 border-t border-gray-200">
+                <h3 className="font-serif text-lg mb-4">Store Hours</h3>
+                <div className="text-sm text-gray-600 space-y-2">
+                    <p className="flex justify-between"><span>Monday - Friday</span> <span>10:00 AM - 6:00 PM</span></p>
+                    <p className="flex justify-between"><span>Saturday</span> <span>10:00 AM - 4:00 PM</span></p>
+                    <p className="flex justify-between"><span>Sunday</span> <span>Closed</span></p>
                 </div>
             </div>
         </div>
 
         <div>
              <h2 className="font-serif text-2xl mb-6">Send a Message</h2>
-             <form className="space-y-4">
-                 <div>
-                     <label className="block text-sm uppercase tracking-wide text-gray-500 mb-1">Name</label>
-                     <input type="text" className="w-full border border-gray-300 p-2 focus:border-burgundy focus:outline-none" />
+             {status === 'success' ? (
+                 <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center">
+                     <CheckCircle className="mx-auto text-green-500 mb-4" size={48} />
+                     <h3 className="text-xl font-serif text-green-800 mb-2">Message Sent!</h3>
+                     <p className="text-green-700">Thank you for contacting us. We will get back to you shortly.</p>
+                     <button 
+                        onClick={() => setStatus('idle')}
+                        className="mt-6 text-sm underline text-green-800 hover:text-green-900"
+                     >
+                        Send another message
+                     </button>
                  </div>
-                 <div>
-                     <label className="block text-sm uppercase tracking-wide text-gray-500 mb-1">Email</label>
-                     <input type="email" className="w-full border border-gray-300 p-2 focus:border-burgundy focus:outline-none" />
-                 </div>
-                 <div>
-                     <label className="block text-sm uppercase tracking-wide text-gray-500 mb-1">Message</label>
-                     <textarea className="w-full border border-gray-300 p-2 focus:border-burgundy focus:outline-none h-32"></textarea>
-                 </div>
-                 <button className="bg-burgundy text-white px-8 py-3 uppercase tracking-widest hover:bg-burgundy-dark transition-colors w-full">
-                     Send Message
-                 </button>
-             </form>
+             ) : (
+                 <form onSubmit={handleSubmit} className="space-y-4">
+                     <div>
+                         <label className="block text-sm uppercase tracking-wide text-gray-500 mb-1">Name</label>
+                         <input 
+                            type="text" 
+                            name="name"
+                            required
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 p-2 focus:border-burgundy focus:outline-none" 
+                         />
+                     </div>
+                     <div>
+                         <label className="block text-sm uppercase tracking-wide text-gray-500 mb-1">Email</label>
+                         <input 
+                            type="email" 
+                            name="email"
+                            required
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 p-2 focus:border-burgundy focus:outline-none" 
+                         />
+                     </div>
+                     <div>
+                         <label className="block text-sm uppercase tracking-wide text-gray-500 mb-1">Message</label>
+                         <textarea 
+                            name="message"
+                            required
+                            value={formData.message}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 p-2 focus:border-burgundy focus:outline-none h-32"
+                         ></textarea>
+                     </div>
+                     <button 
+                        type="submit"
+                        disabled={status === 'submitting'}
+                        className="bg-burgundy text-white px-8 py-3 uppercase tracking-widest hover:bg-burgundy-dark transition-colors w-full flex justify-center items-center disabled:opacity-70"
+                     >
+                         {status === 'submitting' ? <Loader className="animate-spin" size={20} /> : 'Send Message'}
+                     </button>
+                 </form>
+             )}
         </div>
       </div>
     </div>

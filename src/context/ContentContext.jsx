@@ -111,7 +111,7 @@ const initialContent = {
   newsletterSignups: [],
   newsletterPopup: {
     leftImage: '/images/necklace-2.jpg',
-    leftTitle: 'LULU',
+    leftTitle: 'Lapidary Arts',
     leftSubtitle: 'Los Angeles',
     rightLogoImage: '', // If empty, shows text "LS"
     popupTitle: "Don't miss a thing",
@@ -213,7 +213,8 @@ export const ContentProvider = ({ children }) => {
                 preferredTime: c.preferred_time,
                 imageUrl: c.image_url,
                 submittedAt: c.created_at,
-                status: c.status
+                status: c.status,
+                adminNotes: c.admin_notes
             }));
           }
 
@@ -400,8 +401,91 @@ export const ContentProvider = ({ children }) => {
     }
   };
 
+  const deleteNewsletterSignup = async (email) => {
+      // 1. Optimistic Update
+      const currentList = content.newsletterSignups || [];
+      const updatedList = currentList.filter(item => item.email !== email);
+
+      setContent((prev) => ({
+          ...prev,
+          newsletterSignups: updatedList
+      }));
+
+      // 2. Update Supabase
+      try {
+          const { error } = await supabase
+              .from('newsletter_signups')
+              .delete()
+              .eq('email', email);
+
+          if (error) throw error;
+      } catch (err) {
+          console.error('Error deleting newsletter signup:', err);
+          // Revert on error if needed
+      }
+  };
+
+  const deleteConsultation = async (id) => {
+    // 1. Optimistic Update
+    const currentList = content.consultations || [];
+    const updatedList = currentList.filter(item => item.id !== id);
+
+    setContent((prev) => ({
+        ...prev,
+        consultations: updatedList
+    }));
+
+    // 2. Update Supabase
+    try {
+        const { error } = await supabase
+            .from('consultations')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+    } catch (err) {
+        console.error('Error deleting consultation:', err);
+    }
+  };
+
+  const updateConsultationNote = async (id, note) => {
+      // 1. Optimistic Update
+      const currentList = content.consultations || [];
+      const updatedList = currentList.map(item => 
+          item.id === id ? { ...item, adminNotes: note } : item
+      );
+
+      setContent((prev) => ({
+          ...prev,
+          consultations: updatedList
+      }));
+
+      // 2. Update Supabase
+      try {
+          const { error } = await supabase
+              .from('consultations')
+              .update({ admin_notes: note })
+              .eq('id', id);
+
+          if (error) throw error;
+      } catch (err) {
+          console.error('Error updating consultation note:', err);
+      }
+  };
+
   return (
-    <ContentContext.Provider value={{ content, updateContent, updateCategoryImage, uploadContentImage, addConsultation, addNewsletterSignup, loading }}>
+    <ContentContext.Provider value={{ 
+        content, 
+        updateContent, 
+        updateCategoryImage, 
+        uploadContentImage, 
+        addConsultation, 
+        deleteConsultation,
+        updateConsultationNote,
+        addNewsletterSignup, 
+        deleteNewsletterSignup,
+        loading 
+    }}>
       {children}
     </ContentContext.Provider>
   );

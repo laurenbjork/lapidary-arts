@@ -10,7 +10,8 @@ const NewsletterPopup = () => {
   const [formData, setFormData] = useState({
     email: '',
     phone: '',
-    countryCode: 'US'
+    countryCode: 'US',
+    consent: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,12 +32,19 @@ const NewsletterPopup = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setFormData({ 
+        ...formData, 
+        [name]: type === 'checkbox' ? checked : value 
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.consent) {
+        alert("Please agree to receive marketing communications.");
+        return;
+    }
     setIsSubmitting(true);
 
     try {
@@ -92,7 +100,7 @@ const NewsletterPopup = () => {
           {/* Logo Overlay on Image (Bottom Left) */}
           <div className="absolute bottom-8 left-0 right-0 text-center text-white">
              <h2 className="text-xl font-serif tracking-widest uppercase font-bold drop-shadow-md">
-                {newsletterPopup?.leftTitle || "LULU"}
+                {newsletterPopup?.leftTitle || "Lapidary Arts"}
              </h2>
              <p className="text-[10px] tracking-[0.3em] uppercase drop-shadow-md">
                 {newsletterPopup?.leftSubtitle || "Los Angeles"}
@@ -144,20 +152,37 @@ const NewsletterPopup = () => {
               />
             </div>
 
+            <div className="flex items-start space-x-2 my-2">
+                <input
+                    type="checkbox"
+                    name="consent"
+                    id="popup-consent"
+                    checked={formData.consent}
+                    onChange={handleChange}
+                    className="mt-1 h-3 w-3 rounded border-gray-300 text-burgundy focus:ring-burgundy"
+                    required
+                />
+                <label htmlFor="popup-consent" className="text-[10px] text-gray-500 leading-tight text-left">
+                    I agree to receive marketing emails from Lapidary Arts. I understand I can unsubscribe at any time.
+                </label>
+            </div>
+
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-[#8B5E5E] text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-[#7A5252] transition-colors flex justify-center items-center"
+              disabled={isSubmitting || !formData.consent}
+              className={`w-full py-3 text-xs font-bold uppercase tracking-widest transition-colors flex justify-center items-center ${
+                  !formData.consent 
+                    ? 'bg-gray-300 cursor-not-allowed text-gray-500' 
+                    : 'bg-[#8B5E5E] text-white hover:bg-[#7A5252]'
+              }`}
             >
               {isSubmitting ? <Loader size={16} className="animate-spin" /> : 'SIGN UP.'}
             </button>
           </form>
 
-          <div className="mt-6 text-[9px] text-gray-400 leading-tight text-left px-2">
+          <div className="mt-4 text-[9px] text-gray-400 leading-tight text-left px-2">
             <p>
-              You consent to receive marketing text messages. Message and data rates may apply. 
-              You can unsubscribe at any time by replying STOP or clicking the unsubscribe link. 
-              View our <a href="#" className="underline hover:text-gray-600">Privacy Policy</a> and <a href="#" className="underline hover:text-gray-600">Terms of Service</a>.
+              By signing up, you agree to our <a href="#" className="underline hover:text-gray-600">Privacy Policy</a> and <a href="#" className="underline hover:text-gray-600">Terms of Service</a>.
             </p>
           </div>
         </div>

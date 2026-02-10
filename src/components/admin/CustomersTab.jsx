@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useCustomers } from '../../context/CustomerContext';
-import { Plus, Download, Search, User } from 'lucide-react';
+import { Plus, Download, Search, User, Trash2, Edit2, X } from 'lucide-react';
 
 const CustomersTab = () => {
-  const { customers, loading, addCustomer } = useCustomers();
+  const { customers, loading, addCustomer, updateCustomer, deleteCustomer } = useCustomers();
   const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   
   const [formData, setFormData] = useState({
@@ -24,29 +25,61 @@ const CustomersTab = () => {
     }));
   };
 
+  const resetForm = () => {
+      setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          address: '',
+          description: ''
+      });
+      setEditingId(null);
+      setIsAdding(false);
+  };
+
+  const handleEditClick = (customer) => {
+      setFormData({
+          firstName: customer.first_name || '',
+          lastName: customer.last_name || '',
+          email: customer.email || '',
+          phone: customer.phone || '',
+          address: customer.address || '',
+          description: customer.description || ''
+      });
+      setEditingId(customer.id);
+      setIsAdding(true);
+  };
+
+  const handleDeleteClick = async (id) => {
+      if (window.confirm('Are you sure you want to delete this customer?')) {
+          await deleteCustomer(id);
+      }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await addCustomer({
+    
+    const customerData = {
       first_name: formData.firstName,
       last_name: formData.lastName,
       email: formData.email,
       phone: formData.phone,
       address: formData.address,
       description: formData.description
-    });
+    };
+
+    let result;
+    if (editingId) {
+        result = await updateCustomer(editingId, customerData);
+    } else {
+        result = await addCustomer(customerData);
+    }
 
     if (result.success) {
-      setIsAdding(false);
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        address: '',
-        description: ''
-      });
+      resetForm();
     } else {
-      alert('Error adding customer: ' + result.message);
+      alert(`Error ${editingId ? 'updating' : 'adding'} customer: ` + result.message);
     }
   };
 
@@ -103,18 +136,17 @@ const CustomersTab = () => {
             Export CSV
           </button>
           <button 
-            onClick={() => setIsAdding(!isAdding)}
+            onClick={() => isAdding ? resetForm() : setIsAdding(true)}
             className="flex items-center px-4 py-2 bg-burgundy text-white rounded-md text-sm hover:bg-burgundy-light"
           >
-            <Plus size={18} className="mr-2" />
-            {isAdding ? 'Cancel' : 'Add Customer'}
+            {isAdding ? <><X size={18} className="mr-2" /> Cancel</> : <><Plus size={18} className="mr-2" /> Add Customer</>}
           </button>
         </div>
       </div>
 
       {isAdding ? (
         <form onSubmit={handleSubmit} className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-medium mb-4">New Customer</h3>
+          <h3 className="text-lg font-medium mb-4">{editingId ? 'Edit Customer' : 'New Customer'}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">First Name</label>
@@ -182,7 +214,7 @@ const CustomersTab = () => {
               type="submit" 
               className="px-6 py-2 bg-black text-white rounded-md text-xs uppercase tracking-widest hover:bg-gray-800"
             >
-              Save Customer
+              {editingId ? 'Update Customer' : 'Save Customer'}
             </button>
           </div>
         </form>
@@ -208,6 +240,7 @@ const CustomersTab = () => {
                   <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Address</th>
                   <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Notes</th>
                   <th className="py-3 px-4 text-xs uppercase tracking-wider text-gray-500 font-medium">Added</th>
+                  <th className="py-3 px-4 text-right text-xs uppercase tracking-wider text-gray-500 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,6 +266,24 @@ const CustomersTab = () => {
                     </td>
                     <td className="py-3 px-4 text-xs text-gray-500">
                       {new Date(customer.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                        <div className="flex justify-end space-x-2">
+                            <button 
+                                onClick={() => handleEditClick(customer)}
+                                className="text-gray-400 hover:text-burgundy transition-colors"
+                                title="Edit"
+                            >
+                                <Edit2 size={16} />
+                            </button>
+                            <button 
+                                onClick={() => handleDeleteClick(customer.id)}
+                                className="text-gray-400 hover:text-red-600 transition-colors"
+                                title="Delete"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </div>
                     </td>
                   </tr>
                 ))}

@@ -66,13 +66,51 @@ export const AppointmentProvider = ({ children }) => {
     }
   };
 
+  const deleteAppointment = async (id) => {
+      try {
+          const { error } = await supabase
+              .from('appointments')
+              .delete()
+              .eq('id', id);
+
+          if (error) throw error;
+
+          setAppointments(prev => prev.filter(app => app.id !== id));
+          return { success: true };
+      } catch (error) {
+          console.error('Error deleting appointment:', error.message);
+          return { success: false, message: error.message };
+      }
+  };
+
+  const updateAppointmentNote = async (id, note) => {
+      try {
+          const { error } = await supabase
+              .from('appointments')
+              .update({ admin_notes: note })
+              .eq('id', id);
+
+          if (error) throw error;
+
+          setAppointments(prev => prev.map(app => 
+              app.id === id ? { ...app, admin_notes: note } : app
+          ));
+          return { success: true };
+      } catch (error) {
+          console.error('Error updating appointment note:', error.message);
+          return { success: false, message: error.message };
+      }
+  };
+
   return (
     <AppointmentContext.Provider value={{ 
       appointments, 
       loading, 
       fetchAppointments, 
       createAppointment,
-      updateAppointmentStatus
+      updateAppointmentStatus,
+      deleteAppointment,
+      updateAppointmentNote
     }}>
       {children}
     </AppointmentContext.Provider>

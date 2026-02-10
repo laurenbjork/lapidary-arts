@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useContent } from '../../context/ContentContext';
-import { Mail, Calendar, Phone, Download, Upload, Save } from 'lucide-react';
+import { Mail, Calendar, Phone, Download, Upload, Save, Trash2 } from 'lucide-react';
 
 const NewsletterTab = () => {
-  const { content, updateContent, uploadContentImage } = useContent();
+  const { content, updateContent, uploadContentImage, deleteNewsletterSignup } = useContent();
   const signups = content.newsletterSignups || [];
   const [activeSubTab, setActiveSubTab] = useState('signups'); // 'signups' or 'settings'
 
   // Settings State
   const [popupForm, setPopupForm] = useState({
     leftImage: '/images/necklace-2.jpg',
-    leftTitle: 'LULU',
+    leftTitle: 'Lapidary Arts',
     leftSubtitle: 'Los Angeles',
     rightLogoImage: '',
     popupTitle: "Don't miss a thing",
@@ -56,6 +56,12 @@ const NewsletterTab = () => {
         console.error("Failed to save popup settings:", err);
         alert("Failed to save settings. Please try again.");
     }
+  };
+
+  const handleDelete = async (email) => {
+      if (window.confirm(`Are you sure you want to delete ${email}?`)) {
+          await deleteNewsletterSignup(email);
+      }
   };
 
   const handleExport = () => {
@@ -129,7 +135,7 @@ const NewsletterTab = () => {
                             value={popupForm.leftTitle} 
                             onChange={handlePopupChange}
                             className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
-                            placeholder="e.g. LULU"
+                            placeholder="e.g. Lapidary Arts"
                         />
                     </div>
 
@@ -234,6 +240,7 @@ const NewsletterTab = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Country</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -265,6 +272,15 @@ const NewsletterTab = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {signup.country}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button 
+                                onClick={() => handleDelete(signup.email)}
+                                className="text-gray-400 hover:text-red-600 transition-colors"
+                                title="Delete"
+                            >
+                                <Trash2 size={18} />
+                            </button>
                         </td>
                         </tr>
                     ))}
