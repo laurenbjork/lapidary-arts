@@ -183,22 +183,23 @@ const Home = () => {
         
         {/* Simplified Product Grid for "Carousel" look */}
         {newArrivals.length > 0 ? (
-          <div 
-            ref={scrollContainerRef}
-            onScroll={handleScroll}
-            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 max-w-7xl mx-auto [&::-webkit-scrollbar]:hidden"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-             {infiniteArrivals.map((product, index) => (
-               <FadeIn 
-                    key={`${product.id}-${index}`} 
-                    delay={0.1 * (index % 4)}
-                    className="w-[calc(50%-8px)] md:w-[calc(25%-12px)] snap-start flex-none"
-               >
-                  <ProductCard product={product} />
-               </FadeIn>
-             ))}
-          </div>
+          <FadeIn>
+            <div 
+              ref={scrollContainerRef}
+              onScroll={handleScroll}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 max-w-7xl mx-auto [&::-webkit-scrollbar]:hidden"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {infiniteArrivals.map((product, index) => (
+                <div 
+                      key={`${product.id}-${index}`} 
+                      className="w-[calc(50%-8px)] md:w-[calc(25%-12px)] snap-start flex-none"
+                >
+                    <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          </FadeIn>
         ) : (
           <div className="text-gray-400 text-sm italic py-10">No new arrivals to display.</div>
         )}
