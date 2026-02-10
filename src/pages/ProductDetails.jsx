@@ -1,16 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
-import { ChevronLeft, ChevronRight, Star, MapPin, Phone, Clock } from 'lucide-react';
+import { useAppointments } from '../context/AppointmentContext';
+import { ChevronLeft, ChevronRight, Star, MapPin, Phone, Clock, X } from 'lucide-react';
 import FadeIn from '../components/FadeIn';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const { products } = useProducts();
+  const { createAppointment } = useAppointments();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('description');
+  const [activeImage, setActiveImage] = useState(null);
   
+  // Booking Modal State
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [bookingForm, setBookingForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    description: '',
+    preferredTime: 'morning'
+  });
+  const [bookingStatus, setBookingStatus] = useState('idle'); // idle, submitting, success, error
+
   const product = products.find((p) => p.id === id);
+
+  useEffect(() => {
+    if (product) {
+        setActiveImage(product.image);
+    }
+  }, [product]);
 
   if (!product) {
     return (
@@ -21,22 +41,68 @@ const ProductDetails = () => {
     );
   }
 
+  const handleBookingChange = (e) => {
+    setBookingForm({
+        ...bookingForm,
+        [e.target.name]: e.target.value
+    });
+  };
+
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+    setBookingStatus('submitting');
+    
+    const result = await createAppointment({
+        ...bookingForm,
+        product_id: product.id,
+        product_name: product.name,
+        stock_number: product.stockNumber
+    });
+
+    if (result.success) {
+        setBookingStatus('success');
+        setTimeout(() => {
+            setIsBookingOpen(false);
+            setBookingStatus('idle');
+            setBookingForm({
+                name: '',
+                email: '',
+                phone: '',
+                description: '',
+                preferredTime: 'morning'
+            });
+        }, 3000);
+    } else {
+        setBookingStatus('error');
+    }
+  };
+
+  const galleryImages = (product.gallery && product.gallery.length > 0) ? product.gallery : [product.image];
+
   return (
     <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 mb-20">
         {/* Image Gallery Section */}
         <FadeIn className="space-y-4">
           <div className="aspect-square bg-gray-50 overflow-hidden rounded-sm relative group">
-             <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+             <img src={activeImage || product.image} alt={product.name} className="w-full h-full object-cover" />
              <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
           </div>
-          <div className="grid grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-square bg-gray-50 cursor-pointer opacity-70 hover:opacity-100 transition-opacity">
-                    <img src={product.image} alt="Thumbnail" className="w-full h-full object-cover" />
-                </div>
-            ))}
-          </div>
+          {galleryImages.length > 1 && (
+            <div className="grid grid-cols-4 gap-4">
+                {galleryImages.map((img, i) => (
+                    <div 
+                        key={i} 
+                        onClick={() => setActiveImage(img)}
+                        className={`aspect-square bg-gray-50 cursor-pointer transition-all ${
+                            activeImage === img ? 'opacity-100 ring-1 ring-black' : 'opacity-70 hover:opacity-100'
+                        }`}
+                    >
+                        <img src={img} alt={`Thumbnail ${i}`} className="w-full h-full object-cover" />
+                    </div>
+                ))}
+            </div>
+          )}
         </FadeIn>
 
         {/* Product Info Section */}
@@ -44,7 +110,10 @@ const ProductDetails = () => {
           <div className="mb-2 text-xs uppercase tracking-widest text-gray-500">{product.category}</div>
           <h1 className="font-serif text-3xl md:text-4xl text-gray-900 mb-2">{product.name}</h1>
           {product.subTitle && (
-            <h2 className="text-lg text-gray-500 font-light mb-4">{product.subTitle}</h2>
+            <h2 className="text-lg text-gray-500 font-light mb-2">{product.subTitle}</h2>
+          )}
+          {product.stockNumber && (
+            <div className="text-lg text-gray-400 font-thin mb-4">Stock #: {product.stockNumber}</div>
           )}
           
           <div className="flex items-center space-x-4 mb-6">
@@ -68,15 +137,23 @@ const ProductDetails = () => {
           </p>
 
           <div className="space-y-6 mb-8 border-t border-b border-gray-100 py-8">
-            <button className="w-full border border-gray-900 text-gray-900 py-4 uppercase tracking-widest text-xs font-semibold hover:bg-black hover:text-white transition-colors">
-                Book a Virtual Appointment
+            <button 
+                onClick={() => setIsBookingOpen(true)}
+                className="w-full border border-gray-900 text-gray-900 py-4 uppercase tracking-widest text-xs font-semibold hover:bg-black hover:text-white transition-colors"
+            >
+                Book Appointment
             </button>
           </div>
 
           <div className="space-y-4 text-xs text-gray-500">
             <div className="flex items-center space-x-3">
                 <MapPin size={16} />
-                <span>Available for in-store pickup at our downtown location.</span>
+                <span>
+                    {product.inStore 
+                        ? "Available In Store" 
+                        : "Available for special order"
+                    }
+                </span>
             </div>
             <div className="flex items-center space-x-3">
                 <Phone size={16} />
@@ -134,8 +211,131 @@ const ProductDetails = () => {
                     </ul>
                 </FadeIn>
             )}
+            {activeTab === 'in-store' && (
+                <FadeIn>
+                    {product.inStore ? (
+                        <div className="space-y-4">
+                            <p className="font-serif text-lg text-burgundy">Available for Immediate Pickup</p>
+                            <div className="text-gray-600 space-y-1">
+                                <p className="font-semibold">Lapidary Arts Jewelry</p>
+                                <p>3400 Preston Rd #250</p>
+                                <p>Plano, TX 75093</p>
+                                <a href="tel:9729641090" className="block hover:text-burgundy mt-2">(972) 964-1090</a>
+                            </div>
+                            <div className="text-gray-500 text-xs pt-2">
+                                <p>Mon-Fri 10-6 • Sat 10-4</p>
+                                <p>Sun Closed</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                             <p className="italic">This item is currently available for special order.</p>
+                             <p>Please contact us to schedule a viewing or to place an order.</p>
+                        </div>
+                    )}
+                </FadeIn>
+            )}
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {isBookingOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="bg-white p-8 max-w-md w-full rounded-lg relative">
+                <button 
+                    onClick={() => setIsBookingOpen(false)}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                >
+                    <X size={20} />
+                </button>
+                
+                <h2 className="font-serif text-2xl mb-2 text-center">Book Appointment</h2>
+                <p className="text-center text-xs text-gray-500 mb-6">
+                    {product.name} {product.stockNumber && `(Stock #${product.stockNumber})`}
+                </p>
+
+                {bookingStatus === 'success' ? (
+                    <div className="text-center py-8">
+                        <div className="text-green-600 text-lg mb-2">Request Sent!</div>
+                        <p className="text-gray-600 text-sm">
+                            Someone will reach out soon during business hours to confirm your appointment.
+                        </p>
+                    </div>
+                ) : (
+                    <form onSubmit={handleBookingSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Name</label>
+                            <input 
+                                type="text" 
+                                name="name"
+                                required
+                                value={bookingForm.name}
+                                onChange={handleBookingChange}
+                                className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-black"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Email</label>
+                            <input 
+                                type="email" 
+                                name="email"
+                                required
+                                value={bookingForm.email}
+                                onChange={handleBookingChange}
+                                className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-black"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Phone</label>
+                            <input 
+                                type="tel" 
+                                name="phone"
+                                required
+                                value={bookingForm.phone}
+                                onChange={handleBookingChange}
+                                className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-black"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Preferred Time</label>
+                            <select 
+                                name="preferredTime"
+                                value={bookingForm.preferredTime}
+                                onChange={handleBookingChange}
+                                className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-black bg-white"
+                            >
+                                <option value="morning">Morning (9AM - 12PM)</option>
+                                <option value="afternoon">Afternoon (12PM - 3PM)</option>
+                                <option value="evening">Evening (3PM - 6PM)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Message (Optional)</label>
+                            <textarea 
+                                name="description"
+                                value={bookingForm.description}
+                                onChange={handleBookingChange}
+                                rows="3"
+                                className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-black resize-none"
+                            ></textarea>
+                        </div>
+
+                        <button 
+                            type="submit"
+                            disabled={bookingStatus === 'submitting'}
+                            className="w-full bg-black text-white py-3 uppercase tracking-widest text-xs font-semibold hover:bg-gray-800 transition-colors mt-4 disabled:opacity-50"
+                        >
+                            {bookingStatus === 'submitting' ? 'Sending...' : 'Request Appointment'}
+                        </button>
+                        
+                        <p className="text-[10px] text-center text-gray-400 mt-4">
+                            Someone will reach out soon during business hours.
+                        </p>
+                    </form>
+                )}
+            </div>
+        </div>
+      )}
     </div>
   );
 };

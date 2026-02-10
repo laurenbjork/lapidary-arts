@@ -25,6 +25,7 @@ import ProductDetails from './pages/ProductDetails';
 import { ProductProvider } from './context/ProductContext';
 import { ContentProvider } from './context/ContentContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { AppointmentProvider } from './context/AppointmentContext';
 import NewsletterPopup from './components/NewsletterPopup';
 import FAQ from './pages/FAQ';
 import SizeGuide from './pages/SizeGuide';
@@ -62,6 +63,7 @@ function App() {
     <AuthProvider>
       <ProductProvider>
         <ContentProvider>
+            <AppointmentProvider>
             <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
               <ScrollToTop />
               {!isAdmin && <NewsletterPopup />}
@@ -101,16 +103,14 @@ function App() {
                 <Route path="/pop-ups" element={<PopUps />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/size-guide" element={<SizeGuide />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/accessibility" element={<Accessibility />} />
-
-                {/* Fallback for other routes */}
-                <Route path="*" element={<Home />} />
               </Routes>
-            </main>
-            {!isAdmin && <Footer />}
-          </div>
+              </main>
+              {!isAdmin && <Footer />}
+            </div>
+            </AppointmentProvider>
         </ContentProvider>
       </ProductProvider>
     </AuthProvider>

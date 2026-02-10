@@ -21,6 +21,7 @@ import CustomersTab from '../components/admin/CustomersTab';
 import SettingsTab from '../components/admin/SettingsTab';
 import ConsultationsTab from '../components/admin/ConsultationsTab';
 import NewsletterTab from '../components/admin/NewsletterTab';
+import AppointmentsTab from '../components/admin/AppointmentsTab';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -45,6 +46,7 @@ const Admin = () => {
         { id: 'products', label: 'Products', icon: <Package size={20} /> },
         { id: 'orders', label: 'Orders', icon: <ShoppingBag size={20} /> },
         { id: 'customers', label: 'Customers', icon: <Users size={20} /> },
+        { id: 'appointments', label: 'Appointments', icon: <Users size={20} /> },
       ]
     },
     {
@@ -73,6 +75,7 @@ const Admin = () => {
       case 'consultations': return <ConsultationsTab />;
       case 'newsletter': return <NewsletterTab />;
       case 'customers': return <CustomersTab />;
+      case 'appointments': return <AppointmentsTab />;
       case 'content': return <ContentTab />;
       case 'settings': return <SettingsTab />;
       default: return <DashboardTab />;

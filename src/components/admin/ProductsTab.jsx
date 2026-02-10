@@ -25,9 +25,14 @@ const ProductsTab = () => {
     hidePrice: false,
     subTitle: '',
     details: [],
+    inStore: false,
+    stockNumber: '',
+    gallery: [],
+    galleryFiles: [],
   };
   const [formData, setFormData] = useState(initialFormState);
   const [previewImage, setPreviewImage] = useState(null);
+  const [previewGallery, setPreviewGallery] = useState([]); // URLs for previewing new gallery files
 
   const categories = [
     { value: 'rings', label: 'Rings' },
@@ -104,6 +109,32 @@ const ProductsTab = () => {
     }
   };
 
+  const handleGalleryChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setPreviewGallery([...previewGallery, ...newPreviews]);
+      setFormData({
+        ...formData,
+        galleryFiles: [...(formData.galleryFiles || []), ...files]
+      });
+    }
+  };
+
+  const removeGalleryImage = (index, isExisting) => {
+    if (isExisting) {
+      // Remove from formData.gallery
+      const newGallery = formData.gallery.filter((_, i) => i !== index);
+      setFormData({ ...formData, gallery: newGallery });
+    } else {
+      // Remove from formData.galleryFiles and previewGallery
+      const newFiles = formData.galleryFiles.filter((_, i) => i !== index);
+      const newPreviews = previewGallery.filter((_, i) => i !== index);
+      setFormData({ ...formData, galleryFiles: newFiles });
+      setPreviewGallery(newPreviews);
+    }
+  };
+
   const handleDetailChange = (index, field, value) => {
     const newDetails = [...formData.details];
     newDetails[index][field] = value;
@@ -173,10 +204,12 @@ const ProductsTab = () => {
     
     if (result && result.success) {
         setFormData(initialFormState);
-        setPreviewImage(null);
-        setIsEditing(false);
+      setPreviewImage(null);
+      setPreviewGallery([]);
+      setIsEditing(false);
+      setEditingId(null);
     } else {
-        alert(`Failed to save product: ${result?.message || 'Unknown error'}`);
+      alert('Error saving product: ' + result.message);
     }
   };
 
@@ -190,16 +223,21 @@ const ProductsTab = () => {
       description: product.description || '',
       image: product.image,
       isVisible: product.isVisible,
-      isNewArrival: product.isNewArrival || false,
-      showOnHome: product.showOnHome || false,
+      isNewArrival: product.isNewArrival,
+      showOnHome: product.showOnHome,
       brand: product.brand || '',
       modelName: product.modelName || '',
       modelNumber: product.modelNumber || '',
       hidePrice: product.hidePrice || false,
       subTitle: product.subTitle || '',
       details: product.details || [],
+      inStore: product.inStore || false,
+      stockNumber: product.stockNumber || '',
+      gallery: product.gallery || [],
+      galleryFiles: [],
     });
     setPreviewImage(product.image);
+    setPreviewGallery([]);
     setEditingId(product.id);
     setIsEditing(true);
   };
@@ -263,6 +301,17 @@ const ProductsTab = () => {
                 onChange={handleInputChange} 
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
                 placeholder="e.g. 18k Gold"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Stock Number</label>
+              <input 
+                type="text" 
+                name="stockNumber" 
+                value={formData.stockNumber} 
+                onChange={handleInputChange} 
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
               />
             </div>
             
@@ -387,22 +436,77 @@ const ProductsTab = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Product Image</label>
-              <div className="flex items-center space-x-4">
-                <div className="relative overflow-hidden w-32 h-32 bg-gray-200 rounded-md flex justify-center items-center">
+              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Main Product Image</label>
+              <div className="border-2 border-dashed border-gray-300 rounded-md p-6 flex flex-col items-center justify-center cursor-pointer hover:border-black transition-colors">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleImageChange} 
+                  className="hidden" 
+                  id="image-upload"
+                />
+                <label htmlFor="image-upload" className="flex flex-col items-center cursor-pointer">
                   {previewImage ? (
-                    <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={previewImage} alt="Preview" className="h-40 object-contain mb-4" />
                   ) : (
-                    <span className="text-gray-400 text-xs">No Image</span>
+                    <Upload size={32} className="text-gray-400 mb-2" />
                   )}
-                </div>
-                <div className="flex-1">
-                  <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors inline-flex items-center">
-                    <Upload size={16} className="mr-2" /> Upload Image
-                    <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-                  </label>
-                  <p className="text-[10px] text-gray-400 mt-1">Recommended: 1000 x 1250 px (4:5 Portrait)</p>
-                </div>
+                  <span className="text-sm text-gray-500">Click to upload main image</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Gallery Images (Max 6)</label>
+              <div className="border-2 border-dashed border-gray-300 rounded-md p-6 flex flex-col items-center justify-center cursor-pointer hover:border-black transition-colors mb-4">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  multiple
+                  onChange={handleGalleryChange} 
+                  className="hidden" 
+                  id="gallery-upload"
+                />
+                <label htmlFor="gallery-upload" className="flex flex-col items-center cursor-pointer">
+                  <Upload size={32} className="text-gray-400 mb-2" />
+                  <span className="text-sm text-gray-500">Click to upload additional images</span>
+                </label>
+              </div>
+
+              {/* Gallery Grid */}
+              <div className="grid grid-cols-4 gap-4">
+                {formData.gallery.map((url, index) => (
+                  <div key={`existing-${index}`} className="relative aspect-square bg-gray-100 rounded-md overflow-hidden group">
+                    <img src={url} alt={`Gallery ${index}`} className="w-full h-full object-cover" />
+                    <button 
+                        type="button"
+                        onClick={() => removeGalleryImage(index, true)}
+                        className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                        <X size={12} />
+                    </button>
+                    {url === formData.image && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] text-center py-1">
+                            Main Image
+                        </div>
+                    )}
+                  </div>
+                ))}
+                {previewGallery.map((url, index) => (
+                  <div key={`new-${index}`} className="relative aspect-square bg-gray-100 rounded-md overflow-hidden group">
+                    <img src={url} alt={`New Gallery ${index}`} className="w-full h-full object-cover" />
+                    <button 
+                        type="button"
+                        onClick={() => removeGalleryImage(index, false)}
+                        className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                        <X size={12} />
+                    </button>
+                    <div className="absolute bottom-0 left-0 right-0 bg-green-500/50 text-white text-[10px] text-center py-1">
+                        New
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -427,6 +531,17 @@ const ProductsTab = () => {
                   className="mr-2"
                 />
                 <span className="text-sm text-gray-700">Show in "New Arrivals"</span>
+              </label>
+
+              <label className="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  name="inStore" 
+                  checked={formData.inStore} 
+                  onChange={handleInputChange} 
+                  className="mr-2"
+                />
+                <span className="text-sm text-gray-700">Available In Store</span>
               </label>
 
               {formData.category === 'watches' && (

@@ -35,6 +35,9 @@ export const ProductProvider = ({ children }) => {
         hidePrice: p.hide_price,
         subTitle: p.sub_title,
         details: p.details || [],
+        inStore: p.in_store,
+        stockNumber: p.stock_number,
+        gallery: p.gallery || [],
         subcategory: p.subcategory // Ensure subcategory is mapped if it exists in DB
       }));
       
@@ -78,8 +81,20 @@ export const ProductProvider = ({ children }) => {
         imageUrl = await uploadProductImage(product.imageFile);
       }
 
+      // Handle Gallery Images
+      let galleryUrls = product.gallery || [];
+      if (product.galleryFiles && product.galleryFiles.length > 0) {
+        const uploadPromises = product.galleryFiles.map(file => uploadProductImage(file));
+        const newGalleryUrls = await Promise.all(uploadPromises);
+        galleryUrls = [...galleryUrls, ...newGalleryUrls];
+      }
+      // Ensure main image is in gallery if not already (optional, but good for UI)
+      if (imageUrl && !galleryUrls.includes(imageUrl)) {
+          galleryUrls = [imageUrl, ...galleryUrls];
+      }
+
       // Remove temporary ID/file if present
-      const { id, imageFile, ...productData } = product;
+      const { id, imageFile, galleryFiles, ...productData } = product;
       
       const cleanProduct = {
         ...productData,
@@ -96,6 +111,9 @@ export const ProductProvider = ({ children }) => {
         hide_price: productData.hidePrice ?? false,
         sub_title: productData.subTitle || null,
         details: productData.details || [],
+        in_store: productData.inStore ?? false,
+        stock_number: productData.stockNumber || null,
+        gallery: galleryUrls,
       };
 
       // We need to map camelCase (frontend) to snake_case (DB)
@@ -115,7 +133,10 @@ export const ProductProvider = ({ children }) => {
         model_number: cleanProduct.model_number,
         hide_price: cleanProduct.hide_price,
         sub_title: cleanProduct.sub_title,
-        details: cleanProduct.details
+        details: cleanProduct.details,
+        in_store: cleanProduct.in_store,
+        stock_number: cleanProduct.stock_number,
+        gallery: cleanProduct.gallery
       };
 
       const { data, error } = await supabase
@@ -138,7 +159,10 @@ export const ProductProvider = ({ children }) => {
         modelNumber: data.model_number,
         hidePrice: data.hide_price,
         subTitle: data.sub_title,
-        details: data.details || []
+        details: data.details || [],
+        inStore: data.in_store,
+        stockNumber: data.stock_number,
+        gallery: data.gallery || []
       };
 
       setProducts((prev) => [newProduct, ...prev]);
@@ -158,6 +182,21 @@ export const ProductProvider = ({ children }) => {
         imageUrl = await uploadProductImage(updatedProduct.imageFile);
       }
 
+      // Handle Gallery Images
+      let galleryUrls = updatedProduct.gallery || [];
+      if (updatedProduct.galleryFiles && updatedProduct.galleryFiles.length > 0) {
+        const uploadPromises = updatedProduct.galleryFiles.map(file => uploadProductImage(file));
+        const newGalleryUrls = await Promise.all(uploadPromises);
+        galleryUrls = [...galleryUrls, ...newGalleryUrls];
+      }
+      
+      // If we are updating the main image, make sure it's in the gallery?
+      // Or if the user explicitly removed it from gallery, maybe we shouldn't.
+      // But typically main image is part of gallery.
+      if (imageUrl && !galleryUrls.includes(imageUrl)) {
+         galleryUrls = [imageUrl, ...galleryUrls];
+      }
+
       const dbUpdate = {
         name: updatedProduct.name,
         category: updatedProduct.category,
@@ -174,7 +213,10 @@ export const ProductProvider = ({ children }) => {
         model_number: updatedProduct.modelNumber,
         hide_price: updatedProduct.hidePrice,
         sub_title: updatedProduct.subTitle,
-        details: updatedProduct.details
+        details: updatedProduct.details,
+        in_store: updatedProduct.inStore,
+        stock_number: updatedProduct.stockNumber,
+        gallery: galleryUrls
       };
 
       const { data, error } = await supabase
@@ -198,7 +240,10 @@ export const ProductProvider = ({ children }) => {
         modelNumber: data.model_number,
         hidePrice: data.hide_price,
         subTitle: data.sub_title,
-        details: data.details || []
+        details: data.details || [],
+        inStore: data.in_store,
+        stockNumber: data.stock_number,
+        gallery: data.gallery || []
       };
 
       setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p)));
