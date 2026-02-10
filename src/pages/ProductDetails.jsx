@@ -42,10 +42,16 @@ const ProductDetails = () => {
         {/* Product Info Section */}
         <FadeIn delay={0.2} className="flex flex-col">
           <div className="mb-2 text-xs uppercase tracking-widest text-gray-500">{product.category}</div>
-          <h1 className="font-serif text-3xl md:text-4xl text-gray-900 mb-4">{product.name}</h1>
+          <h1 className="font-serif text-3xl md:text-4xl text-gray-900 mb-2">{product.name}</h1>
+          {product.subTitle && (
+            <h2 className="text-lg text-gray-500 font-light mb-4">{product.subTitle}</h2>
+          )}
           
           <div className="flex items-center space-x-4 mb-6">
-            <div className="text-xl text-gray-900">${product.price.toLocaleString()}</div>
+            <div className="text-xl text-gray-900">
+                {product.hidePrice ? 'Price Upon Request' : `$${product.price.toLocaleString()}`}
+            </div>
+            {!product.hidePrice && (
             <div className="flex items-center text-yellow-500 text-xs">
                 <Star size={14} fill="currentColor" />
                 <Star size={14} fill="currentColor" />
@@ -54,6 +60,7 @@ const ProductDetails = () => {
                 <Star size={14} fill="currentColor" />
                 <span className="text-gray-400 ml-2">(12 Reviews)</span>
             </div>
+            )}
           </div>
 
           <p className="text-gray-600 text-sm leading-relaxed mb-8">
@@ -112,10 +119,18 @@ const ProductDetails = () => {
             {activeTab === 'details' && (
                 <FadeIn>
                     <ul className="space-y-2 inline-block text-left">
-                        <li>• 18k Solid Gold</li>
-                        <li>• Ethically sourced diamonds</li>
-                        <li>• Handcrafted in Los Angeles</li>
-                        <li>• Total Carat Weight: 1.2ct</li>
+                        {product.details && product.details.length > 0 ? (
+                            product.details.map((detail, index) => (
+                                <li key={index}>• <span className="font-semibold">{detail.title}:</span> {detail.description}</li>
+                            ))
+                        ) : (
+                            <>
+                                <li>• 18k Solid Gold</li>
+                                <li>• Ethically sourced diamonds</li>
+                                <li>• Handcrafted in Los Angeles</li>
+                                <li>• Total Carat Weight: 1.2ct</li>
+                            </>
+                        )}
                     </ul>
                 </FadeIn>
             )}

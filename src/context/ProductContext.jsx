@@ -32,6 +32,9 @@ export const ProductProvider = ({ children }) => {
         brand: p.brand,
         modelName: p.model_name,
         modelNumber: p.model_number,
+        hidePrice: p.hide_price,
+        subTitle: p.sub_title,
+        details: p.details || [],
         subcategory: p.subcategory // Ensure subcategory is mapped if it exists in DB
       }));
       
@@ -90,6 +93,9 @@ export const ProductProvider = ({ children }) => {
         brand: productData.brand || null,
         model_name: productData.modelName || null,
         model_number: productData.modelNumber || null,
+        hide_price: productData.hidePrice ?? false,
+        sub_title: productData.subTitle || null,
+        details: productData.details || [],
       };
 
       // We need to map camelCase (frontend) to snake_case (DB)
@@ -106,7 +112,10 @@ export const ProductProvider = ({ children }) => {
         show_on_home: cleanProduct.show_on_home,
         brand: cleanProduct.brand,
         model_name: cleanProduct.model_name,
-        model_number: cleanProduct.model_number
+        model_number: cleanProduct.model_number,
+        hide_price: cleanProduct.hide_price,
+        sub_title: cleanProduct.sub_title,
+        details: cleanProduct.details
       };
 
       const { data, error } = await supabase
@@ -126,7 +135,10 @@ export const ProductProvider = ({ children }) => {
         showOnHome: data.show_on_home,
         brand: data.brand,
         modelName: data.model_name,
-        modelNumber: data.model_number
+        modelNumber: data.model_number,
+        hidePrice: data.hide_price,
+        subTitle: data.sub_title,
+        details: data.details || []
       };
 
       setProducts((prev) => [newProduct, ...prev]);
@@ -159,7 +171,10 @@ export const ProductProvider = ({ children }) => {
         show_on_home: updatedProduct.showOnHome,
         brand: updatedProduct.brand,
         model_name: updatedProduct.modelName,
-        model_number: updatedProduct.modelNumber
+        model_number: updatedProduct.modelNumber,
+        hide_price: updatedProduct.hidePrice,
+        sub_title: updatedProduct.subTitle,
+        details: updatedProduct.details
       };
 
       const { data, error } = await supabase
@@ -180,7 +195,10 @@ export const ProductProvider = ({ children }) => {
         showOnHome: data.show_on_home,
         brand: data.brand,
         modelName: data.model_name,
-        modelNumber: data.model_number
+        modelNumber: data.model_number,
+        hidePrice: data.hide_price,
+        subTitle: data.sub_title,
+        details: data.details || []
       };
 
       setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p)));

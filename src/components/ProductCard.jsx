@@ -37,7 +37,9 @@ const ProductCard = ({ product }) => {
           <Link to={`/product/${product.id}`}>
             <h3 className="text-lg font-serif text-gray-900 hover:text-burgundy transition-colors">{product.name}</h3>
           </Link>
-          <p className="text-sm text-gray-500">${product.price.toLocaleString()}</p>
+          <p className="text-sm text-gray-500">
+            {product.hidePrice ? 'Price Upon Request' : `$${product.price.toLocaleString()}`}
+          </p>
         </div>
       </div>
 

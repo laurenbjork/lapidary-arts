@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useProducts } from '../../context/ProductContext';
-import { Plus, Edit2, Trash2, Save, X, Upload } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Upload, Download, MinusCircle, PlusCircle } from 'lucide-react';
 
 const ProductsTab = () => {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
@@ -22,6 +22,9 @@ const ProductsTab = () => {
     brand: '',
     modelName: '',
     modelNumber: '',
+    hidePrice: false,
+    subTitle: '',
+    details: [],
   };
   const [formData, setFormData] = useState(initialFormState);
   const [previewImage, setPreviewImage] = useState(null);
@@ -101,6 +104,57 @@ const ProductsTab = () => {
     }
   };
 
+  const handleDetailChange = (index, field, value) => {
+    const newDetails = [...formData.details];
+    newDetails[index][field] = value;
+    setFormData({ ...formData, details: newDetails });
+  };
+
+  const addDetail = () => {
+    setFormData({ ...formData, details: [...formData.details, { title: '', description: '' }] });
+  };
+
+  const removeDetail = (index) => {
+    const newDetails = formData.details.filter((_, i) => i !== index);
+    setFormData({ ...formData, details: newDetails });
+  };
+
+  const downloadCSV = () => {
+    const headers = ['ID', 'Name', 'Category', 'Subcategory', 'Price', 'Discount Price', 'Brand', 'Model Name', 'Model Number', 'Sub Title', 'Visible', 'Show On Home', 'New Arrival', 'Hide Price'];
+    
+    const csvContent = [
+      headers.join(','),
+      ...products.map(p => [
+        p.id,
+        `"${(p.name || '').replace(/"/g, '""')}"`,
+        p.category,
+        p.subcategory || '',
+        p.price,
+        p.discountPrice || '',
+        `"${(p.brand || '').replace(/"/g, '""')}"`,
+        `"${(p.modelName || '').replace(/"/g, '""')}"`,
+        `"${(p.modelNumber || '').replace(/"/g, '""')}"`,
+        `"${(p.subTitle || '').replace(/"/g, '""')}"`,
+        p.isVisible,
+        p.showOnHome,
+        p.isNewArrival,
+        p.hidePrice
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'products_export.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const productData = {
@@ -140,6 +194,10 @@ const ProductsTab = () => {
       showOnHome: product.showOnHome || false,
       brand: product.brand || '',
       modelName: product.modelName || '',
+      modelNumber: product.modelNumber || '',
+      hidePrice: product.hidePrice || false,
+      subTitle: product.subTitle || '',
+      details: product.details || [],
     });
     setPreviewImage(product.image);
     setEditingId(product.id);
@@ -163,14 +221,22 @@ const ProductsTab = () => {
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-serif">Product Management</h2>
-        {!isEditing && (
-          <button 
-            onClick={() => setIsEditing(true)}
-            className="bg-black text-white px-4 py-2 rounded-md flex items-center text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
-          >
-            <Plus size={16} className="mr-2" /> Add Product
-          </button>
-        )}
+        <div className="flex space-x-3">
+            <button 
+                onClick={downloadCSV}
+                className="border border-black text-black px-4 py-2 rounded-md flex items-center text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors"
+            >
+                <Download size={16} className="mr-2" /> Export CSV
+            </button>
+            {!isEditing && (
+            <button 
+                onClick={() => setIsEditing(true)}
+                className="bg-black text-white px-4 py-2 rounded-md flex items-center text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
+            >
+                <Plus size={16} className="mr-2" /> Add Product
+            </button>
+            )}
+        </div>
       </div>
 
       {isEditing ? (
@@ -185,6 +251,18 @@ const ProductsTab = () => {
                 onChange={handleInputChange} 
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
                 required 
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Sub Product Name (Optional)</label>
+              <input 
+                type="text" 
+                name="subTitle" 
+                value={formData.subTitle} 
+                onChange={handleInputChange} 
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                placeholder="e.g. 18k Gold"
               />
             </div>
             
@@ -222,7 +300,19 @@ const ProductsTab = () => {
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Price ($)</label>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-xs uppercase tracking-wider text-gray-500">Price ($)</label>
+                <label className="flex items-center cursor-pointer">
+                    <input 
+                    type="checkbox" 
+                    name="hidePrice" 
+                    checked={formData.hidePrice} 
+                    onChange={handleInputChange} 
+                    className="mr-2 h-3 w-3"
+                    />
+                    <span className="text-[10px] uppercase tracking-wider text-gray-500">Hide Price</span>
+                </label>
+              </div>
               <input 
                 type="number" 
                 name="price" 
@@ -257,6 +347,43 @@ const ProductsTab = () => {
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
                 rows="3"
               />
+            </div>
+
+            <div className="md:col-span-2 bg-white p-4 rounded-md border border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                    <label className="block text-xs uppercase tracking-wider text-gray-500">Product Details</label>
+                    <button type="button" onClick={addDetail} className="text-black text-[10px] uppercase tracking-wider flex items-center hover:text-gray-600">
+                        <PlusCircle size={14} className="mr-1" /> Add Detail
+                    </button>
+                </div>
+                {formData.details.length === 0 && (
+                    <p className="text-sm text-gray-400 italic">No details added yet.</p>
+                )}
+                {formData.details.map((detail, index) => (
+                    <div key={index} className="flex gap-4 mb-3 items-start">
+                        <div className="flex-1">
+                            <input 
+                                type="text" 
+                                placeholder="Title (e.g. Material)" 
+                                value={detail.title}
+                                onChange={(e) => handleDetailChange(index, 'title', e.target.value)}
+                                className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm focus:outline-none focus:border-black"
+                            />
+                        </div>
+                        <div className="flex-[2]">
+                            <input 
+                                type="text" 
+                                placeholder="Description (e.g. 18k Gold)" 
+                                value={detail.description}
+                                onChange={(e) => handleDetailChange(index, 'description', e.target.value)}
+                                className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm focus:outline-none focus:border-black"
+                            />
+                        </div>
+                        <button type="button" onClick={() => removeDetail(index)} className="text-red-500 mt-2 hover:text-red-700">
+                            <MinusCircle size={18} />
+                        </button>
+                    </div>
+                ))}
             </div>
 
             <div className="md:col-span-2">
