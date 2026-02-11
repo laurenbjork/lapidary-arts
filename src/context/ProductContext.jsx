@@ -138,10 +138,10 @@ export const ProductProvider = ({ children }) => {
         sub_title: cleanProduct.sub_title,
         details: cleanProduct.details,
         in_store: cleanProduct.in_store,
-        stock_number: newProduct.stockNumber,
+        stock_number: cleanProduct.stock_number,
         gallery: galleryUrls,
-        availability_status: newProduct.availabilityStatus,
-        secondary_description: newProduct.secondaryDescription
+        availability_status: cleanProduct.availability_status,
+        secondary_description: cleanProduct.secondaryDescription
       };
 
       const { data, error } = await supabase
