@@ -27,7 +27,12 @@ const ContentTab = () => {
     image: '/images/custom-design-feature.jpg',
     title: 'Custom Design',
     description: 'Our custom design process allows you to work one-on-one with our designers to create the jewelry of your dreams.',
-    buttonText: 'Book a Consultation'
+    buttonText: 'Book a Consultation',
+    steps: [
+      { title: 'Personal Consultation', description: 'Begin with an intimate discussion of your vision and preferences' },
+      { title: 'Expert Design', description: 'Our artisans create detailed renderings for your approval' },
+      { title: 'Masterful Craftsmanship', description: 'Watch as your dream piece is meticulously handcrafted' }
+    ]
   });
 
   const [watchesForm, setWatchesForm] = useState(content.watches || {
@@ -116,6 +121,24 @@ const ContentTab = () => {
   const handleCustomDesignPageChange = (e) => {
     const { name, value } = e.target;
     setCustomDesignPageForm({ ...customDesignPageForm, [name]: value });
+  };
+
+  const handleCustomDesignPageStepChange = (index, field, value) => {
+    const newSteps = [...(customDesignPageForm.steps || [])];
+    if (!newSteps[index]) newSteps[index] = {};
+    newSteps[index] = { ...newSteps[index], [field]: value };
+    setCustomDesignPageForm({ ...customDesignPageForm, steps: newSteps });
+  };
+
+  const handleAddCustomDesignPageStep = () => {
+    const newSteps = [...(customDesignPageForm.steps || [])];
+    newSteps.push({ title: '', description: '' });
+    setCustomDesignPageForm({ ...customDesignPageForm, steps: newSteps });
+  };
+
+  const handleRemoveCustomDesignPageStep = (index) => {
+    const newSteps = [...(customDesignPageForm.steps || [])].filter((_, i) => i !== index);
+    setCustomDesignPageForm({ ...customDesignPageForm, steps: newSteps });
   };
 
   const handleCustomDesignFeatureChange = (index, field, value) => {
@@ -640,6 +663,61 @@ const ContentTab = () => {
               className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
               rows="4"
             />
+          </div>
+
+          <div className="pt-4 border-t border-gray-100">
+            <div className="flex justify-between items-center mb-4">
+               <label className="block text-xs uppercase tracking-wider text-gray-500">Process Steps</label>
+               <button
+                 type="button"
+                 onClick={handleAddCustomDesignPageStep}
+                 className="text-xs text-burgundy font-medium uppercase tracking-wider hover:text-burgundy-light"
+               >
+                 + Add Step
+               </button>
+            </div>
+            
+            <div className="space-y-4">
+              {(customDesignPageForm.steps || []).map((step, index) => (
+                <div key={index} className="bg-gray-50 p-4 rounded-md relative border border-gray-100">
+                   <div className="flex justify-between items-start mb-2">
+                      <div className="w-6 h-6 rounded-full bg-burgundy text-white flex items-center justify-center text-xs font-serif">
+                        {index + 1}
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => handleRemoveCustomDesignPageStep(index)}
+                        className="text-red-500 hover:text-red-700 text-xs uppercase tracking-wider ml-2"
+                      >
+                        Remove
+                      </button>
+                   </div>
+
+                   <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1">Step Title</label>
+                        <input 
+                          type="text" 
+                          value={step.title || ''} 
+                          onChange={(e) => handleCustomDesignPageStepChange(index, 'title', e.target.value)} 
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                          placeholder="e.g. Consultation"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase tracking-wider text-gray-400 mb-1">Description</label>
+                        <textarea 
+                          value={step.description || ''} 
+                          onChange={(e) => handleCustomDesignPageStepChange(index, 'description', e.target.value)} 
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                          rows="2"
+                          placeholder="Step description..."
+                        />
+                      </div>
+                   </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div>

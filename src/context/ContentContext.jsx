@@ -60,7 +60,21 @@ const initialContent = {
     image: '/images/custom-design-feature.jpg',
     title: 'Custom Design',
     description: 'Our custom design process allows you to work one-on-one with our designers to create the jewelry of your dreams.',
-    buttonText: 'Book a Consultation'
+    buttonText: 'Book a Consultation',
+    steps: [
+      {
+        title: 'Personal Consultation',
+        description: 'Begin with an intimate discussion of your vision and preferences'
+      },
+      {
+        title: 'Expert Design',
+        description: 'Our artisans create detailed renderings for your approval'
+      },
+      {
+        title: 'Masterful Craftsmanship',
+        description: 'Watch as your dream piece is meticulously handcrafted'
+      }
+    ]
   },
   watches: {
     title: "Watches",

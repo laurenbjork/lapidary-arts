@@ -22,13 +22,23 @@ const Gifts = () => {
       
       // If "All Gifting", show all products in 'gifting' category
       if (guide === 'all-gifting') {
-        return p.category === 'gifting';
+        if (p.category === 'gifting') return true;
+        return (p.additionalCategories || []).some(ac => ac.category === 'gifting');
       }
 
-      // Otherwise match category 'gifting' AND subcategory matches guide
-      // OR check if subcategory matches guide regardless of category (flexible)
-      return (p.category === 'gifting' && p.subcategory === guide) || 
+      // Check main category/subcategory
+      const mainMatch = (p.category === 'gifting' && p.subcategory === guide) || 
              (p.subcategory === guide);
+      if (mainMatch) return true;
+
+      // Check additional categories
+      const additionalMatch = (p.additionalCategories || []).some(ac => {
+          if (ac.category === 'gifting' && ac.subcategory === guide) return true;
+          if (ac.subcategory === guide) return true;
+          return false;
+      });
+
+      return additionalMatch;
     });
 
     return (

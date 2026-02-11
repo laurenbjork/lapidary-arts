@@ -53,9 +53,24 @@ const Shop = () => {
         // Exact category match (checks both original slug and mapped category)
         if (pCat === searchCat || pCat === mappedCategory) return true;
 
+        // Check Additional Categories
+        const additionalCats = p.additionalCategories || [];
+        const isInAdditional = additionalCats.some(ac => {
+            const acCat = ac.category ? ac.category.toLowerCase() : '';
+            return acCat === searchCat || acCat === mappedCategory;
+        });
+        if (isInAdditional) return true;
+
         // Subcategory Logic (Check explicitly defined subcategory field first)
         const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
         if (pSub && (pSub === searchCat || pSub === mappedCategory)) return true;
+        
+        // Check Additional Subcategories
+        const isInAdditionalSub = additionalCats.some(ac => {
+            const acSub = ac.subcategory ? ac.subcategory.toLowerCase() : '';
+            return acSub === searchCat || acSub === mappedCategory;
+        });
+        if (isInAdditionalSub) return true;
 
         // STRICT MODE: If we are searching for a main category, don't do fuzzy search
         const mainCategories = ['rings', 'earrings', 'necklaces', 'watches', 'stones', 'gifting'];

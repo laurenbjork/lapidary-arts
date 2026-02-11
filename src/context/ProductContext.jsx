@@ -40,7 +40,8 @@ export const ProductProvider = ({ children }) => {
         gallery: p.gallery || [],
         availabilityStatus: p.availability_status || 'available',
         subcategory: p.subcategory, // Ensure subcategory is mapped if it exists in DB
-        secondaryDescription: p.secondary_description
+        secondaryDescription: p.secondary_description,
+        additionalCategories: p.additional_categories || []
       }));
       
       setProducts(mappedProducts);
@@ -141,7 +142,8 @@ export const ProductProvider = ({ children }) => {
         stock_number: cleanProduct.stock_number,
         gallery: galleryUrls,
         availability_status: cleanProduct.availability_status,
-        secondary_description: cleanProduct.secondaryDescription
+        secondary_description: cleanProduct.secondaryDescription,
+        additional_categories: cleanProduct.additionalCategories
       };
 
       const { data, error } = await supabase
@@ -169,7 +171,8 @@ export const ProductProvider = ({ children }) => {
         stockNumber: data.stock_number,
         gallery: data.gallery || [],
         availabilityStatus: data.availability_status,
-        secondaryDescription: data.secondary_description
+        secondaryDescription: data.secondary_description,
+        additionalCategories: data.additional_categories || []
       };
 
       setProducts((prev) => [mappedData, ...prev]);
@@ -225,7 +228,8 @@ export const ProductProvider = ({ children }) => {
         stock_number: updatedProduct.stockNumber,
         gallery: galleryUrls,
         availability_status: updatedProduct.availabilityStatus,
-        secondary_description: updatedProduct.secondaryDescription
+        secondary_description: updatedProduct.secondaryDescription,
+        additional_categories: updatedProduct.additionalCategories
       };
 
       const { data, error } = await supabase
@@ -254,7 +258,8 @@ export const ProductProvider = ({ children }) => {
         stockNumber: data.stock_number,
         gallery: data.gallery || [],
         availabilityStatus: data.availability_status,
-        secondaryDescription: data.secondary_description
+        secondaryDescription: data.secondary_description,
+        additionalCategories: data.additional_categories || []
       };
 
       setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p)));
@@ -282,9 +287,17 @@ export const ProductProvider = ({ children }) => {
   };
 
   const getProductsByCategory = (category) => {
-    return products.filter((p) => 
-      p.category?.toLowerCase() === category?.toLowerCase() && p.isVisible
-    );
+    return products.filter((p) => {
+      if (!p.isVisible) return false;
+      
+      const mainMatch = p.category?.toLowerCase() === category?.toLowerCase();
+      if (mainMatch) return true;
+
+      const additionalMatch = (p.additionalCategories || []).some(
+        ac => ac.category?.toLowerCase() === category?.toLowerCase()
+      );
+      return additionalMatch;
+    });
   };
 
   const getNewArrivals = () => {

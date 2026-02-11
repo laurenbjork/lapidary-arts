@@ -31,6 +31,7 @@ const ProductsTab = () => {
     gallery: [],
     galleryFiles: [],
     availabilityStatus: 'available', // 'available', 'special_order', 'out_of_stock'
+    additionalCategories: []
   };
   const [formData, setFormData] = useState(initialFormState);
   const [previewImage, setPreviewImage] = useState(null);
@@ -152,6 +153,27 @@ const ProductsTab = () => {
     setFormData({ ...formData, details: newDetails });
   };
 
+  const addAdditionalCategory = () => {
+    setFormData({ 
+        ...formData, 
+        additionalCategories: [...(formData.additionalCategories || []), { category: '', subcategory: '' }] 
+    });
+  };
+
+  const removeAdditionalCategory = (index) => {
+    const newCats = formData.additionalCategories.filter((_, i) => i !== index);
+    setFormData({ ...formData, additionalCategories: newCats });
+  };
+
+  const handleAdditionalCategoryChange = (index, field, value) => {
+    const newCats = [...formData.additionalCategories];
+    newCats[index][field] = value;
+    if (field === 'category') {
+        newCats[index].subcategory = ''; // Reset subcat if category changes
+    }
+    setFormData({ ...formData, additionalCategories: newCats });
+  };
+
   const downloadCSV = () => {
     const headers = ['ID', 'Name', 'Category', 'Subcategory', 'Price', 'Discount Price', 'Brand', 'Model Name', 'Model Number', 'Sub Title', 'Visible', 'Show On Home', 'New Arrival', 'Hide Price', 'Stock Number', 'Availability Status', 'Main Description', 'Secondary Description'];
     
@@ -241,6 +263,7 @@ const ProductsTab = () => {
       stockNumber: product.stockNumber || '',
       gallery: product.gallery || [],
       galleryFiles: [],
+      additionalCategories: product.additionalCategories || []
     });
     setPreviewImage(product.image);
     setPreviewGallery([]);
@@ -352,6 +375,51 @@ const ProductsTab = () => {
                   <option key={sub.value} value={sub.value}>{sub.label}</option>
                 ))}
               </select>
+            </div>
+
+            {/* Additional Categories Section */}
+            <div className="md:col-span-2 bg-white p-4 rounded-md border border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                    <label className="block text-xs uppercase tracking-wider text-gray-500">Additional Categories</label>
+                    <button type="button" onClick={addAdditionalCategory} className="text-black text-[10px] uppercase tracking-wider flex items-center hover:text-gray-600">
+                        <PlusCircle size={14} className="mr-1" /> Add Category
+                    </button>
+                </div>
+                {(!formData.additionalCategories || formData.additionalCategories.length === 0) && (
+                    <p className="text-sm text-gray-400 italic">No additional categories.</p>
+                )}
+                {formData.additionalCategories && formData.additionalCategories.map((cat, index) => (
+                    <div key={index} className="flex gap-4 mb-3 items-start">
+                        <div className="flex-1">
+                            <select 
+                                value={cat.category} 
+                                onChange={(e) => handleAdditionalCategoryChange(index, 'category', e.target.value)}
+                                className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm focus:outline-none focus:border-black"
+                            >
+                                <option value="">Select Category</option>
+                                {categories.map(c => (
+                                    <option key={c.value} value={c.value}>{c.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex-1">
+                             <select 
+                                value={cat.subcategory} 
+                                onChange={(e) => handleAdditionalCategoryChange(index, 'subcategory', e.target.value)}
+                                className="w-full border border-gray-300 px-3 py-2 rounded-md text-sm focus:outline-none focus:border-black"
+                                disabled={!cat.category}
+                            >
+                                <option value="">Select Subcategory</option>
+                                {subcategories[cat.category]?.map(sub => (
+                                    <option key={sub.value} value={sub.value}>{sub.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <button type="button" onClick={() => removeAdditionalCategory(index)} className="text-red-500 mt-2 hover:text-red-700">
+                            <MinusCircle size={18} />
+                        </button>
+                    </div>
+                ))}
             </div>
 
             <div>
