@@ -9,7 +9,7 @@ const shopMenu = {
   RINGS: ['All Rings', 'Stacks and Bands', 'Diamond Bands', 'Bridal & Engagement'],
   NECKLACES: ['All Necklaces', 'Pendant', 'Disk and Coins'],
   EARRINGS: ['All Earrings', 'Hoops & Huggies', 'Studs', 'Drop Earrings'],
-  STONE: ['Emerald', 'Topaz', 'Sapphire', 'Spinel', 'Pearl', 'Opal', 'Tourmaline', 'Ruby', 'Garnet', 'Zircon', 'Tanzanite']
+  STONE: ['All Stones', 'Emerald', 'Topaz', 'Sapphire', 'Spinel', 'Pearl', 'Opal', 'Tourmaline', 'Ruby', 'Garnet', 'Zircon', 'Tanzanite']
 };
 
 
