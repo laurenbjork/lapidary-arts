@@ -27,12 +27,15 @@ import { ContentProvider } from './context/ContentContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AppointmentProvider } from './context/AppointmentContext';
 import { CustomerProvider } from './context/CustomerContext';
+import { BlogProvider } from './context/BlogContext';
 import NewsletterPopup from './components/NewsletterPopup';
 import FAQ from './pages/FAQ';
 import SizeGuide from './pages/SizeGuide';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import Accessibility from './pages/Accessibility';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -66,6 +69,7 @@ function App() {
         <ContentProvider>
           <CustomerProvider>
             <AppointmentProvider>
+            <BlogProvider>
             <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
               <ScrollToTop />
               {!isAdmin && <NewsletterPopup />}
@@ -108,10 +112,13 @@ function App() {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/accessibility" element={<Accessibility />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
               </Routes>
               </main>
               {!isAdmin && <Footer />}
             </div>
+            </BlogProvider>
             </AppointmentProvider>
           </CustomerProvider>
         </ContentProvider>

@@ -10,7 +10,8 @@ import {
   Settings,
   LogOut,
   MessageSquare,
-  Mail
+  Mail,
+  BookOpen
 } from 'lucide-react';
 
 import DashboardTab from '../components/admin/DashboardTab';
@@ -21,6 +22,7 @@ import SettingsTab from '../components/admin/SettingsTab';
 import ConsultationsTab from '../components/admin/ConsultationsTab';
 import NewsletterTab from '../components/admin/NewsletterTab';
 import AppointmentsTab from '../components/admin/AppointmentsTab';
+import BlogTab from '../components/admin/BlogTab';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -52,6 +54,7 @@ const Admin = () => {
       items: [
         { id: 'newsletter', label: 'Newsletter', icon: <Mail size={20} /> },
         { id: 'content', label: 'Site Content', icon: <Image size={20} /> },
+        { id: 'blog', label: 'Blog', icon: <BookOpen size={20} /> },
         { id: 'consultations', label: 'Consultations', icon: <MessageSquare size={20} /> },
       ]
     },
@@ -74,6 +77,7 @@ const Admin = () => {
       case 'customers': return <CustomersTab />;
       case 'appointments': return <AppointmentsTab />;
       case 'content': return <ContentTab />;
+      case 'blog': return <BlogTab />;
       case 'settings': return <SettingsTab />;
       default: return <DashboardTab />;
     }
