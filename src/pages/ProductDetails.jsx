@@ -178,26 +178,17 @@ const ProductDetails = () => {
             {activeTab === 'description' && (
                 <FadeIn>
                     <p className="whitespace-pre-line">
-                        {product.secondaryDescription || (
-                          "Every piece in our collection is a testament to the artistry of fine jewelry making. Hand-selected gemstones are set in precious metals by our master artisans in Los Angeles. This piece specifically embodies the balance between timeless elegance and modern design."
-                        )}
+                        {product.secondaryDescription}
                     </p>
                 </FadeIn>
             )}
             {activeTab === 'details' && (
                 <FadeIn>
                     <ul className="space-y-2 inline-block text-left">
-                        {product.details && product.details.length > 0 ? (
+                        {product.details && product.details.length > 0 && (
                             product.details.map((detail, index) => (
                                 <li key={index}>• <span className="font-semibold">{detail.title}:</span> {detail.description}</li>
                             ))
-                        ) : (
-                            <>
-                                <li>• 18k Solid Gold</li>
-                                <li>• Ethically sourced diamonds</li>
-                                <li>• Handcrafted in Los Angeles</li>
-                                <li>• Total Carat Weight: 1.2ct</li>
-                            </>
                         )}
                     </ul>
                 </FadeIn>
