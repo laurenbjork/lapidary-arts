@@ -65,16 +65,6 @@ const QuickView = ({ product, isOpen, onClose }) => {
               <div className="text-xl text-gray-900">
                 {product.hidePrice ? 'Price Upon Request' : `$${product.price.toLocaleString()}`}
               </div>
-              {!product.hidePrice && (
-              <div className="flex items-center text-yellow-500 text-xs">
-                  <Star size={14} fill="currentColor" />
-                  <Star size={14} fill="currentColor" />
-                  <Star size={14} fill="currentColor" />
-                  <Star size={14} fill="currentColor" />
-                  <Star size={14} fill="currentColor" />
-                  <span className="text-gray-400 ml-2">(12)</span>
-              </div>
-              )}
             </div>
 
             <p className="text-gray-600 text-sm leading-relaxed mb-8 line-clamp-4">
