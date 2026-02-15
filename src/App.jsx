@@ -33,7 +33,6 @@ import FAQ from './pages/FAQ';
 import SizeGuide from './pages/SizeGuide';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
-import Accessibility from './pages/Accessibility';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 
@@ -111,7 +110,6 @@ function App() {
                 <Route path="/size-guide" element={<SizeGuide />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
-                <Route path="/accessibility" element={<Accessibility />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
               </Routes>

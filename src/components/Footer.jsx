@@ -98,9 +98,8 @@ const Footer = () => {
           <div className="lg:col-span-2 mt-10">
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-white mb-4">Legal</h4>
             <ul className="space-y-2 text-[10px] uppercase tracking-wider text-white/60">
-              <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link to="/accessibility" className="hover:text-white transition-colors">Accessibility</Link></li>
+              <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
 

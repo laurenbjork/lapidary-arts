@@ -6,8 +6,8 @@ import AnnouncementBar from './AnnouncementBar';
 import { useProducts } from '../context/ProductContext';
 
 const shopMenu = {
-  RINGS: ['All Rings', 'Stacks and Bands', 'Diamond Bands', 'Bridal & Engagement'],
-  NECKLACES: ['All Necklaces', 'Pendant', 'Disk and Coins'],
+  RINGS: ['All Rings', 'Gemstones', 'Cocktail', 'Diamond Bands', 'Bridal & Engagement'],
+  NECKLACES: ['All Necklaces', 'Diamond', 'Gemstones', 'Coin', 'Gold'],
   EARRINGS: ['All Earrings', 'Hoops & Huggies', 'Studs', 'Drop Earrings'],
   STONE: ['All Stones', 'Emerald', 'Topaz', 'Sapphire', 'Spinel', 'Pearl', 'Opal', 'Tourmaline', 'Ruby', 'Garnet', 'Zircon', 'Tanzanite']
 };

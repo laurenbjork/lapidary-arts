@@ -1,44 +1,68 @@
+
 import React from 'react';
-import FadeIn from '../components/FadeIn';
 
 const TermsOfService = () => {
   return (
-    <div className="pt-32 pb-20 px-4 max-w-4xl mx-auto">
-      <FadeIn className="text-center mb-16">
-        <h1 className="font-serif text-4xl text-gray-900 mb-6 italic">Terms of Service</h1>
-      </FadeIn>
+    <div className="bg-white text-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold text-center mb-8">Terms of Service</h1>
 
-      <FadeIn className="space-y-8 text-sm text-gray-600 leading-relaxed">
-        <section>
-          <h2 className="font-serif text-xl text-gray-900 mb-4">General Conditions</h2>
-          <p>
-            We reserve the right to refuse service to anyone for any reason at any time. You understand that your content (not including credit card information), 
-            may be transferred unencrypted and involve (a) transmissions over various networks; and (b) changes to conform and adapt to technical requirements of connecting networks or devices.
-          </p>
-        </section>
+        <div className="space-y-6 text-sm">
+          <p><strong>Effective Date:</strong> February 15, 2026</p>
 
-        <section>
-          <h2 className="font-serif text-xl text-gray-900 mb-4">Accuracy, Completeness and Timeliness of Information</h2>
           <p>
-            We are not responsible if information made available on this site is not accurate, complete or current. The material on this site is provided for general information only 
-            and should not be relied upon or used as the sole basis for making decisions without consulting primary, more accurate, more complete or more timely sources of information.
+            Please read these Terms of Service ("Terms", "Terms of Service") carefully before using the Lapidary Arts Jewelry website (the "Service") operated by Lapidary Arts Jewelry ("us", "we", or "our").
           </p>
-        </section>
+          <p>
+            Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users, and others who access or use the Service.
+          </p>
+          <p>
+            By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you may not access the Service.
+          </p>
 
-        <section>
-          <h2 className="font-serif text-xl text-gray-900 mb-4">Modifications to the Service and Prices</h2>
+          <h2 className="text-xl font-semibold pt-4">1. ACCOUNTS</h2>
           <p>
-            Prices for our products are subject to change without notice. We reserve the right at any time to modify or discontinue the Service (or any part or content thereof) without notice at any time.
+            When you create an account with us, you must provide us information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.
           </p>
-        </section>
+          <p>
+            You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password, whether your password is with our Service or a third-party service.
+          </p>
 
-        <section>
-          <h2 className="font-serif text-xl text-gray-900 mb-4">Products or Services</h2>
+          <h2 className="text-xl font-semibold pt-4">2. INTELLECTUAL PROPERTY</h2>
           <p>
-            Certain products or services may be available exclusively online through the website. These products or services may have limited quantities and are subject to return or exchange only according to our Return Policy.
+            The Service and its original content, features, and functionality are and will remain the exclusive property of Lapidary Arts Jewelry and its licensors. The Service is protected by copyright, trademark, and other laws of both the United States and foreign countries.
           </p>
-        </section>
-      </FadeIn>
+
+          <h2 className="text-xl font-semibold pt-4">3. LINKS TO OTHER WEB SITES</h2>
+          <p>
+            Our Service may contain links to third-party web sites or services that are not owned or controlled by Lapidary Arts Jewelry.
+          </p>
+          <p>
+            Lapidary Arts Jewelry has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third-party web sites or services. You further acknowledge and agree that Lapidary Arts Jewelry shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services.
+          </p>
+
+          <h2 className="text-xl font-semibold pt-4">4. GOVERNING LAW</h2>
+          <p>
+            These Terms shall be governed and construed in accordance with the laws of the State of California, United States, without regard to its conflict of law provisions.
+          </p>
+
+          <h2 className="text-xl font-semibold pt-4">5. CHANGES</h2>
+          <p>
+            We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.
+          </p>
+
+          <h2 className="text-xl font-semibold pt-4">6. CONTACT US</h2>
+          <p>
+            If you have any questions about these Terms, please contact us:
+          </p>
+          <p>
+            Lapidary Arts Jewelry<br />
+            [Your Company Address]<br />
+            [Your Email Address]<br />
+            [Your Phone Number]
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
