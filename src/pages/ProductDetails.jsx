@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 import { useAppointments } from '../context/AppointmentContext';
 import { ChevronLeft, ChevronRight, Star, MapPin, Phone, Clock, X } from 'lucide-react';
+import InnerImageZoom from 'react-inner-image-zoom';
+import 'react-inner-image-zoom/lib/styles.min.css';
 import FadeIn from '../components/FadeIn';
 
 const ProductDetails = () => {
@@ -85,8 +87,8 @@ const ProductDetails = () => {
         {/* Image Gallery Section */}
         <FadeIn className="space-y-4 max-w-xl mx-auto w-full">
           <div className="aspect-square bg-gray-50 overflow-hidden rounded-sm relative group">
-             <img src={activeImage || product.image} alt={product.name} className="w-full h-full object-cover" />
-             <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
+             <InnerImageZoom src={activeImage || product.image} zoomSrc={activeImage || product.image} alt={product.name} className="w-full h-full object-cover" />
+
           </div>
           {galleryImages.length > 1 && (
             <div className="grid grid-cols-4 gap-4">
