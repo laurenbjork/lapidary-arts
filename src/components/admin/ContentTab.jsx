@@ -483,11 +483,6 @@ const ContentTab = () => {
             + Add Image
           </button>
         </div>
-            className="px-6 py-2 bg-burgundy text-white rounded-md text-xs uppercase tracking-widest hover:bg-burgundy-light flex items-center"
-          >
-            <Save size={16} className="mr-2" /> Save Changes
-          </button>
-        </form>
       )}
 
 
