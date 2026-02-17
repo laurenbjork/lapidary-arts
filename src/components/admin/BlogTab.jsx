@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { useBlog } from '../../context/BlogContext';
 import { Plus, Edit2, Trash2, Save, X, Upload, Image as ImageIcon } from 'lucide-react';
 
@@ -18,6 +20,46 @@ const BlogTab = () => {
   };
 
   const [formData, setFormData] = useState(initialFormState);
+  const quillRef = useRef(null);
+
+  const handleContentChange = (content) => {
+    setFormData(prev => ({ ...prev, content }));
+  };
+
+  const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (file) {
+        try {
+          const publicUrl = await uploadBlogImage(file);
+          const editor = quillRef.current.getEditor();
+          const range = editor.getSelection();
+          editor.insertEmbed(range.index, 'image', publicUrl);
+        } catch (error) {
+          alert('Error uploading image to blog content');
+        }
+      }
+    };
+  };
+
+  const modules = useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{'list': 'ordered'}, {'list': 'bullet'}],
+        ['link', 'image']
+      ],
+      handlers: {
+        image: imageHandler
+      }
+    }
+  }), [uploadBlogImage]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -197,12 +239,13 @@ const BlogTab = () => {
 
           <div>
             <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Blog Content</label>
-            <textarea 
-              name="content" 
-              value={formData.content} 
-              onChange={handleInputChange} 
-              className="w-full border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:border-black font-serif text-lg leading-relaxed min-h-[400px]"
-              placeholder="Write your story here..."
+            <ReactQuill 
+              ref={quillRef}
+              theme="snow"
+              value={formData.content}
+              onChange={handleContentChange}
+              modules={modules}
+              className="bg-white"
             />
           </div>
 

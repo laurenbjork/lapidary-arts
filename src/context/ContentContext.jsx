@@ -289,6 +289,28 @@ export const ContentProvider = ({ children }) => {
     }
   };
 
+  const updateInstagramFeed = async (newFeed) => {
+    // 1. Optimistic Update
+    setContent(prev => ({
+      ...prev,
+      instagramFeed: newFeed
+    }));
+
+    // 2. Update Supabase
+    try {
+      const { error } = await supabase
+        .from('site_content')
+        .upsert({ 
+          section_name: 'instagramFeed', 
+          content: newFeed
+        }, { onConflict: 'section_name' });
+
+      if (error) throw error;
+    } catch (err) {
+      console.error(`Error updating Instagram feed:`, err);
+    }
+  };
+
   const updateContent = async (section, data) => {
     // Check if we're updating an array directly (like instagramFeed)
     const isArraySection = Array.isArray(data) || (Array.isArray(content[section]) && Array.isArray(data));
@@ -491,6 +513,7 @@ export const ContentProvider = ({ children }) => {
     <ContentContext.Provider value={{ 
         content, 
         updateContent, 
+        updateInstagramFeed,
         updateCategoryImage, 
         uploadContentImage, 
         addConsultation, 

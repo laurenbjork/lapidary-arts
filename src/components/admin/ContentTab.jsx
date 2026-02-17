@@ -3,7 +3,7 @@ import { useContent } from '../../context/ContentContext';
 import { Upload, Save } from 'lucide-react';
 
 const ContentTab = () => {
-  const { content, updateContent, updateCategoryImage, uploadContentImage } = useContent();
+  const { content, updateContent, updateInstagramFeed, updateCategoryImage, uploadContentImage } = useContent();
   const [activeSection, setActiveSection] = useState('hero'); // hero, announcement, categories
   
   // Local state for forms
@@ -67,19 +67,6 @@ const ContentTab = () => {
   });
 
   const [pressCarouselForm, setPressCarouselForm] = useState(content.pressCarousel || ["The Knot"]);
-
-  const [instagramFeedForm, setInstagramFeedForm] = useState(() => {
-    const feed = content.instagramFeed;
-    if (Array.isArray(feed)) return feed;
-    if (feed && typeof feed === 'object') return Object.values(feed);
-    return [
-      { image: '/images/earring-1.jpg', link: '#' },
-      { image: '/images/earring-2.jpg', link: '#' },
-      { image: '/images/earring-3.jpg', link: '#' },
-      { image: '/images/earring-4.jpg', link: '#' },
-      { image: '/images/earring-5.jpg', link: '#' }
-    ];
-  });
 
   const [footerForm, setFooterForm] = useState(content.footer || {
     logo: '/images/Home.png'
@@ -179,17 +166,11 @@ const ContentTab = () => {
     }
   };
 
-  const handleRemovePressBrand = (brandToRemove) => {
-    setPressCarouselForm(pressCarouselForm.filter(brand => brand !== brandToRemove));
-  };
-
   const handleImageUpload = (e, section, field = 'image', index = null) => {
     const file = e.target.files[0];
     if (file) {
       const objectUrl = URL.createObjectURL(file);
       
-      // Store file for later upload
-      // key format: section-field-index (or section-field if index is null)
       const key = index !== null ? `${section}-${field}-${index}` : `${section}-${field}`;
       setFilesToUpload(prev => ({ ...prev, [key]: file }));
 
@@ -217,14 +198,27 @@ const ContentTab = () => {
         setAboutForm({ ...aboutForm, [field]: objectUrl });
       } else if (section === 'footer') {
         setFooterForm({ ...footerForm, [field]: objectUrl });
-      } else if (section === 'instagramFeed') {
-        const newItems = [...instagramFeedForm];
-        if (!newItems[index]) newItems[index] = {};
-        newItems[index].image = objectUrl;
-        setInstagramFeedForm(newItems);
       }
     }
   };
+
+  const handleRemovePressBrand = (brandToRemove) => {
+    setPressCarouselForm(pressCarouselForm.filter(brand => brand !== brandToRemove));
+  };
+
+  const handleInstagramImageUpload = async (file, index) => {
+    if (!file) return;
+
+    try {
+      const publicUrl = await uploadContentImage(file);
+      const newFeed = [...(content.instagramFeed || [])];
+      newFeed[index] = { ...newFeed[index], image: publicUrl };
+      await updateInstagramFeed(newFeed);
+    } catch (error) {
+      alert('Error uploading Instagram image: ' + error.message);
+    }
+  };
+
 
   const processUploads = async (section, currentData) => {
     const updatedData = { ...currentData };
@@ -351,47 +345,20 @@ const ContentTab = () => {
     alert('About section updated!');
   };
 
-  const saveSocials = (e) => {
-    e.preventDefault();
-    updateContent('socials', socialsForm);
-    alert('Social media links updated!');
-  };
-
-  const savePressCarousel = (e) => {
-    e.preventDefault();
-    updateContent('pressCarousel', pressCarouselForm);
-    alert('Press Carousel updated!');
-  };
-
-  const saveFooter = async (e) => {
-    e.preventDefault();
-    const dataToSave = await processUploads('footer', footerForm);
-    setFooterForm(dataToSave);
-    updateContent('footer', dataToSave);
-    alert('Footer logo updated!');
-  };
-
-  const saveInstagramFeed = async (e) => {
-    e.preventDefault();
-    const dataToSave = await processUploads('instagramFeed', instagramFeedForm);
-    setInstagramFeedForm(dataToSave);
-    updateContent('instagramFeed', dataToSave);
-    alert('Instagram Feed updated!');
-  };
-
   const handleAddInstagramImage = () => {
-    setInstagramFeedForm([...instagramFeedForm, { image: '', link: '#' }]);
+    const newFeed = [...(content.instagramFeed || []), { image: '', link: '#' }];
+    updateInstagramFeed(newFeed);
   };
 
   const handleRemoveInstagramImage = (index) => {
-    const newItems = instagramFeedForm.filter((_, i) => i !== index);
-    setInstagramFeedForm(newItems);
+    const newFeed = (content.instagramFeed || []).filter((_, i) => i !== index);
+    updateInstagramFeed(newFeed);
   };
 
   const handleInstagramItemChange = (index, field, value) => {
-    const newItems = [...instagramFeedForm];
-    newItems[index] = { ...newItems[index], [field]: value };
-    setInstagramFeedForm(newItems);
+    const newFeed = [...(content.instagramFeed || [])];
+    newFeed[index] = { ...newFeed[index], [field]: value };
+    updateInstagramFeed(newFeed);
   };
 
   const menuGroups = [
@@ -460,9 +427,9 @@ const ContentTab = () => {
         </div>
 
       {activeSection === 'instagramFeed' && (
-        <form onSubmit={saveInstagramFeed} className="space-y-6 max-w-2xl">
+        <div className="space-y-6 max-w-2xl">
           <div className="space-y-4">
-            {Array.isArray(instagramFeedForm) && instagramFeedForm.map((item, index) => (
+            {Array.isArray(content.instagramFeed) && content.instagramFeed.map((item, index) => (
               <div key={index} className="bg-gray-50 p-4 rounded-md relative">
                 <button 
                   type="button"
@@ -486,7 +453,7 @@ const ContentTab = () => {
                       <div className="flex-1">
                         <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 px-3 py-1 rounded-md text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors inline-flex items-center">
                           <Upload size={14} className="mr-2" /> Upload
-                          <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'instagramFeed', 'image', index)} className="hidden" />
+                          <input type="file" accept="image/*" onChange={(e) => handleInstagramImageUpload(e.target.files[0], index)} className="hidden" />
                         </label>
                         <p className="text-[10px] text-gray-400 mt-1">Recommended: 800 x 800 px (Square)</p>
                       </div>
@@ -515,9 +482,7 @@ const ContentTab = () => {
           >
             + Add Image
           </button>
-
-          <button 
-            type="submit" 
+        </div>
             className="px-6 py-2 bg-burgundy text-white rounded-md text-xs uppercase tracking-widest hover:bg-burgundy-light flex items-center"
           >
             <Save size={16} className="mr-2" /> Save Changes

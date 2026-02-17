@@ -54,7 +54,7 @@ const Contact = () => {
             <div className="space-y-6">
                 <div className="flex items-center text-gray-600">
                     <Mail className="mr-4 text-burgundy" />
-                    <a href="mailto:info@lapidaryarts.com" className="hover:text-black">info@lapidaryarts.com</a>
+                    <a href="mailto:lauren@lapidaryartsjewelry.com" className="hover:text-black">lauren@lapidaryartsjewelry.com</a>
                 </div>
                 <div className="flex items-center text-gray-600">
                     <Phone className="mr-4 text-burgundy" />

@@ -112,7 +112,7 @@ export const BlogProvider = ({ children }) => {
   };
 
   return (
-    <BlogContext.Provider value={{ 
+    <BlogContext.Provider value={{
       posts, 
       loading, 
       fetchPosts, 

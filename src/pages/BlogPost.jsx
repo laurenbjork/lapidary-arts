@@ -70,9 +70,10 @@ const BlogPost = () => {
             />
           </div>
 
-          <div className="prose prose-lg mx-auto font-serif text-gray-800 leading-relaxed max-w-2xl whitespace-pre-wrap">
-            {post.content}
-          </div>
+          <div 
+            className="prose prose-lg mx-auto font-serif text-gray-800 leading-relaxed max-w-2xl"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </FadeIn>
       </div>
     </article>

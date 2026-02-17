@@ -138,7 +138,7 @@ const Footer = () => {
                       <Facebook size={18} strokeWidth={1.5} />
                   </a>
               )}
-              <a href="mailto:info@lapidaryarts.com" className="text-white/60 hover:text-white transition-colors">
+              <a href="mailto:lauren@lapidaryartsjewelry.com" className="text-white/60 hover:text-white transition-colors">
                   <Mail size={18} strokeWidth={1.5} />
               </a>
             </div>
