@@ -48,13 +48,16 @@ const ProductsTab = () => {
 
   const subcategories = {
     rings: [
-      { value: 'stacks-and-bands', label: 'Stacks and Bands' },
+      { value: 'gemstones', label: 'Gemstones' },
+      { value: 'cocktail', label: 'Cocktail' },
       { value: 'diamond-bands', label: 'Diamond Bands' },
       { value: 'bridal-&-engagement', label: 'Bridal & Engagement' },
     ],
     necklaces: [
-      { value: 'pendant', label: 'Pendant' },
-      { value: 'disk-and-coins', label: 'Disk and Coins' },
+      { value: 'diamond', label: 'Diamond' },
+      { value: 'gemstones', label: 'Gemstones' },
+      { value: 'coin', label: 'Coin' },
+      { value: 'gold', label: 'Gold' },
     ],
     earrings: [
       { value: 'hoops-&-huggies', label: 'Hoops & Huggies' },
