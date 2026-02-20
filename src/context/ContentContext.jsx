@@ -13,6 +13,14 @@ const initialContent = {
     buttonText: "Shop Now",
     buttonLink: "/gifts"
   },
+  gifting: [
+    { name: 'Daughters', link: '/gifts/daughters', image: '' },
+    { name: 'Lovers', link: '/gifts/lovers', image: '' },
+    { name: 'Friend', link: '/gifts/friend', image: '' },
+    { name: 'Mamas', link: '/gifts/mamas', image: '' },
+    { name: 'The Minimalist', link: '/gifts/the-minimalist', image: '' },
+    { name: 'The Maximalist', link: '/gifts/the-maximalist', image: '' }
+  ],
   announcement: {
     text: "Complimentary shipping with code DAYGLOW at checkout",
     link: "/shop",

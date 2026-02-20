@@ -72,6 +72,8 @@ const ContentTab = () => {
     logo: '/images/Home.png'
   });
 
+  const [giftingForm, setGiftingForm] = useState(content.gifting || []);
+
   const [newPressBrand, setNewPressBrand] = useState('');
 
   // State to track files to upload
@@ -155,6 +157,12 @@ const ContentTab = () => {
     setAboutForm({ ...aboutForm, [name]: value });
   };
 
+  const handleGiftingChange = (index, field, value) => {
+    const newGifting = [...giftingForm];
+    newGifting[index] = { ...newGifting[index], [field]: value };
+    setGiftingForm(newGifting);
+  };
+
   const handleSocialsChange = (e) => {
     const { name, value } = e.target;
     setSocialsForm({ ...socialsForm, [name]: value });
@@ -198,6 +206,10 @@ const ContentTab = () => {
         setAboutForm({ ...aboutForm, [field]: objectUrl });
       } else if (section === 'footer') {
         setFooterForm({ ...footerForm, [field]: objectUrl });
+      } else if (section === 'gifting') {
+        const newItems = [...giftingForm];
+        newItems[index] = { ...newItems[index], [field]: objectUrl };
+        setGiftingForm(newItems);
       }
     }
   };
@@ -278,6 +290,13 @@ const ContentTab = () => {
                 await checkAndUpload(key, (url) => updatedData.items[index].image = url);
             }
         }
+    } else if (section === 'gifting') {
+        for (const key of Object.keys(filesToUpload)) {
+            if (key.startsWith('gifting-image-')) {
+                const index = parseInt(key.split('-').pop());
+                await checkAndUpload(key, (url) => updatedData[index].image = url);
+            }
+        }
     }
     
     return updatedData;
@@ -345,6 +364,14 @@ const ContentTab = () => {
     alert('About section updated!');
   };
 
+  const saveGifting = async (e) => {
+    e.preventDefault();
+    const dataToSave = await processUploads('gifting', giftingForm);
+    setGiftingForm(dataToSave);
+    updateContent('gifting', dataToSave);
+    alert('Gifting section updated!');
+  };
+
   const handleAddInstagramImage = () => {
     const newFeed = [...(content.instagramFeed || []), { image: '', link: '#' }];
     updateInstagramFeed(newFeed);
@@ -378,6 +405,7 @@ const ContentTab = () => {
       items: [
         { id: 'about', label: 'About Page' },
         { id: 'customDesignPage', label: 'Custom Design Page' },
+        { id: 'gifting', label: 'Gifting Page' },
       ]
     },
     {
@@ -514,7 +542,66 @@ const ContentTab = () => {
         </form>
       )}
 
-      {activeSection === 'about' && (
+      {activeSection === 'gifting' && (
+        <form onSubmit={saveGifting} className="space-y-6 max-w-4xl">
+          <div className="space-y-4">
+            {giftingForm.map((item, index) => (
+              <div key={index} className="bg-gray-50 p-4 rounded-md">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Image</label>
+                    <div className="flex items-center space-x-4">
+                      <div className="relative overflow-hidden w-24 h-24 bg-gray-200 rounded-md">
+                        {item.image ? (
+                          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="flex items-center justify-center h-full text-gray-400 text-xs">No Image</div>
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 px-3 py-1 rounded-md text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors inline-flex items-center">
+                          <Upload size={14} className="mr-2" /> Upload
+                          <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'gifting', 'image', index)} className="hidden" />
+                        </label>
+                        <p className="text-[10px] text-gray-400 mt-1">Recommended: 800 x 800 px</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Name</label>
+                    <input 
+                      type="text" 
+                      value={item.name} 
+                      onChange={(e) => handleGiftingChange(index, 'name', e.target.value)} 
+                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Link</label>
+                    <input 
+                      type="text" 
+                      value={item.link} 
+                      onChange={(e) => handleGiftingChange(index, 'link', e.target.value)} 
+                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button 
+            type="submit" 
+            className="px-6 py-2 bg-burgundy text-white rounded-md text-xs uppercase tracking-widest hover:bg-burgundy-light flex items-center"
+          >
+            <Save size={16} className="mr-2" /> Save Gifting Section
+          </button>
+        </form>
+      )}
+
+      {activeSection === 'footer' && (
         <form onSubmit={saveAbout} className="space-y-6 max-w-2xl">
           <div>
             <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">About Image</label>
