@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { X, Upload, Loader } from 'lucide-react';
-import { useAppointments } from '../context/AppointmentContext';
+import { useInquiries } from '../context/InquiryContext';
 
 const ConsultationModal = ({ isOpen, onClose }) => {
-  const { addAppointment, uploadAppointmentImage } = useAppointments();
+  const { addInquiry, uploadInquiryImage } = useInquiries();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -38,31 +38,28 @@ const ConsultationModal = ({ isOpen, onClose }) => {
     try {
       let imageUrl = '';
       if (formData.image) {
-        imageUrl = await uploadAppointmentImage(formData.image);
+        imageUrl = await uploadInquiryImage(formData.image);
       }
 
-      const newAppointment = {
-        id: Date.now().toString(),
+      const newInquiry = {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        preferredTime: formData.preferredTime,
+        preferred_time: formData.preferredTime,
         description: formData.description,
-        imageUrl: imageUrl,
-        status: 'pending',
-        notes: ''
+        image_url: imageUrl,
+        type: 'appointment'
       };
 
-      await addAppointment(newAppointment);
+      const result = await addInquiry(newInquiry);
       
-      setSuccess(true);
-      // Reset form but keep success message for a moment or until closed
-      setFormData({ name: '', email: '', phone: '', description: '', preferredTime: 'morning', image: null });
-      setImagePreview(null);
-      // setTimeout(() => {
-      //    onClose();
-      //    setSuccess(false);
-      // }, 3000);
+      if (result.success) {
+        setSuccess(true);
+        setFormData({ name: '', email: '', phone: '', description: '', preferredTime: 'morning', image: null });
+        setImagePreview(null);
+      } else {
+        throw new Error(result.message || 'An unknown error occurred.');
+      }
     } catch (error) {
       console.error('Submission error:', error);
       alert('Failed to submit request. Please try again.');

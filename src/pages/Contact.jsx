@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Loader, CheckCircle } from 'lucide-react';
-import { useAppointments } from '../context/AppointmentContext';
+import { useInquiries } from '../context/InquiryContext';
 
 const Contact = () => {
-  const { addAppointment } = useAppointments();
+  const { addInquiry } = useInquiries();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,21 +20,20 @@ const Contact = () => {
     setStatus('submitting');
 
     try {
-        // We reuse the consultation structure but mark it as a general inquiry in the description
         const inquiryData = {
             name: formData.name,
             email: formData.email,
-            phone: '', 
-            preferredTime: 'Anytime',
-            description: `GENERAL INQUIRY: ${formData.message}`,
-            imageUrl: '',
-            status: 'pending',
-            notes: ''
+            description: formData.message,
+            type: 'contact'
         };
 
-        await addAppointment(inquiryData);
-        setStatus('success');
-        setFormData({ name: '', email: '', message: '' });
+        const result = await addInquiry(inquiryData);
+        if (result.success) {
+            setStatus('success');
+            setFormData({ name: '', email: '', message: '' });
+        } else {
+            throw new Error(result.message || 'An unknown error occurred.');
+        }
     } catch (error) {
         console.error('Contact form error:', error);
         setStatus('error');

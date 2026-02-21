@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { X, Loader } from 'lucide-react';
-import { useCustomers } from '../context/CustomerContext';
+import { useInquiries } from '../context/InquiryContext';
 import { useContent } from '../context/ContentContext';
 
 const NewsletterPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const { addCustomer } = useCustomers();
+  const { addInquiry } = useInquiries();
   const { content } = useContent();
   const { newsletterPopup } = content;
   
@@ -51,21 +51,27 @@ const NewsletterPopup = () => {
     setIsSubmitting(true);
 
     try {
-      const signupData = {
-        id: Date.now().toString(),
+      const inquiryData = {
+        name: 'Newsletter Signup',
         email: formData.email,
         phone: formData.phone,
-        country: formData.countryCode,
-        signedUpAt: new Date().toISOString()
+        description: `Consented to marketing: ${formData.consent}`,
+        type: 'newsletter'
       };
 
-      await addCustomer(signupData);
-      setIsSuccess(true);
-      setTimeout(() => {
-        handleClose();
-      }, 3000);
+      const result = await addInquiry(inquiryData);
+
+      if (result.success) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          handleClose();
+        }, 3000);
+      } else {
+        throw new Error(result.message || 'An unknown error occurred.');
+      }
     } catch (error) {
       console.error('Signup error:', error);
+      alert('Failed to sign up. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
