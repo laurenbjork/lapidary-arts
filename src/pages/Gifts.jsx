@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import FadeIn from '../components/FadeIn';
 import { useProducts } from '../context/ProductContext';
 import { useContent } from '../context/ContentContext';
+import ProductCard from '../components/ProductCard';
 
 const Gifts = () => {
   const { guide } = useParams();
