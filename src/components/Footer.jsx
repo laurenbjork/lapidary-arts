@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Mail, CreditCard, Loader, X } from 'lucide-react';
 import { useContent } from '../context/ContentContext';
 
+import { useInquiries } from '../context/InquiryContext';
+
 const Footer = () => {
-  const { content, addNewsletterSignup } = useContent();
+  const { content } = useContent();
+  const { addInquiry } = useInquiries();
   const { socials, footer } = content;
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, submitting, success, error
@@ -24,14 +27,20 @@ const Footer = () => {
     setStatus('submitting');
     setShowConsentModal(false);
     
-    try {
-      await addNewsletterSignup({ email, country: 'US' });
+    const result = await addInquiry({
+      email,
+      type: 'newsletter',
+      name: 'Footer Signup',
+      description: 'User consented to marketing via footer form.'
+    });
+
+    if (result && result.success) {
       setStatus('success');
       setEmail('');
       setConsent(false);
       setTimeout(() => setStatus('idle'), 3000);
-    } catch (error) {
-      console.error('Footer signup error:', error);
+    } else {
+      console.error('Footer signup error:', result && result.message);
       setStatus('error');
     }
   };

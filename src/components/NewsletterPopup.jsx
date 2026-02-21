@@ -61,11 +61,12 @@ const NewsletterPopup = () => {
 
       const result = await addInquiry(inquiryData);
 
-      if (result.success) {
+      if (result && result.success) {
         setIsSuccess(true);
+        localStorage.setItem('newsletter_popup_seen', 'true');
         setTimeout(() => {
           handleClose();
-        }, 3000);
+        }, 3000); // Auto-close after 3 seconds
       } else {
         throw new Error(result.message || 'An unknown error occurred.');
       }

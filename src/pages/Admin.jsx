@@ -17,12 +17,9 @@ import {
 import DashboardTab from '../components/admin/DashboardTab';
 import ProductsTab from '../components/admin/ProductsTab';
 import ContentTab from '../components/admin/ContentTab';
-import CustomersTab from '../components/admin/CustomersTab';
 import SettingsTab from '../components/admin/SettingsTab';
-import ConsultationsTab from '../components/admin/ConsultationsTab';
-import NewsletterTab from '../components/admin/NewsletterTab';
-import AppointmentsTab from '../components/admin/AppointmentsTab';
 import BlogTab from '../components/admin/BlogTab';
+import InquiriesTab from '../components/admin/InquiriesTab';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -39,23 +36,20 @@ const Admin = () => {
       title: 'Overview',
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+        { id: 'inquiries', label: 'Inquiries', icon: <MessageSquare size={20} /> },
       ]
     },
     {
       title: 'Store',
       items: [
         { id: 'products', label: 'Products', icon: <Package size={20} /> },
-        { id: 'customers', label: 'Customers', icon: <Users size={20} /> },
-        { id: 'appointments', label: 'Appointments', icon: <Users size={20} /> },
       ]
     },
     {
       title: 'Content & Marketing',
       items: [
-        { id: 'newsletter', label: 'Newsletter', icon: <Mail size={20} /> },
         { id: 'content', label: 'Site Content', icon: <Image size={20} /> },
         { id: 'blog', label: 'Blog', icon: <BookOpen size={20} /> },
-        { id: 'consultations', label: 'Consultations', icon: <MessageSquare size={20} /> },
       ]
     },
     {
@@ -71,11 +65,8 @@ const Admin = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard': return <DashboardTab />;
+      case 'inquiries': return <InquiriesTab />;
       case 'products': return <ProductsTab />;
-      case 'consultations': return <ConsultationsTab />;
-      case 'newsletter': return <NewsletterTab />;
-      case 'customers': return <CustomersTab />;
-      case 'appointments': return <AppointmentsTab />;
       case 'content': return <ContentTab />;
       case 'blog': return <BlogTab />;
       case 'settings': return <SettingsTab />;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
-import { useAppointments } from '../context/AppointmentContext';
+import { useInquiries } from '../context/InquiryContext';
 import { ChevronLeft, ChevronRight, Star, MapPin, Phone, Clock, X } from 'lucide-react';
 import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/styles.min.css';
@@ -10,7 +10,7 @@ import FadeIn from '../components/FadeIn';
 const ProductDetails = () => {
   const { id } = useParams();
   const { products } = useProducts();
-  const { createAppointment } = useAppointments();
+  const { addInquiry } = useInquiries();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('description');
   const [activeImage, setActiveImage] = useState(null);
@@ -54,26 +54,17 @@ const ProductDetails = () => {
     e.preventDefault();
     setBookingStatus('submitting');
     
-    const result = await createAppointment({
+    const result = await addInquiry({
         name: bookingForm.name,
         email: bookingForm.email,
         phone: bookingForm.phone,
-        description: bookingForm.description,
+        description: `Product Inquiry: ${product.name} (Stock #: ${product.stockNumber}) - Message: ${bookingForm.description}`,
         preferred_time: bookingForm.preferredTime,
-        product_id: product.id,
-        product_name: product.name,
-        stock_number: product.stockNumber
+        type: 'appointment'
     });
 
-    if (result.success) {
+    if (result && result.success) {
         setBookingStatus('success');
-        setBookingForm({
-            name: '',
-            email: '',
-            phone: '',
-            description: '',
-            preferredTime: 'morning'
-        });
     } else {
         setBookingStatus('error');
     }
