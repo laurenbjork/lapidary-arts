@@ -48,59 +48,22 @@ const Shop = () => {
         };
 
         const mappedCategory = categoryAliases[searchCat] || searchCat;
+
+        // Check main category/subcategory
         const pCat = p.category ? p.category.toLowerCase() : '';
-        
-        // Exact category match (checks both original slug and mapped category)
-        if (pCat === searchCat || pCat === mappedCategory) return true;
+        const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
+
+        if (pCat === mappedCategory || pSub === mappedCategory) {
+            return true;
+        }
 
         // Check Additional Categories
         const additionalCats = p.additionalCategories || [];
-        const isInAdditional = additionalCats.some(ac => {
+        return additionalCats.some(ac => {
             const acCat = ac.category ? ac.category.toLowerCase() : '';
-            return acCat === searchCat || acCat === mappedCategory;
-        });
-        if (isInAdditional) return true;
-
-        // Subcategory Logic (Check explicitly defined subcategory field first)
-        const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
-        if (pSub && (pSub === searchCat || pSub === mappedCategory)) return true;
-        
-        // Check Additional Subcategories
-        const isInAdditionalSub = additionalCats.some(ac => {
             const acSub = ac.subcategory ? ac.subcategory.toLowerCase() : '';
-            return acSub === searchCat || acSub === mappedCategory;
+            return acCat === mappedCategory || acSub === mappedCategory;
         });
-        if (isInAdditionalSub) return true;
-
-        // STRICT MODE: If we are searching for a main category, don't do fuzzy search
-        const mainCategories = ['rings', 'earrings', 'necklaces', 'watches', 'stones', 'gifting'];
-        if (mainCategories.includes(searchCat) || mainCategories.includes(mappedCategory)) return false;
-
-        // For subcategories (legacy/fallback), check name/description for keywords
-        const normalizedSearch = searchCat.replace(/-/g, ' ');
-        const keywords = normalizedSearch.split(' ').filter(k => k.length > 2 && k !== 'and' && k !== '&');
-        
-        if (keywords.length > 0) {
-          return keywords.some(k => {
-            const lowerName = p.name.toLowerCase();
-            const lowerDesc = p.description ? p.description.toLowerCase() : '';
-            
-            // Check exact keyword
-            if (lowerName.includes(k) || lowerDesc.includes(k)) return true;
-
-            // Check singular form (e.g. "hoops" -> "hoop")
-            if (k.endsWith('s')) {
-                const singular = k.slice(0, -1);
-                if (singular.length > 2 && (lowerName.includes(singular) || lowerDesc.includes(singular))) return true;
-            }
-            
-            return false;
-          });
-        }
-        
-        // Fallback for simple string match
-        return p.name.toLowerCase().includes(normalizedSearch) || 
-               (p.description && p.description.toLowerCase().includes(normalizedSearch));
     }
 
     return true;
