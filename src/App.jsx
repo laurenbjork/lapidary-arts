@@ -97,7 +97,7 @@ function App() {
                 {/* New Main Nav Routes */}
                 <Route path="/new-arrivals" element={<NewArrivals />} />
                 <Route path="/shop" element={<Shop />} />
-                <Route path="/shop/:category" element={<Shop />} />
+                <Route path="/shop/:category/:subcategory" element={<Shop />} />
                 <Route path="/watches" element={<Watches />} />
                 <Route path="/collections" element={<Collections />} />
                 <Route path="/collections/:collection" element={<Collections />} />

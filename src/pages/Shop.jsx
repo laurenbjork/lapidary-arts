@@ -6,7 +6,7 @@ import ProductCard from '../components/ProductCard';
 import { Filter, ChevronDown } from 'lucide-react';
 
 const Shop = () => {
-  const { category } = useParams();
+  const { category, subcategory } = useParams();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get('search');
@@ -31,39 +31,37 @@ const Shop = () => {
                (p.category && p.category.toLowerCase().includes(q));
     }
 
-    // Category Logic
+    // Category/Subcategory Logic
     if (category) {
-        let searchCat = category.toLowerCase();
-        
-        // Handle "all-" prefix (e.g. "all-earrings" -> "earrings")
-        if (searchCat.startsWith('all-')) {
-            searchCat = searchCat.replace('all-', '');
+      const pCat = p.category ? p.category.toLowerCase() : '';
+      const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
+      
+      const mainCategoryMatch = pCat === category.toLowerCase();
+
+      if (subcategory) {
+        // URL: /shop/:category/:subcategory
+        const subCategoryMatch = pSub === subcategory.toLowerCase();
+        if (mainCategoryMatch && subCategoryMatch) {
+          return true;
         }
-
-        // Category Aliases (URL slug -> DB Category Value)
-        const categoryAliases = {
-            'bridal-&-engagement': 'engagement',
-            'diamonds-&-gemstones': 'diamonds',
-            'watches': 'watches' 
-        };
-
-        const mappedCategory = categoryAliases[searchCat] || searchCat;
-
-        // Check main category/subcategory
-        const pCat = p.category ? p.category.toLowerCase() : '';
-        const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
-
-        if (pCat === mappedCategory || pSub === mappedCategory) {
-            return true;
+      } else {
+        // URL: /shop/:category
+        if (mainCategoryMatch) {
+          return true;
         }
+      }
 
-        // Check Additional Categories
-        const additionalCats = p.additionalCategories || [];
-        return additionalCats.some(ac => {
-            const acCat = ac.category ? ac.category.toLowerCase() : '';
-            const acSub = ac.subcategory ? ac.subcategory.toLowerCase() : '';
-            return acCat === mappedCategory || acSub === mappedCategory;
-        });
+      // Also check additional categories for a match
+      const additionalCats = p.additionalCategories || [];
+      return additionalCats.some(ac => {
+          const acCat = ac.category ? ac.category.toLowerCase() : '';
+          const acSub = ac.subcategory ? ac.subcategory.toLowerCase() : '';
+          const addCatMatch = acCat === category.toLowerCase();
+          if (subcategory) {
+            return addCatMatch && acSub === subcategory.toLowerCase();
+          } 
+          return addCatMatch;
+      });
     }
 
     return true;
@@ -74,7 +72,9 @@ const Shop = () => {
 
   const displayTitle = searchQuery
     ? `Search Results for "${searchQuery}"`
-    : category 
+    : subcategory
+      ? `${category.replace(/-/g, ' ')} - ${subcategory.replace(/-/g, ' ')}`
+      : category 
         ? category.replace(/-/g, ' ') 
         : 'Shop All';
 
