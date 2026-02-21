@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Loader, CheckCircle } from 'lucide-react';
-import { useContent } from '../context/ContentContext';
+import { useAppointments } from '../context/AppointmentContext';
 
 const Contact = () => {
-  const { addConsultation } = useContent();
+  const { addAppointment } = useAppointments();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,17 +22,17 @@ const Contact = () => {
     try {
         // We reuse the consultation structure but mark it as a general inquiry in the description
         const inquiryData = {
-            id: Date.now().toString(),
             name: formData.name,
             email: formData.email,
-            phone: '', // Optional/Not collected in this simple form
+            phone: '', 
             preferredTime: 'Anytime',
             description: `GENERAL INQUIRY: ${formData.message}`,
             imageUrl: '',
-            submittedAt: new Date().toISOString()
+            status: 'pending',
+            notes: ''
         };
 
-        await addConsultation(inquiryData);
+        await addAppointment(inquiryData);
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
     } catch (error) {

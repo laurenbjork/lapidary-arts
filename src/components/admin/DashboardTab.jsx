@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react';
 import { useProducts } from '../../context/ProductContext';
 import { useAppointments } from '../../context/AppointmentContext';
+import { useCustomers } from '../../context/CustomerContext';
 import { useContent } from '../../context/ContentContext';
 import { Mail, ShoppingBag, Users, Calendar, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare } from 'lucide-react';
 
 const DashboardTab = () => {
   const { products } = useProducts();
   const { appointments, fetchAppointments } = useAppointments();
-  const { content } = useContent();
+  const { customers, fetchCustomers } = useCustomers();
 
   useEffect(() => {
     fetchAppointments();
+    fetchCustomers();
   }, []);
 
   // Product Stats
@@ -22,7 +24,7 @@ const DashboardTab = () => {
   const outOfStockCount = products.filter(p => p.availabilityStatus === 'out_of_stock').length;
 
   // Newsletter Stats
-  const newsletterCount = (content.newsletterSignups || []).length;
+  const newsletterCount = customers.length;
 
   // Activity Feeds
   const newAppointments = appointments
@@ -30,9 +32,7 @@ const DashboardTab = () => {
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .slice(0, 5);
 
-  const newConsultations = (content.consultations || [])
-    .sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt))
-    .slice(0, 5);
+
 
   const stats = [
     { 
@@ -94,19 +94,19 @@ const DashboardTab = () => {
       </div>
 
       {/* Activity Feeds */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* New Appointments */}
+      <div className="grid grid-cols-1 gap-8">
+        {/* New Inquiries */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-serif">New Appointments</h3>
+            <h3 className="text-lg font-serif">New Inquiries</h3>
             <span className="bg-burgundy text-white text-xs px-2 py-1 rounded-full">
-              {appointments.filter(a => a.status === 'new').length} New
+              {appointments.filter(a => a.status === 'pending').length} New
             </span>
           </div>
           
           <div className="space-y-4">
             {newAppointments.length === 0 ? (
-              <p className="text-gray-500 text-sm italic text-center py-4">No new appointment requests.</p>
+              <p className="text-gray-500 text-sm italic text-center py-4">No new inquiries.</p>
             ) : (
               newAppointments.map((apt) => (
                 <div key={apt.id} className="flex items-start border-b border-gray-50 pb-4 last:border-0 last:pb-0">
@@ -120,12 +120,12 @@ const DashboardTab = () => {
                         {new Date(apt.created_at).toLocaleDateString()} • {new Date(apt.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Request for: <span className="font-medium">{apt.product_name}</span>
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                      {apt.description}
                     </p>
                     <div className="flex items-center mt-2 text-xs text-burgundy">
                       <Clock size={12} className="mr-1" />
-                      <span className="capitalize">{apt.preferred_time}</span>
+                      <span className="capitalize">{apt.preferredTime}</span>
                     </div>
                     {apt.phone && (
                       <p className="text-xs text-gray-500 mt-1">{apt.phone}</p>
@@ -137,48 +137,7 @@ const DashboardTab = () => {
           </div>
         </div>
 
-        {/* New Consultations */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-serif">New Consultations</h3>
-            <span className="bg-burgundy text-white text-xs px-2 py-1 rounded-full">
-              {(content.consultations || []).length} Total
-            </span>
-          </div>
 
-          <div className="space-y-4">
-            {newConsultations.length === 0 ? (
-              <p className="text-gray-500 text-sm italic text-center py-4">No consultation requests yet.</p>
-            ) : (
-              newConsultations.map((consult, idx) => (
-                <div key={idx} className="flex items-start border-b border-gray-50 pb-4 last:border-0 last:pb-0">
-                  <div className="bg-gray-100 p-2 rounded-full mr-3">
-                    <MessageSquare size={16} className="text-gray-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <p className="text-sm font-medium text-gray-900">{consult.name}</p>
-                      <span className="text-xs text-gray-400">
-                        {new Date(consult.submittedAt).toLocaleDateString()} • {new Date(consult.submittedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                      {consult.description}
-                    </p>
-                    <div className="flex flex-col mt-1">
-                      <a href={`mailto:${consult.email}`} className="text-xs text-burgundy hover:underline">
-                        {consult.email}
-                      </a>
-                      {consult.phone && (
-                        <span className="text-xs text-gray-500">{consult.phone}</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );

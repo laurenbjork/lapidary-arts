@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { X, Upload, Loader } from 'lucide-react';
-import { useContent } from '../context/ContentContext';
+import { useAppointments } from '../context/AppointmentContext';
 
 const ConsultationModal = ({ isOpen, onClose }) => {
-  const { addConsultation, uploadContentImage } = useContent();
+  const { addAppointment, uploadAppointmentImage } = useAppointments();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -38,10 +38,10 @@ const ConsultationModal = ({ isOpen, onClose }) => {
     try {
       let imageUrl = '';
       if (formData.image) {
-        imageUrl = await uploadContentImage(formData.image);
+        imageUrl = await uploadAppointmentImage(formData.image);
       }
 
-      const newConsultation = {
+      const newAppointment = {
         id: Date.now().toString(),
         name: formData.name,
         email: formData.email,
@@ -49,10 +49,11 @@ const ConsultationModal = ({ isOpen, onClose }) => {
         preferredTime: formData.preferredTime,
         description: formData.description,
         imageUrl: imageUrl,
-        submittedAt: new Date().toISOString()
+        status: 'pending',
+        notes: ''
       };
 
-      await addConsultation(newConsultation);
+      await addAppointment(newAppointment);
       
       setSuccess(true);
       // Reset form but keep success message for a moment or until closed

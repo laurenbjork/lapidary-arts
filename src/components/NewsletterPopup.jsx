@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { X, Loader } from 'lucide-react';
+import { useCustomers } from '../context/CustomerContext';
 import { useContent } from '../context/ContentContext';
 
 const NewsletterPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const { addNewsletterSignup, content } = useContent();
+  const { addCustomer } = useCustomers();
+  const { content } = useContent();
   const { newsletterPopup } = content;
   
   const [formData, setFormData] = useState({
@@ -14,6 +16,7 @@ const NewsletterPopup = () => {
     consent: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     // Check if user has already seen/closed/signed up
@@ -56,12 +59,11 @@ const NewsletterPopup = () => {
         signedUpAt: new Date().toISOString()
       };
 
-      await addNewsletterSignup(signupData);
-      
-      // Mark as seen so it doesn't show again
-      localStorage.setItem('newsletter_popup_seen', 'true');
-      setIsVisible(false);
-      // Optional: Show success toast
+      await addCustomer(signupData);
+      setIsSuccess(true);
+      setTimeout(() => {
+        handleClose();
+      }, 3000);
     } catch (error) {
       console.error('Signup error:', error);
     } finally {
@@ -110,81 +112,90 @@ const NewsletterPopup = () => {
 
         {/* Right Side - Form */}
         <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center text-center bg-white">
-          {/* Logo (Top Center) */}
-          <div className="mb-6 flex flex-col items-center">
-             {newsletterPopup?.rightLogoImage ? (
-                <img src={newsletterPopup.rightLogoImage} alt="Logo" className="h-12 w-auto object-contain" />
-             ) : (
-                <span className="font-serif text-3xl italic font-medium mb-1">LS</span>
-             )}
-          </div>
-
-          <h2 className="font-serif text-2xl md:text-3xl text-burgundy italic mb-4">
-              {newsletterPopup?.popupTitle || "Don't miss a thing"}
-          </h2>
-          
-          <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-8 leading-relaxed px-4">
-            {newsletterPopup?.popupDescription || "Sign up for new arrivals, exclusive offers, events and more."}
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-xs mx-auto">
-            <input
-              type="email"
-              name="email"
-              required
-              placeholder="ENTER EMAIL"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-4 py-3 text-xs tracking-wide focus:outline-none focus:border-black uppercase placeholder-gray-400"
-            />
-            
-            <div className="flex border border-gray-300 focus-within:border-black">
-              <div className="flex items-center px-3 bg-gray-50 border-r border-gray-300">
-                <span className="text-lg">🇺🇸</span>
+          {isSuccess ? (
+            <div className="text-center">
+              <h2 className="font-serif text-2xl md:text-3xl text-burgundy italic mb-4">Thank You!</h2>
+              <p className="text-sm text-gray-600">You've been added to our newsletter.</p>
+            </div>
+          ) : (
+            <>
+              {/* Logo (Top Center) */}
+              <div className="mb-6 flex flex-col items-center">
+                {newsletterPopup?.rightLogoImage ? (
+                    <img src={newsletterPopup.rightLogoImage} alt="Logo" className="h-12 w-auto object-contain" />
+                ) : (
+                    <span className="font-serif text-3xl italic font-medium mb-1">LS</span>
+                )}
               </div>
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Phone Number"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full px-4 py-3 text-xs tracking-wide focus:outline-none uppercase placeholder-gray-400"
-              />
-            </div>
 
-            <div className="flex items-start space-x-2 my-2">
+              <h2 className="font-serif text-2xl md:text-3xl text-burgundy italic mb-4">
+                  {newsletterPopup?.popupTitle || "Don't miss a thing"}
+              </h2>
+              
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-8 leading-relaxed px-4">
+                {newsletterPopup?.popupDescription || "Sign up for new arrivals, exclusive offers, events and more."}
+              </p>
+
+              <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-xs mx-auto">
                 <input
-                    type="checkbox"
-                    name="consent"
-                    id="popup-consent"
-                    checked={formData.consent}
-                    onChange={handleChange}
-                    className="mt-1 h-3 w-3 rounded border-gray-300 text-burgundy focus:ring-burgundy"
-                    required
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="ENTER EMAIL"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 px-4 py-3 text-xs tracking-wide focus:outline-none focus:border-black uppercase placeholder-gray-400"
                 />
-                <label htmlFor="popup-consent" className="text-[10px] text-gray-500 leading-tight text-left">
-                    I agree to receive marketing emails from Lapidary Arts. I understand I can unsubscribe at any time.
-                </label>
-            </div>
+                
+                <div className="flex border border-gray-300 focus-within:border-black">
+                  <div className="flex items-center px-3 bg-gray-50 border-r border-gray-300">
+                    <span className="text-lg">🇺🇸</span>
+                  </div>
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Phone Number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 text-xs tracking-wide focus:outline-none uppercase placeholder-gray-400"
+                  />
+                </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting || !formData.consent}
-              className={`w-full py-3 text-xs font-bold uppercase tracking-widest transition-colors flex justify-center items-center ${
-                  !formData.consent 
-                    ? 'bg-gray-300 cursor-not-allowed text-gray-500' 
-                    : 'bg-[#8B5E5E] text-white hover:bg-[#7A5252]'
-              }`}
-            >
-              {isSubmitting ? <Loader size={16} className="animate-spin" /> : 'SIGN UP.'}
-            </button>
-          </form>
+                <div className="flex items-start space-x-2 my-2">
+                    <input
+                        type="checkbox"
+                        name="consent"
+                        id="popup-consent"
+                        checked={formData.consent}
+                        onChange={handleChange}
+                        className="mt-1 h-3 w-3 rounded border-gray-300 text-burgundy focus:ring-burgundy"
+                        required
+                    />
+                    <label htmlFor="popup-consent" className="text-[10px] text-gray-500 leading-tight text-left">
+                        I agree to receive marketing emails from Lapidary Arts. I understand I can unsubscribe at any time.
+                    </label>
+                </div>
 
-          <div className="mt-4 text-[9px] text-gray-400 leading-tight text-left px-2">
-            <p>
-              By signing up, you agree to our <a href="#" className="underline hover:text-gray-600">Privacy Policy</a> and <a href="#" className="underline hover:text-gray-600">Terms of Service</a>.
-            </p>
-          </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !formData.consent}
+                  className={`w-full py-3 text-xs font-bold uppercase tracking-widest transition-colors flex justify-center items-center ${
+                      !formData.consent 
+                        ? 'bg-gray-300 cursor-not-allowed text-gray-500' 
+                        : 'bg-[#8B5E5E] text-white hover:bg-[#7A5252]'
+                  }`}
+                >
+                  {isSubmitting ? <Loader size={16} className="animate-spin" /> : 'SIGN UP.'}
+                </button>
+              </form>
+
+              <div className="mt-4 text-[9px] text-gray-400 leading-tight text-left px-2">
+                <p>
+                  By signing up, you agree to our <a href="#" className="underline hover:text-gray-600">Privacy Policy</a> and <a href="#" className="underline hover:text-gray-600">Terms of Service</a>.
+                </p>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
