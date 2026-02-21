@@ -11,7 +11,7 @@ const ProductCard = ({ product }) => {
       <div className="group">
         <div className="relative aspect-square overflow-hidden bg-gray-100 mb-4">
           <img
-            src={product.image}
+            src={`${product.image}?width=800&quality=80`}
             alt={product.name}
             className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
           />

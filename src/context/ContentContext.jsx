@@ -134,7 +134,7 @@ const initialContent = {
   newsletterPopup: {
     leftImage: '/images/necklace-2.jpg',
     leftTitle: 'Lapidary Arts',
-    leftSubtitle: 'Los Angeles',
+    leftSubtitle: 'Jewelry',
     rightLogoImage: '', // If empty, shows text "LS"
     popupTitle: "Don't miss a thing",
     popupDescription: "Sign up for new arrivals, exclusive offers, events and more."

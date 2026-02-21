@@ -87,7 +87,7 @@ const ProductDetails = () => {
         {/* Image Gallery Section */}
         <FadeIn className="space-y-4 max-w-xl mx-auto w-full">
           <div className="aspect-square bg-gray-50 overflow-hidden rounded-sm relative group">
-             <InnerImageZoom src={activeImage || product.image} zoomSrc={activeImage || product.image} alt={product.name} className="w-full h-full object-cover" />
+             <InnerImageZoom src={`${activeImage || product.image}?width=1200&quality=80`} zoomSrc={`${activeImage || product.image}`} alt={product.name} className="w-full h-full object-cover" />
 
           </div>
           {galleryImages.length > 1 && (
@@ -100,7 +100,7 @@ const ProductDetails = () => {
                             activeImage === img ? 'opacity-100 ring-1 ring-black' : 'opacity-70 hover:opacity-100'
                         }`}
                     >
-                        <img src={img} alt={`Thumbnail ${i}`} className="w-full h-full object-cover" />
+                        <img src={`${img}?width=200&quality=80`} alt={`Thumbnail ${i}`} className="w-full h-full object-cover" />
                     </div>
                 ))}
             </div>

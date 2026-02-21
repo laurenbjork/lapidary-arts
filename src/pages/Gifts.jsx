@@ -84,7 +84,7 @@ const Gifts = () => {
              <Link to={g.link} className="block h-full">
                 <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden flex items-center justify-center p-8 text-center h-full">
                   {g.image ? (
-                    <img src={g.image} alt={g.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <img src={`${g.image}?width=800&quality=80`} alt={g.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   ) : (
                     <div className="absolute inset-0 bg-[#f9f5f3] group-hover:bg-[#f0ebe9] transition-colors duration-500"></div>
                   )}
