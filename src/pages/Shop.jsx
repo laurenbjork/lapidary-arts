@@ -39,25 +39,30 @@ const Shop = () => {
       const mainCategoryMatch = pCat === category.toLowerCase();
 
       if (subcategory) {
-        // URL: /shop/:category/:subcategory
-        const subCategoryMatch = pSub === subcategory.toLowerCase();
-        if (mainCategoryMatch && subCategoryMatch) {
-          return true;
+        // Handle "All" subcategories (e.g., /shop/rings/all-rings)
+        if (subcategory.toLowerCase().startsWith('all-')) {
+          if (mainCategoryMatch) return true;
+        } else {
+          // Handle specific subcategories (e.g., /shop/rings/gemstones)
+          const subCategoryMatch = pSub === subcategory.toLowerCase();
+          if (mainCategoryMatch && subCategoryMatch) return true;
         }
       } else {
-        // URL: /shop/:category
-        if (mainCategoryMatch) {
-          return true;
-        }
+        // Handle main category pages (e.g., /shop/rings)
+        if (mainCategoryMatch) return true;
       }
 
-      // Also check additional categories for a match
+      // Fallback to check additional categories with the same logic
       const additionalCats = p.additionalCategories || [];
       return additionalCats.some(ac => {
           const acCat = ac.category ? ac.category.toLowerCase() : '';
           const acSub = ac.subcategory ? ac.subcategory.toLowerCase() : '';
           const addCatMatch = acCat === category.toLowerCase();
+
           if (subcategory) {
+            if (subcategory.toLowerCase().startsWith('all-')) {
+              return addCatMatch;
+            }
             return addCatMatch && acSub === subcategory.toLowerCase();
           } 
           return addCatMatch;
@@ -70,13 +75,18 @@ const Shop = () => {
   const visibleProducts = filteredProducts.slice(0, displayLimit);
   const totalProducts = filteredProducts.length;
 
-  const displayTitle = searchQuery
-    ? `Search Results for "${searchQuery}"`
-    : subcategory
-      ? `${category.replace(/-/g, ' ')} - ${subcategory.replace(/-/g, ' ')}`
-      : category 
-        ? category.replace(/-/g, ' ') 
-        : 'Shop All';
+  const displayTitle = (() => {
+    if (searchQuery) return `Search Results for "${searchQuery}"`;
+    if (category) {
+      const catName = category.replace(/-/g, ' ');
+      if (subcategory && !subcategory.startsWith('all-')) {
+        const subName = subcategory.replace(/-/g, ' ');
+        return `${catName} - ${subName}`;
+      }
+      return catName;
+    }
+    return 'Shop All';
+  })();
 
   return (
     <div key={category || 'shop-all'} className="pt-32 pb-20 px-4 md:px-12 max-w-[1920px] mx-auto">
