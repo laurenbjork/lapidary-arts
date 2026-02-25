@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Star, MapPin, Phone, Clock, X } from 'lucide
 import InnerImageZoom from 'react-inner-image-zoom';
 import 'react-inner-image-zoom/lib/styles.min.css';
 import FadeIn from '../components/FadeIn';
+import SEO from '../components/SEO';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -37,11 +38,33 @@ const ProductDetails = () => {
   if (!product) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
+        <SEO title="Product Not Found" description="The product you are looking for could not be found." />
         <h2 className="text-2xl font-serif mb-4">Product Not Found</h2>
         <Link to="/" className="text-burgundy border-b border-burgundy pb-1">Return Home</Link>
       </div>
     );
   }
+
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.description,
+    image: product.image,
+    sku: product.stockNumber,
+    brand: {
+      '@type': 'Brand',
+      name: product.brand || 'Lapidary Arts'
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://www.lapidaryartsjewelry.com/product/${product.id}`,
+      priceCurrency: 'USD',
+      price: product.price,
+      availability: product.availabilityStatus === 'out_of_stock' ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition'
+    }
+  };
 
   const handleBookingChange = (e) => {
     setBookingForm({
@@ -74,11 +97,20 @@ const ProductDetails = () => {
 
   return (
     <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
+      <SEO 
+        title={product.name}
+        description={product.description}
+        keywords={[product.name, product.category, product.brand, 'fine jewelry']}
+        schema={productSchema}
+        url={`https://www.lapidaryartsjewelry.com/product/${product.id}`}
+        image={product.image}
+        type="product"
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 mb-20">
         {/* Image Gallery Section */}
         <FadeIn className="space-y-4 max-w-xl mx-auto w-full">
           <div className="aspect-square bg-gray-50 overflow-hidden rounded-sm relative group">
-             <InnerImageZoom src={`${activeImage || product.image}?width=1200&quality=80`} zoomSrc={`${activeImage || product.image}`} alt={product.name} className="w-full h-full object-cover" />
+             <InnerImageZoom src={`${activeImage || product.image}?width=1200&quality=80`} zoomSrc={`${activeImage || product.image}`} alt={`${product.name} - Main View`} className="w-full h-full object-cover" />
 
           </div>
           {galleryImages.length > 1 && (
@@ -91,7 +123,7 @@ const ProductDetails = () => {
                             activeImage === img ? 'opacity-100 ring-1 ring-black' : 'opacity-70 hover:opacity-100'
                         }`}
                     >
-                        <img src={`${img}?width=200&quality=80`} alt={`Thumbnail ${i}`} className="w-full h-full object-cover" />
+                        <img src={`${img}?width=200&quality=80`} alt={`${product.name} - Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
                     </div>
                 ))}
             </div>

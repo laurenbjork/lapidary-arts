@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useBlog } from '../context/BlogContext';
 import FadeIn from '../components/FadeIn';
 import { ArrowLeft } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -35,14 +36,47 @@ const BlogPost = () => {
   if (!post) {
     return (
       <div className="min-h-screen pt-32 px-4 text-center">
+        <SEO title="Post Not Found" description="The blog post you are looking for could not be found." />
         <h1 className="font-serif text-2xl mb-4">Post not found</h1>
         <Link to="/blog" className="text-xs uppercase tracking-widest border-b border-black">Return to Journal</Link>
       </div>
     );
   }
 
+  const postSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    image: post.image,
+    author: {
+      '@type': 'Organization',
+      name: 'Lapidary Arts Jewelry',
+      url: 'https://www.lapidaryartsjewelry.com'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Lapidary Arts Jewelry',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.lapidaryartsjewelry.com/images/logo.svg'
+      }
+    },
+    datePublished: new Date(post.created_at).toISOString(),
+    dateModified: new Date(post.created_at).toISOString(), // Or use an updated_at field if you have one
+    description: post.subtitle
+  };
+
   return (
     <article className="pt-32 pb-20">
+      <SEO 
+        title={post.title}
+        description={post.subtitle}
+        keywords={post.title.split(' ').concat(['blog', 'journal', 'fine jewelry'])}
+        schema={postSchema}
+        url={`https://www.lapidaryartsjewelry.com/blog/${post.slug}`}
+        image={post.image}
+        type="article"
+      />
       <div className="max-w-4xl mx-auto px-4">
         <FadeIn>
           <div className="text-center mb-12">

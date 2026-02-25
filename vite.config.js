@@ -25,23 +25,31 @@ async function getDynamicRoutes() {
   const routes = [];
 
   // Fetch products
-  const { data: products, error: productsError } = await supabase.from('products').select('id');
+  const { data: products, error: productsError } = await supabase.from('products').select('id, updated_at');
   if (productsError) {
     console.error('Error fetching products:', productsError);
   } else {
-    products.forEach(product => routes.push(`/product/${product.id}`));
+    products.forEach(product => routes.push({ 
+      url: `/product/${product.id}`,
+      lastmod: product.updated_at,
+      changefreq: 'weekly',
+      priority: 0.8
+    }));
   }
 
   // Fetch blog posts
-  const { data: blogPosts, error: blogError } = await supabase.from('blog_posts').select('slug');
+  const { data: blogPosts, error: blogError } = await supabase.from('blog_posts').select('slug, updated_at');
   if (blogError) {
     console.error('Error fetching blog posts:', blogError);
   } else {
-    blogPosts.forEach(post => routes.push(`/blog/${post.slug}`));
+    blogPosts.forEach(post => routes.push({ 
+      url: `/blog/${post.slug}`,
+      lastmod: post.updated_at,
+      changefreq: 'monthly',
+      priority: 0.7
+    }));
   }
   
-  // Add other dynamic routes as needed (e.g., collections, designers)
-
   return routes;
 }
 
@@ -55,18 +63,16 @@ export default defineConfig(async () => {
       sitemap({
         hostname: 'https://www.lapidaryartsjewelry.com',
         dynamicRoutes,
-        // Add static routes if they are not automatically discovered
         staticRoutes: [
-          '/',
-          '/about',
-          '/contact',
-          '/faq',
-          '/size-guide',
-          '/privacy-policy',
-          '/terms-of-service',
-          '/blog',
-          '/shop/all',
-          // Add other static pages
+          { url: '/', lastmod: new Date().toISOString(), changefreq: 'daily', priority: 1.0 },
+          { url: '/about', changefreq: 'monthly', priority: 0.8 },
+          { url: '/contact', changefreq: 'yearly', priority: 0.5 },
+          { url: '/faq', changefreq: 'monthly', priority: 0.6 },
+          { url: '/size-guide', changefreq: 'yearly', priority: 0.4 },
+          { url: '/privacy-policy', changefreq: 'yearly', priority: 0.3 },
+          { url: '/terms-of-service', changefreq: 'yearly', priority: 0.3 },
+          { url: '/blog', changefreq: 'weekly', priority: 0.9 },
+          { url: '/shop/all', changefreq: 'daily', priority: 0.9 },
         ],
       }),
     ],
