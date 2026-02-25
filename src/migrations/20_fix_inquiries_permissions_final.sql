@@ -1,12 +1,9 @@
--- Final, corrected script for a UUID primary key.
--- Based on the user's debug assistant analysis.
-
 -- 1) Table + schema grants
-GRANT SELECT, INSERT ON public.inquiries TO anon, authenticated;
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT, INSERT ON public.inquiries TO anon, authenticated;
 
 -- 2) Policy: allow anonymous/public inserts
-DO $$
+DO $do$
 BEGIN
   IF EXISTS (
     SELECT 1 FROM pg_policies
@@ -22,10 +19,11 @@ BEGIN
       FOR INSERT TO anon
       WITH CHECK (true);
   $pol$;
-END $$;
+END
+$do$ LANGUAGE plpgsql;
 
 -- 3) Policy: allow authenticated users full access
-DO $$
+DO $do$
 BEGIN
   IF EXISTS (
     SELECT 1 FROM pg_policies
@@ -42,10 +40,11 @@ BEGIN
       USING (true)
       WITH CHECK (true);
   $pol$;
-END $$;
+END
+$do$ LANGUAGE plpgsql;
 
 -- 4) Cleanup old policy if present
-DO $$
+DO $do$
 BEGIN
   IF EXISTS (
     SELECT 1 FROM pg_policies
@@ -55,7 +54,8 @@ BEGIN
   ) THEN
     EXECUTE 'DROP POLICY "Enable insert for public anonymous users" ON public.inquiries';
   END IF;
-END $$;
+END
+$do$ LANGUAGE plpgsql;
 
 -- 5) Ensure RLS is enabled
 ALTER TABLE public.inquiries ENABLE ROW LEVEL SECURITY;
