@@ -10,22 +10,21 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // v1: Check active session on startup (synchronous)
-    const session = supabase.auth.session();
-    setCurrentUser(session?.user ?? null);
+    // v1: Set user from initial session (synchronous)
+    setUser(supabase.auth.session()?.user ?? null);
     setLoading(false);
 
-    // v1: Listen for changes and return the subscription
-    const { data: listener } = supabase.auth.onAuthStateChange(
+    // v1: Listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setCurrentUser(session?.user ?? null);
+        setUser(session?.user ?? null);
         setLoading(false);
       }
     );
 
+    // v1: Cleanup subscription on unmount
     return () => {
-      // v1: The listener object itself is the subscription.
-      listener?.unsubscribe();
+      authListener?.unsubscribe();
     };
   }, []);
 
