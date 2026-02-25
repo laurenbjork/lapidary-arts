@@ -7,8 +7,4 @@ if (!supabaseUrl || !supabaseKey) {
   console.error('Missing Supabase URL or Anon Key. Please check your .env file or Vercel project settings.');
 }
 
-// Fallback to avoid crashing the app immediately if keys are missing
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co', 
-  supabaseKey || 'placeholder'
-);
+export const supabase = createClient(supabaseUrl, supabaseKey);
