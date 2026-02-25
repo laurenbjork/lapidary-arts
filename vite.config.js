@@ -25,26 +25,26 @@ async function getDynamicRoutes() {
   const routes = [];
 
   // Fetch products
-  const { data: products, error: productsError } = await supabase.from('products').select('id, updated_at');
+  const { data: products, error: productsError } = await supabase.from('products').select('id, created_at');
   if (productsError) {
     console.error('Error fetching products:', productsError);
   } else {
     products.forEach(product => routes.push({ 
       url: `/product/${product.id}`,
-      lastmod: product.updated_at,
+      lastmod: product.created_at,
       changefreq: 'weekly',
       priority: 0.8
     }));
   }
 
   // Fetch blog posts
-  const { data: blogPosts, error: blogError } = await supabase.from('blog_posts').select('slug, updated_at');
+  const { data: blogPosts, error: blogError } = await supabase.from('blog_posts').select('slug, created_at');
   if (blogError) {
     console.error('Error fetching blog posts:', blogError);
   } else {
     blogPosts.forEach(post => routes.push({ 
       url: `/blog/${post.slug}`,
-      lastmod: post.updated_at,
+      lastmod: post.created_at,
       changefreq: 'monthly',
       priority: 0.7
     }));
