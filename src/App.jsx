@@ -35,6 +35,8 @@ import TermsOfService from './pages/TermsOfService';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 
+import Analytics from './components/Analytics';
+
 // Scroll to top on route change
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -69,6 +71,7 @@ function App() {
             <BlogProvider>
             <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
               <ScrollToTop />
+              <Analytics />
               {!isAdmin && <NewsletterPopup />}
               {!isAdmin && <Navbar />}
               <main className="flex-grow">
