@@ -28,7 +28,7 @@ const Home = () => {
     },
     sameAs: [
       socials?.instagram || "https://www.instagram.com/lapidaryartsjewelry/",
-      // Add other social media links here
+      socials?.facebook || "https://www.facebook.com/LapidaryArtsCJ/"
     ],
   };
 

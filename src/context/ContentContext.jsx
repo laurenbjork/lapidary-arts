@@ -112,7 +112,7 @@ const initialContent = {
   },
   socials: {
     instagram: 'https://www.instagram.com/lapidaryartsjewelry/',
-    facebook: 'https://facebook.com'
+    facebook: 'https://www.facebook.com/LapidaryArtsCJ/'
   },
   pressCarousel: [
     "The Knot"
