@@ -10,32 +10,22 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Check active session on startup
-    const checkSession = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        setCurrentUser(data.session?.user ?? null);
-      } catch (err) {
-        console.error("Error checking session:", err.message);
-        setCurrentUser(null);
-      } finally {
+    // v1: Check active session on startup (synchronous)
+    const session = supabase.auth.session();
+    setCurrentUser(session?.user ?? null);
+    setLoading(false);
+
+    // v1: Listen for changes and return the subscription
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setCurrentUser(session?.user ?? null);
         setLoading(false);
       }
-    };
-
-    checkSession();
-
-    // 2. Listen for changes (login, logout, etc.)
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      setCurrentUser(session?.user ?? null);
-      setLoading(false);
-    });
+    );
 
     return () => {
-      if (data && data.subscription) {
-        data.subscription.unsubscribe();
-      }
+      // v1: The listener object itself is the subscription.
+      listener?.unsubscribe();
     };
   }, []);
 
