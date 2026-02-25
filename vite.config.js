@@ -30,13 +30,15 @@ async function getDynamicRoutes() {
     console.error('Error fetching products:', productsError);
   } else {
     products.forEach(product => {
-      if (product.id && product.created_at) {
-        routes.push({ 
+      if (product && product.id && product.created_at) {
+        routes.push({
           url: `/product/${product.id}`,
           lastmod: new Date(product.created_at).toISOString(),
-      changefreq: 'weekly',
-      priority: 0.8
-    }));
+          changefreq: 'weekly',
+          priority: 0.8
+        });
+      }
+    });
   }
 
   // Fetch blog posts
@@ -45,13 +47,15 @@ async function getDynamicRoutes() {
     console.error('Error fetching blog posts:', blogError);
   } else {
     blogPosts.forEach(post => {
-      if (post.slug && post.created_at) {
-        routes.push({ 
+      if (post && post.slug && post.created_at) {
+        routes.push({
           url: `/blog/${post.slug}`,
           lastmod: new Date(post.created_at).toISOString(),
-      changefreq: 'monthly',
-      priority: 0.7
-    }));
+          changefreq: 'monthly',
+          priority: 0.7
+        });
+      }
+    });
   }
   
   return routes;
