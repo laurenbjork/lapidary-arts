@@ -29,9 +29,11 @@ async function getDynamicRoutes() {
   if (productsError) {
     console.error('Error fetching products:', productsError);
   } else {
-    products.forEach(product => routes.push({ 
-      url: `/product/${product.id}`,
-      lastmod: product.created_at,
+    products.forEach(product => {
+      if (product.id && product.created_at) {
+        routes.push({ 
+          url: `/product/${product.id}`,
+          lastmod: new Date(product.created_at).toISOString(),
       changefreq: 'weekly',
       priority: 0.8
     }));
@@ -42,9 +44,11 @@ async function getDynamicRoutes() {
   if (blogError) {
     console.error('Error fetching blog posts:', blogError);
   } else {
-    blogPosts.forEach(post => routes.push({ 
-      url: `/blog/${post.slug}`,
-      lastmod: post.created_at,
+    blogPosts.forEach(post => {
+      if (post.slug && post.created_at) {
+        routes.push({ 
+          url: `/blog/${post.slug}`,
+          lastmod: new Date(post.created_at).toISOString(),
       changefreq: 'monthly',
       priority: 0.7
     }));
