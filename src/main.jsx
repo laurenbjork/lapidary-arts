@@ -11,7 +11,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </HelmetProvider>
-    {/* Cache-busting comment: 2024-03-08 12:00 UTC */}
+    </HelmetProvider><App />
   </React.StrictMode>,
 )
