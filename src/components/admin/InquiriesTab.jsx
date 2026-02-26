@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useInquiries } from '../../context/InquiryContext';
 import { Mail, Calendar, MessageSquare, Trash2, StickyNote, X, ChevronDown, ChevronUp, Filter, Phone, Clock } from 'lucide-react';
+import TabButton from './TabButton';
 
 const InquiriesTab = () => {
   const { inquiries, loading, fetchInquiries, updateInquiry, deleteInquiry } = useInquiries();
@@ -78,14 +79,14 @@ const InquiriesTab = () => {
     <div className="bg-white p-6 rounded-lg shadow-sm relative">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-serif">Inquiries</h2>
-        <div className="flex items-center space-x-2">
-            <Filter size={16} className="text-gray-500"/>
-            <select onChange={(e) => setFilter(e.target.value)} value={filter} className="border-gray-300 rounded-md text-sm">
-                <option value="all">All</option>
-                <option value="appointment">Appointments</option>
-                <option value="contact">Contact</option>
-                <option value="newsletter">Newsletter</option>
-            </select>
+      </div>
+      
+      <div className="border-b border-gray-200 mb-6">
+        <div className="flex space-x-2">
+          <TabButton label="All" isActive={filter === 'all'} onClick={() => setFilter('all')} />
+          <TabButton label="Newsletter" isActive={filter === 'newsletter'} onClick={() => setFilter('newsletter')} />
+          <TabButton label="Contact" isActive={filter === 'contact'} onClick={() => setFilter('contact')} />
+          <TabButton label="Appointments" isActive={filter === 'appointment'} onClick={() => setFilter('appointment')} />
         </div>
       </div>
       
