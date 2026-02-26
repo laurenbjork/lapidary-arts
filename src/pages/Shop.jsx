@@ -39,14 +39,13 @@ const Shop = () => {
       // Special handling for "Stone" category which is not a real category in the DB
       if (category.toLowerCase() === 'stone') {
         const stoneSubcategories = ['gemstone', 'diamond'];
-        
-        // Handle specific stone URLs like /shop/stone/diamond
-        if (subcategory && !subcategory.toLowerCase().startsWith('all-')) {
-          return pSub === subcategory.toLowerCase();
-        }
-        
-        // Handle /shop/stone/all-stones
-        return stoneSubcategories.includes(pSub);
+        const isStoneBySubcategory = stoneSubcategories.includes(pSub);
+
+        const isStoneByAdditionalCategory = (p.additionalCategories || []).some(ac => 
+          stoneSubcategories.includes(ac.subcategory ? ac.subcategory.toLowerCase() : '')
+        );
+
+        return isStoneBySubcategory || isStoneByAdditionalCategory;
       }
 
       // Original logic for real categories like "Rings", "Earrings", etc.
