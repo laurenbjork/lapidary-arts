@@ -41,7 +41,7 @@ export const InquiryProvider = ({ children }) => {
 
       if (error) throw error;
 
-      setInquiries((prev) => [data, ...prev]);
+      fetchInquiries();
       return { success: true, data };
     } catch (error) {
       console.error('Error adding inquiry:', error.message);
