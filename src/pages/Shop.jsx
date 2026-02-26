@@ -12,6 +12,7 @@ const Shop = () => {
   const searchQuery = searchParams.get('search');
   
   const { products } = useProducts();
+  console.log("Products from context:", products);
   const [displayLimit, setDisplayLimit] = useState(12);
   
   // Reset limit on category change
