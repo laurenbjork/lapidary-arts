@@ -12,7 +12,6 @@ const Shop = () => {
   const searchQuery = searchParams.get('search');
   
   const { products } = useProducts();
-  console.log("Products from context:", products);
   const [displayLimit, setDisplayLimit] = useState(12);
   
   // Reset limit on category change
@@ -37,6 +36,20 @@ const Shop = () => {
       const pCat = p.category ? p.category.toLowerCase() : '';
       const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
       
+      // Special handling for "Stone" category which is not a real category in the DB
+      if (category.toLowerCase() === 'stone') {
+        const stoneSubcategories = ['gemstone', 'diamond'];
+        
+        // Handle specific stone URLs like /shop/stone/diamond
+        if (subcategory && !subcategory.toLowerCase().startsWith('all-')) {
+          return pSub === subcategory.toLowerCase();
+        }
+        
+        // Handle /shop/stone/all-stones
+        return stoneSubcategories.includes(pSub);
+      }
+
+      // Original logic for real categories like "Rings", "Earrings", etc.
       const mainCategoryMatch = pCat === category.toLowerCase();
 
       if (subcategory) {
