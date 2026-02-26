@@ -51,7 +51,7 @@ const Shop = () => {
         }
 
         // Handle general stone URLs like /shop/stone or /shop/stone/all-stones
-        const stoneSubcategories = ['gemstone', 'diamond'];
+        const stoneSubcategories = ['gemstone', 'diamond', 'emerald', 'topaz', 'sapphire', 'spinel', 'pearl', 'opal', 'tourmaline', 'ruby', 'garnet', 'zircon', 'tanzanite', 'gemstones'];
         return allProductSubcategories.some(s => stoneSubcategories.includes(s));
       }
 
