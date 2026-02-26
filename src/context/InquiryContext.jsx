@@ -70,6 +70,41 @@ export const InquiryProvider = ({ children }) => {
       }
   };
 
+  const deleteInquiry = async (id) => {
+    try {
+      const { error } = await supabase
+        .from('inquiries')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setInquiries(prev => prev.filter(i => i.id !== id));
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting inquiry:', error.message);
+      return { success: false, message: error.message };
+    }
+  };
+
+  const emptyArchive = async () => {
+    try {
+      const { error } = await supabase
+        .from('inquiries')
+        .delete()
+        .eq('status', 'archived');
+
+      if (error) throw error;
+
+      // Refetch all inquiries to get the updated list
+      fetchInquiries();
+      return { success: true };
+    } catch (error) {
+      console.error('Error emptying archive:', error.message);
+      return { success: false, message: error.message };
+    }
+  };
+
   const uploadInquiryImage = async (file) => {
     try {
       const fileExt = file.name.split('.').pop();
@@ -102,6 +137,8 @@ export const InquiryProvider = ({ children }) => {
         fetchInquiries,
         addInquiry, 
         updateInquiry,
+        deleteInquiry,
+        emptyArchive,
         uploadInquiryImage
     }}>
       {children}

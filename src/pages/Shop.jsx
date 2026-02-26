@@ -38,14 +38,19 @@ const Shop = () => {
       
       // Special handling for "Stone" category which is not a real category in the DB
       if (category.toLowerCase() === 'stone') {
+        const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
+        const additionalSubs = (p.additionalCategories || []).map(ac => ac.subcategory ? ac.subcategory.toLowerCase() : '');
+        const allProductSubcategories = [pSub, ...additionalSubs].filter(Boolean); // Create a clean list of all subcategories
+
+        // Handle specific subcategory URLs like /shop/stone/diamond
+        if (subcategory && !subcategory.toLowerCase().startsWith('all-')) {
+          const targetSub = subcategory.toLowerCase();
+          return allProductSubcategories.includes(targetSub);
+        }
+
+        // Handle general stone URLs like /shop/stone/all-stones or /shop/stone
         const stoneSubcategories = ['gemstone', 'diamond'];
-        const isStoneBySubcategory = stoneSubcategories.includes(pSub);
-
-        const isStoneByAdditionalCategory = (p.additionalCategories || []).some(ac => 
-          stoneSubcategories.includes(ac.subcategory ? ac.subcategory.toLowerCase() : '')
-        );
-
-        return isStoneBySubcategory || isStoneByAdditionalCategory;
+        return allProductSubcategories.some(s => stoneSubcategories.includes(s));
       }
 
       // Original logic for real categories like "Rings", "Earrings", etc.

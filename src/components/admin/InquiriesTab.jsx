@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useInquiries } from '../../context/InquiryContext';
-import { Mail, Calendar, MessageSquare, Trash2, StickyNote, X, ChevronDown, ChevronUp, Filter, Phone, Clock } from 'lucide-react';
+import { Mail, Calendar, MessageSquare, Trash2, StickyNote, X, ChevronDown, ChevronUp, Filter, Phone, Clock, Archive, Download, History } from 'lucide-react';
 import TabButton from './TabButton';
+import Papa from 'papaparse';
 
 const InquiriesTab = () => {
-  const { inquiries, loading, fetchInquiries, updateInquiry, deleteInquiry } = useInquiries();
+  const { inquiries, loading, fetchInquiries, updateInquiry, deleteInquiry, emptyArchive } = useInquiries();
   const [filteredInquiries, setFilteredInquiries] = useState([]);
   const [filter, setFilter] = useState('all');
   const [noteModal, setNoteModal] = useState({ isOpen: false, id: null, note: '' });
@@ -15,11 +16,15 @@ const InquiriesTab = () => {
   }, []);
 
   useEffect(() => {
-    if (filter === 'all') {
-      setFilteredInquiries(inquiries);
+    let currentInquiries = [];
+    if (filter === 'archived') {
+      currentInquiries = inquiries.filter(i => i.status === 'archived');
+    } else if (filter === 'all') {
+      currentInquiries = inquiries.filter(i => i.status !== 'archived');
     } else {
-      setFilteredInquiries(inquiries.filter(i => i.type === filter));
+      currentInquiries = inquiries.filter(i => i.type === filter && i.status !== 'archived');
     }
+    setFilteredInquiries(currentInquiries);
   }, [inquiries, filter]);
 
   const getStatusColor = (status) => {
@@ -41,11 +46,43 @@ const InquiriesTab = () => {
     });
   };
 
+  const handleArchive = async (id) => {
+      if (window.confirm('Are you sure you want to archive this inquiry?')) {
+          await updateInquiry(id, { status: 'archived' });
+      }
+  };
+
+  const handleRestore = async (id) => {
+      await updateInquiry(id, { status: 'pending' });
+  };
+  
   const handleDelete = async (id) => {
-      if (window.confirm('Are you sure you want to delete this inquiry?')) {
+      if (window.confirm('This is permanent. Are you sure you want to delete this inquiry forever?')) {
           await deleteInquiry(id);
       }
   };
+
+  const handleEmptyArchive = async () => {
+    if (window.confirm('This is permanent. Are you sure you want to delete ALL archived inquiries forever?')) {
+        await emptyArchive();
+    }
+  }
+
+  const downloadCSV = () => {
+    if (filteredInquiries.length === 0) {
+        alert("There's nothing to download.");
+        return;
+    }
+    const csv = Papa.unparse(filteredInquiries);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `inquiries-${filter}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 
   const openNoteModal = (id, currentNote) => {
       setNoteModal({ isOpen: true, id, note: currentNote || '' });
@@ -79,14 +116,26 @@ const InquiriesTab = () => {
     <div className="bg-white p-6 rounded-lg shadow-sm relative">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-serif">Inquiries</h2>
+        <button onClick={downloadCSV} className="flex items-center text-sm text-burgundy hover:text-burgundy-dark font-medium transition-colors">
+            <Download size={16} className="mr-2" />
+            Download CSV
+        </button>
       </div>
       
       <div className="border-b border-gray-200 mb-6">
-        <div className="flex space-x-2">
-          <TabButton label="All" isActive={filter === 'all'} onClick={() => setFilter('all')} />
-          <TabButton label="Newsletter" isActive={filter === 'newsletter'} onClick={() => setFilter('newsletter')} />
-          <TabButton label="Contact" isActive={filter === 'contact'} onClick={() => setFilter('contact')} />
-          <TabButton label="Appointments" isActive={filter === 'appointment'} onClick={() => setFilter('appointment')} />
+        <div className="flex justify-between items-center">
+            <div className="flex space-x-2">
+                <TabButton label="All" isActive={filter === 'all'} onClick={() => setFilter('all')} />
+                <TabButton label="Newsletter" isActive={filter === 'newsletter'} onClick={() => setFilter('newsletter')} />
+                <TabButton label="Contact" isActive={filter === 'contact'} onClick={() => setFilter('contact')} />
+                <TabButton label="Appointments" isActive={filter === 'appointment'} onClick={() => setFilter('appointment')} />
+                <TabButton label="Archived" isActive={filter === 'archived'} onClick={() => setFilter('archived')} />
+            </div>
+            {filter === 'archived' && filteredInquiries.length > 0 && (
+                <button onClick={handleEmptyArchive} className="text-xs uppercase tracking-wider px-3 py-1 border border-red-500 text-red-700 rounded hover:bg-red-50">
+                    Empty Archive
+                </button>
+            )}
         </div>
       </div>
       
@@ -158,13 +207,32 @@ const InquiriesTab = () => {
                     >
                         <StickyNote size={18} />
                     </button>
-                    <button 
-                        onClick={() => handleDelete(inquiry.id)}
-                        className="text-gray-400 hover:text-red-600 transition-colors"
-                        title="Delete"
-                    >
-                        <Trash2 size={18} />
-                    </button>
+                    {filter === 'archived' ? (
+                        <>
+                           <button 
+                                onClick={() => handleRestore(inquiry.id)}
+                                className="text-gray-400 hover:text-blue-600 transition-colors"
+                                title="Restore"
+                            >
+                                <History size={18} />
+                            </button>
+                            <button 
+                                onClick={() => handleDelete(inquiry.id)}
+                                className="text-gray-400 hover:text-red-600 transition-colors"
+                                title="Delete Permanently"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        </>
+                    ) : (
+                        <button 
+                            onClick={() => handleArchive(inquiry.id)}
+                            className="text-gray-400 hover:text-yellow-600 transition-colors"
+                            title="Archive"
+                        >
+                            <Archive size={18} />
+                        </button>
+                    )}
                 </div>
 
                 <div className="flex space-x-2">
@@ -174,14 +242,6 @@ const InquiriesTab = () => {
                             className="text-xs uppercase tracking-wider px-3 py-1 border border-blue-500 text-blue-700 rounded hover:bg-blue-50"
                         >
                             Mark Reviewed
-                        </button>
-                    )}
-                    {inquiry.status !== 'archived' && (
-                        <button 
-                            onClick={() => updateInquiry(inquiry.id, {status: 'archived'})}
-                            className="text-xs uppercase tracking-wider px-3 py-1 border border-gray-500 text-gray-700 rounded hover:bg-gray-50"
-                        >
-                            Archive
                         </button>
                     )}
                 </div>
