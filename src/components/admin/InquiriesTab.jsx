@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useInquiries } from '../../context/InquiryContext';
-import { Mail, Calendar, MessageSquare, Trash2, StickyNote, X, ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import { Mail, Calendar, MessageSquare, Trash2, StickyNote, X, ChevronDown, ChevronUp, Filter, Phone, Clock } from 'lucide-react';
 
 const InquiriesTab = () => {
   const { inquiries, loading, fetchInquiries, updateInquiry, deleteInquiry } = useInquiries();
