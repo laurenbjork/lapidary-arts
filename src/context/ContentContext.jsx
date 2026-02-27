@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../supabase';
+import { uploadImage, deleteImage } from '../utils/storage';
 
 const ContentContext = createContext();
 
@@ -272,30 +273,7 @@ export const ContentProvider = ({ children }) => {
     localStorage.setItem('siteContent_v2', JSON.stringify(content));
   }, [content]);
 
-  const uploadContentImage = async (file) => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `content-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${fileName}`;
 
-      const BUCKET_NAME = 'product-images'; 
-
-      const { error: uploadError } = await supabase.storage
-        .from(BUCKET_NAME)
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from(BUCKET_NAME)
-        .getPublicUrl(filePath);
-
-      return data.publicUrl;
-    } catch (error) {
-      console.error('Error uploading content image:', error.message);
-      throw error;
-    }
-  };
 
   const updateInstagramFeed = async (newFeed) => {
     // 1. Optimistic Update
@@ -523,7 +501,8 @@ export const ContentProvider = ({ children }) => {
         updateContent, 
         updateInstagramFeed,
         updateCategoryImage, 
-        uploadContentImage, 
+        uploadImage, 
+        deleteImage,
         addConsultation, 
         deleteConsultation,
         updateConsultationNote,

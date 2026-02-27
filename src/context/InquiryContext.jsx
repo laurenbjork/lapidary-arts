@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabase';
+import { uploadImage, deleteImage } from '../utils/storage';
 
 const InquiryContext = createContext();
 
@@ -105,30 +106,7 @@ export const InquiryProvider = ({ children }) => {
     }
   };
 
-  const uploadInquiryImage = async (file) => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `inquiry-images/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(filePath);
-
-      return data.publicUrl;
-    } catch (error) {
-      console.error('Error uploading image:', error.message);
-      return null;
-    }
-  };
 
   return (
     <InquiryContext.Provider value={{ 
@@ -139,7 +117,8 @@ export const InquiryProvider = ({ children }) => {
         updateInquiry,
         deleteInquiry,
         emptyArchive,
-        uploadInquiryImage
+        uploadImage,
+        deleteImage
     }}>
       {children}
     </InquiryContext.Provider>

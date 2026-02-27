@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../supabase';
+import { uploadImage, deleteImage } from '../utils/storage';
 
 const BlogContext = createContext();
 
@@ -88,28 +89,7 @@ export const BlogProvider = ({ children }) => {
     }
   };
 
-  const uploadBlogImage = async (file) => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `blog-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('product-images') // Reusing existing bucket for simplicity
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(filePath);
-
-      return data.publicUrl;
-    } catch (error) {
-      console.error('Error uploading blog image:', error.message);
-      throw error;
-    }
-  };
 
   return (
     <BlogContext.Provider value={{
@@ -120,7 +100,8 @@ export const BlogProvider = ({ children }) => {
       addPost, 
       updatePost, 
       deletePost,
-      uploadBlogImage 
+      uploadImage,
+      deleteImage
     }}>
       {children}
     </BlogContext.Provider>

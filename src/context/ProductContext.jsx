@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../supabase';
+import { uploadImage, deleteImage } from '../utils/storage';
 
 const ProductContext = createContext();
 
@@ -22,27 +23,32 @@ export const ProductProvider = ({ children }) => {
 
       if (error) throw error;
       
-      // Map DB snake_case to frontend camelCase
-      const mappedProducts = (data || []).map(p => ({
-        ...p,
-        discountPrice: p.discount_price,
-        isVisible: p.is_visible,
-        isNewArrival: p.is_new_arrival,
-        showOnHome: p.show_on_home, // Map new field
-        brand: p.brand,
-        modelName: p.model_name,
-        modelNumber: p.model_number,
-        hidePrice: p.hide_price,
-        subTitle: p.sub_title,
-        details: p.details || [],
-        inStore: p.in_store,
-        stockNumber: p.stock_number,
-        gallery: p.gallery || [],
-        availabilityStatus: p.availability_status || 'available',
-        subcategory: p.subcategory, // Ensure subcategory is mapped if it exists in DB
-        secondaryDescription: p.secondary_description,
-        additionalCategories: p.additional_categories || []
-      }));
+      const mappedProducts = (data || []).map(p => {
+        const gallery = (p.gallery || []).filter(img => img);
+        if (p.image && !gallery.includes(p.image)) {
+          gallery.unshift(p.image);
+        }
+        return {
+          ...p,
+          discountPrice: p.discount_price,
+          isVisible: p.is_visible,
+          isNewArrival: p.is_new_arrival,
+          showOnHome: p.show_on_home,
+          brand: p.brand,
+          modelName: p.model_name,
+          modelNumber: p.model_number,
+          hidePrice: p.hide_price,
+          subTitle: p.sub_title,
+          details: p.details || [],
+          inStore: p.in_store,
+          stockNumber: p.stock_number,
+          gallery: gallery,
+          availabilityStatus: p.availability_status || 'available',
+          subcategory: p.subcategory,
+          secondaryDescription: p.secondary_description,
+          additionalCategories: p.additional_categories || []
+        };
+      });
       
       setProducts(mappedProducts);
     } catch (error) {
@@ -52,28 +58,7 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
-  const uploadProductImage = async (file) => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(filePath);
-
-      return data.publicUrl;
-    } catch (error) {
-      console.error('Error uploading image:', error.message);
-      throw error;
-    }
-  };
 
   const addProduct = async (product) => {
     try {
@@ -81,13 +66,13 @@ export const ProductProvider = ({ children }) => {
 
       // Upload image if it's a File object (not a string URL)
       if (product.imageFile) {
-        imageUrl = await uploadProductImage(product.imageFile);
+        imageUrl = await uploadImage(product.imageFile);
       }
 
       // Handle Gallery Images
       let galleryUrls = product.gallery || [];
       if (product.galleryFiles && product.galleryFiles.length > 0) {
-        const uploadPromises = product.galleryFiles.map(file => uploadProductImage(file));
+        const uploadPromises = product.galleryFiles.map(file => uploadImage(file));
         const newGalleryUrls = await Promise.all(uploadPromises);
         galleryUrls = [...galleryUrls, ...newGalleryUrls];
       }
@@ -189,13 +174,13 @@ export const ProductProvider = ({ children }) => {
 
       // Upload image if it's a File object
       if (updatedProduct.imageFile) {
-        imageUrl = await uploadProductImage(updatedProduct.imageFile);
+        imageUrl = await uploadImage(updatedProduct.imageFile);
       }
 
       // Handle Gallery Images
       let galleryUrls = updatedProduct.gallery || [];
       if (updatedProduct.galleryFiles && updatedProduct.galleryFiles.length > 0) {
-        const uploadPromises = updatedProduct.galleryFiles.map(file => uploadProductImage(file));
+        const uploadPromises = updatedProduct.galleryFiles.map(file => uploadImage(file));
         const newGalleryUrls = await Promise.all(uploadPromises);
         galleryUrls = [...galleryUrls, ...newGalleryUrls];
       }

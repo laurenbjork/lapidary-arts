@@ -93,7 +93,7 @@ const ProductDetails = () => {
     }
   };
 
-  const galleryImages = (product.gallery && product.gallery.length > 0) ? product.gallery : [product.image];
+  const galleryImages = (product.gallery || []).filter(img => img);
 
   return (
     <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
@@ -113,7 +113,7 @@ const ProductDetails = () => {
              <InnerImageZoom src={`${activeImage || product.image}?width=1200&quality=80`} zoomSrc={`${activeImage || product.image}`} alt={`${product.name} - Main View`} className="w-full h-full object-cover" />
 
           </div>
-          {galleryImages.length > 1 && (
+          {galleryImages.length > 0 && (
             <div className="grid grid-cols-4 gap-4">
                 {galleryImages.map((img, i) => (
                     <div 
