@@ -39,13 +39,13 @@ export const uploadImage = async (file) => {
 
     console.log('[storage.js] 6. Data from getPublicUrl:', publicUrlData);
 
-    if (!publicUrlData || !publicUrlData.publicURL) {
+    if (!publicUrlData || !publicUrlData.publicUrl) {
       console.error('[storage.js] 7. Failed to get public URL from data. Data received:', publicUrlData);
       throw new Error('Failed to get public URL for the uploaded image.');
     }
 
-    console.log('[storage.js] 8. Public URL retrieved:', publicUrlData.publicURL);
-    return publicUrlData.publicURL;
+    console.log('[storage.js] 8. Public URL retrieved:', publicUrlData.publicUrl);
+    return publicUrlData.publicUrl;
   } catch (error) {
     console.error('[storage.js] FINAL ERROR in uploadImage:', error);
     throw new Error(`Image upload failed: ${error.message}`);
