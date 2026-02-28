@@ -8,51 +8,59 @@ const BUCKET_NAME = 'product-images';
  * @param {File} file The file to upload.
  * @returns {Promise<string>} The public URL of the uploaded image.
  */
-export const uploadImage = async (file) => {
-  console.log('[storage.js] 1. Starting uploadImage function.');
-  try {
-    if (!file) {
-      console.error('[storage.js] 2. No file provided for upload.');
-      throw new Error('No file provided for upload.');
-    }
-    console.log('[storage.js] 2. File received:', file.name, file.type);
-
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `${fileName}`;
-    console.log(`[storage.js] 3. Uploading to bucket: ${BUCKET_NAME}, path: ${filePath}`);
-
-    const { error: uploadError } = await supabase.storage
-      .from(BUCKET_NAME)
-      .upload(filePath, file);
-
-    if (uploadError) {
-      console.error('[storage.js] 4. Supabase upload error:', uploadError);
-      throw new Error(`Failed to upload image: ${uploadError.message}`);
-    }
-    console.log('[storage.js] 4. Supabase upload successful.');
-
-    console.log('[storage.js] 5. Attempting to get public URL.');
-    const publicUrlResponse = supabase.storage
-      .from(BUCKET_NAME)
-      .getPublicUrl(filePath);
-
-    console.log('[storage.js] 6. Raw response from getPublicUrl:', publicUrlResponse);
-
-    const publicUrl = publicUrlResponse?.data?.publicUrl;
-
-    if (!publicUrl) {
-      console.error('[storage.js] 7. Failed to get public URL from response. Response received:', publicUrlResponse);
-      throw new Error('Failed to get public URL for the uploaded image.');
-    }
-
-    console.log('[storage.js] 8. Public URL retrieved:', publicUrl);
-    return publicUrl;
-  } catch (error) {
-    console.error('[storage.js] FINAL ERROR in uploadImage:', error);
-    throw new Error(`Image upload failed: ${error.message}`);
-  }
-};
+export const uploadImage = async (file) => { 
+   console.log('[storage.js] 1. Starting uploadImage function.'); 
+   try { 
+     if (!file) { 
+       console.error('[storage.js] 2. No file provided for upload.'); 
+       throw new Error('No file provided for upload.'); 
+     } 
+     console.log('[storage.js] 2. File received:', file.name, file.type); 
+ 
+     const fileExt = file.name.split('.').pop(); 
+     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`; 
+     const filePath = `${fileName}`; 
+     console.log(`[storage.js] 3. Uploading to bucket: ${BUCKET_NAME}, path: ${filePath}`); 
+ 
+     // Perform the upload 
+     const { error: uploadError } = await supabase.storage 
+       .from(BUCKET_NAME) 
+       .upload(filePath, file); 
+ 
+     if (uploadError) { 
+       console.error('[storage.js] 4. Supabase upload error:', uploadError); 
+       throw new Error(`Failed to upload image: ${uploadError.message}`); 
+     } 
+     console.log('[storage.js] 4. Supabase upload successful.'); 
+ 
+     console.log('[storage.js] 5. Attempting to get public URL.'); 
+     
+     // Retrieve the public URL (Note: in some versions getPublicUrl is synchronous) 
+     const publicUrlResponse = supabase.storage 
+       .from(BUCKET_NAME) 
+       .getPublicUrl(filePath); 
+ 
+     console.log('[storage.js] 6. Data from getPublicUrl:', publicUrlResponse); 
+ 
+     // FIX START: Robust extraction for different Supabase JS versions 
+     // We check for .data.publicUrl (v2) AND .publicURL (v1) 
+     const publicUrl = publicUrlResponse?.data?.publicUrl || publicUrlResponse?.publicURL; 
+ 
+     if (!publicUrl) { 
+       console.error('[storage.js] 7. Failed to extract public URL from response object. Object structure:', publicUrlResponse); 
+       throw new Error('Failed to retrieve the public URL for the uploaded image.'); 
+     } 
+     // FIX END 
+ 
+     console.log('[storage.js] 8. Public URL retrieved:', publicUrl); 
+     return publicUrl; 
+     
+   } catch (error) { 
+     console.error('[storage.js] FINAL ERROR in uploadImage:', error); 
+     // Propagate the error so the calling component can show a feedback message 
+     throw error; 
+   } 
+ };
 
 /**
  * Deletes an image from Supabase storage.
