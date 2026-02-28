@@ -3,7 +3,7 @@ import { useContent } from '../../context/ContentContext';
 import { Upload, Save } from 'lucide-react';
 
 const ContentTab = () => {
-  const { content, updateContent, updateInstagramFeed, updateCategoryImage, uploadContentImage } = useContent();
+  const { content, updateContent, updateInstagramFeed, updateCategoryImage, uploadImage } = useContent();
   const [activeSection, setActiveSection] = useState('hero'); // hero, announcement, categories
   
   // Local state for forms
@@ -222,7 +222,7 @@ const ContentTab = () => {
     if (!file) return;
 
     try {
-      const publicUrl = await uploadContentImage(file);
+      const publicUrl = await uploadImage(file);
       const newFeed = [...(content.instagramFeed || [])];
       newFeed[index] = { ...newFeed[index], image: publicUrl };
       await updateInstagramFeed(newFeed);
@@ -240,7 +240,7 @@ const ContentTab = () => {
     const checkAndUpload = async (fieldKey, updateFn) => {
       if (filesToUpload[fieldKey]) {
         try {
-            const publicUrl = await uploadContentImage(filesToUpload[fieldKey]);
+            const publicUrl = await uploadImage(filesToUpload[fieldKey]);
             updateFn(publicUrl);
             hasUploads = true;
             // Clear from pending uploads

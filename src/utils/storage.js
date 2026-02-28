@@ -9,37 +9,46 @@ const BUCKET_NAME = 'product-images';
  * @returns {Promise<string>} The public URL of the uploaded image.
  */
 export const uploadImage = async (file) => {
+  console.log('[storage.js] 1. Starting uploadImage function.');
   try {
     if (!file) {
+      console.error('[storage.js] 2. No file provided for upload.');
       throw new Error('No file provided for upload.');
     }
+    console.log('[storage.js] 2. File received:', file.name, file.type);
 
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `${fileName}`;
+    console.log(`[storage.js] 3. Uploading to bucket: ${BUCKET_NAME}, path: ${filePath}`);
 
     const { error: uploadError } = await supabase.storage
       .from(BUCKET_NAME)
       .upload(filePath, file);
 
     if (uploadError) {
-      console.error('Supabase upload error:', uploadError);
+      console.error('[storage.js] 4. Supabase upload error:', uploadError);
       throw new Error(`Failed to upload image: ${uploadError.message}`);
     }
+    console.log('[storage.js] 4. Supabase upload successful.');
 
-    const { data } = supabase.storage
+    console.log('[storage.js] 5. Attempting to get public URL.');
+    const { data: publicUrlData } = supabase.storage
       .from(BUCKET_NAME)
       .getPublicUrl(filePath);
 
-    if (!data || !data.publicUrl) {
+    console.log('[storage.js] 6. Data from getPublicUrl:', publicUrlData);
+
+    if (!publicUrlData || !publicUrlData.publicURL) {
+      console.error('[storage.js] 7. Failed to get public URL from data. Data received:', publicUrlData);
       throw new Error('Failed to get public URL for the uploaded image.');
     }
-    
-    return data.publicUrl;
+
+    console.log('[storage.js] 8. Public URL retrieved:', publicUrlData.publicURL);
+    return publicUrlData.publicURL;
   } catch (error) {
-    console.error('Error uploading image:', error.message);
-    // Return a more user-friendly error or re-throw
-    throw new Error('Image upload failed. Please try again.');
+    console.error('[storage.js] FINAL ERROR in uploadImage:', error);
+    throw new Error(`Image upload failed: ${error.message}`);
   }
 };
 
