@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useAuth } from './AuthContext';
 import { supabase } from '../supabase';
 import { uploadImage, deleteImage } from '../utils/storage';
 
@@ -8,6 +9,7 @@ const InquiryContext = createContext();
 export const useInquiries = () => useContext(InquiryContext);
 
 export const InquiryProvider = ({ children }) => {
+  const { isAuthenticated } = useAuth();
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,27 +31,31 @@ export const InquiryProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    fetchInquiries();
-  }, [fetchInquiries]);
-
-  const addInquiry = async (inquiryData) => {
-    try {
-      const { data, error } = await supabase
-        .from('inquiries')
-        .insert([inquiryData])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      // Instead of refetching, update state directly
-      setInquiries(prev => [data, ...prev]);
-
-    } catch (error) {
-      console.error('Error adding inquiry:', error.message);
-      // Propagate the error to the calling component
-      throw error;
+    if (isAuthenticated) {
+      fetchInquiries();
+    } else {
+      setInquiries([]);
+      setLoading(false);
     }
+  }, [isAuthenticated, fetchInquiries]);
+
+  const addInquiry = async (inquiryData) => { 
+    try { 
+      const { error } = await supabase 
+        .from('inquiries') 
+        .insert([inquiryData]); 
+        // Notice we removed .select() and .single() 
+
+      if (error) throw error; 
+
+      // We also remove fetchInquiries() here. 
+      // A public user shouldn't be fetching the admin list of inquiries! 
+      
+      return { success: true }; 
+    } catch (error) { 
+      console.error('Error adding inquiry:', error.message); 
+      return { success: false, message: error.message }; 
+    } 
   };
 
   const updateInquiry = async (id, updates) => {
