@@ -58,41 +58,51 @@ export const InquiryProvider = ({ children }) => {
     } 
   };
 
-  const updateInquiry = async (id, updates) => {
-      try {
-          const { data, error } = await supabase
-              .from('inquiries')
-              .update(updates)
-              .eq('id', id)
-              .select()
-              .single();
+  const updateInquiry = async (id, updates) => { 
+    try { 
+      // Safety Check: Ensure the UI actually sent an ID 
+      if (!id) throw new Error("Attempted to update inquiry, but ID is missing or undefined."); 
 
-          if (error) throw error;
+      const { data, error } = await supabase 
+        .from('inquiries') 
+        .update(updates) 
+        .eq('id', id) 
+        .select(); // Notice .single() is permanently removed 
 
-          setInquiries(prev => prev.map(i => 
-              i.id === id ? data : i
-          ));
-      } catch (error) {
-          console.error('Error updating inquiry:', error.message);
-          throw error;
-      }
-  };
+      if (error) throw error; 
 
-  const deleteInquiry = async (id) => {
-    try {
-      const { error } = await supabase
-        .from('inquiries')
-        .delete()
-        .eq('id', id);
+      // Safely check if data came back, then grab the first item [0] 
+      if (data && data.length > 0) { 
+        setInquiries(prev => prev.map(i => 
+          i.id === id ? data[0] : i 
+        )); 
+      } else { 
+        console.warn(`Update executed, but no data was returned to read for ID: ${id}`); 
+      } 
+    } catch (error) { 
+      console.error('Error updating inquiry:', error.message); 
+      throw error; 
+    } 
+  }; 
 
-      if (error) throw error;
+  const deleteInquiry = async (id) => { 
+    try { 
+      // Safety Check: Ensure the UI actually sent an ID 
+      if (!id) throw new Error("Attempted to delete inquiry, but ID is missing."); 
 
-      setInquiries(prev => prev.filter(i => i.id !== id));
-    } catch (error) {
-      console.error('Error deleting inquiry:', error.message);
-      throw error;
-    }
-  };
+      const { error } = await supabase 
+        .from('inquiries') 
+        .delete() 
+        .eq('id', id); 
+
+      if (error) throw error; 
+
+      setInquiries(prev => prev.filter(i => i.id !== id)); 
+    } catch (error) { 
+      console.error('Error deleting inquiry:', error.message); 
+      throw error; 
+    } 
+  }; 
 
   const emptyArchive = async () => {
     try {
