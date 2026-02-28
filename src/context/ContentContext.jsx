@@ -352,44 +352,7 @@ export const ContentProvider = ({ children }) => {
     }
   };
 
-  const addConsultation = async (consultationData) => {
-    // 1. Get current list (for optimistic update)
-    const currentList = content.consultations || [];
-    // Frontend uses camelCase, DB uses snake_case. 
-    // We'll keep optimistic state matching frontend structure.
-    const optimisticItem = {
-        ...consultationData,
-        submittedAt: new Date().toISOString()
-    };
-    
-    const updatedList = [optimisticItem, ...currentList]; 
 
-    // 2. Optimistic Update
-    setContent((prev) => ({
-      ...prev,
-      consultations: updatedList
-    }));
-
-    // 3. Update Supabase (New Table)
-    try {
-        const { error } = await supabase
-        .from('consultations')
-        .insert([{
-            name: consultationData.name,
-            email: consultationData.email,
-            phone: consultationData.phone,
-            description: consultationData.description,
-            preferred_time: consultationData.preferredTime,
-            image_url: consultationData.imageUrl
-        }]);
-
-        if (error) throw error;
-    } catch (err) {
-        console.error('Error adding consultation:', err);
-        // We should probably revert state here, but for now we'll log it
-        // alert('Failed to save consultation to database');
-    }
-  };
 
   const addNewsletterSignup = async (signupData) => {
     // 1. Optimistic Update
@@ -503,7 +466,6 @@ export const ContentProvider = ({ children }) => {
         updateCategoryImage, 
         uploadImage, 
         deleteImage,
-        addConsultation, 
         deleteConsultation,
         updateConsultationNote,
         addNewsletterSignup, 

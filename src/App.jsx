@@ -26,6 +26,7 @@ import { ProductProvider } from './context/ProductContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { InquiryProvider } from './context/InquiryContext';
 import { BlogProvider } from './context/BlogContext';
+import { ContentProvider } from './context/ContentContext';
 import NewsletterPopup from './components/NewsletterPopup';
 import FAQ from './pages/FAQ';
 import SizeGuide from './pages/SizeGuide';
@@ -65,6 +66,7 @@ function App() {
   return (
     <AuthProvider>
       <ProductProvider>
+        <ContentProvider>
           <InquiryProvider>
             <BlogProvider>
             <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
@@ -117,6 +119,7 @@ function App() {
             </div>
             </BlogProvider>
           </InquiryProvider>
+        </ContentProvider>
       </ProductProvider>
     </AuthProvider>
   );
