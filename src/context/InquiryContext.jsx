@@ -106,7 +106,16 @@ export const InquiryProvider = ({ children }) => {
     }
   };
 
-
+  const uploadInquiryImage = async (file) => {
+    try {
+      const imageUrl = await uploadImage(file);
+      return imageUrl;
+    } catch (error) {
+      console.error('Error uploading inquiry image:', error);
+      // Propagate the error to be handled by the form
+      throw error;
+    }
+  };
 
   return (
     <InquiryContext.Provider value={{ 
@@ -117,7 +126,7 @@ export const InquiryProvider = ({ children }) => {
         updateInquiry,
         deleteInquiry,
         emptyArchive,
-        uploadImage,
+        uploadInquiryImage,
         deleteImage
     }}>
       {children}
