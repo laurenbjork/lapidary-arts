@@ -112,8 +112,8 @@ const NewsletterPopup = () => {
                 {newsletterPopup?.leftTitle || "Lapidary Arts"}
              </h2>
              <p className="text-[10px] tracking-[0.3em] uppercase drop-shadow-md">
-                {newsletterPopup?.leftSubtitle || "Los Angeles"}
-             </p>
+                  Jewelry
+               </p>
           </div>
         </div>
 
