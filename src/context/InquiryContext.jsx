@@ -42,11 +42,13 @@ export const InquiryProvider = ({ children }) => {
 
       if (error) throw error;
 
-      fetchInquiries();
-      return { success: true, data };
+      // Instead of refetching, update state directly
+      setInquiries(prev => [data, ...prev]);
+
     } catch (error) {
       console.error('Error adding inquiry:', error.message);
-      return { success: false, message: error.message };
+      // Propagate the error to the calling component
+      throw error;
     }
   };
 
@@ -64,10 +66,9 @@ export const InquiryProvider = ({ children }) => {
           setInquiries(prev => prev.map(i => 
               i.id === id ? data : i
           ));
-          return { success: true };
       } catch (error) {
           console.error('Error updating inquiry:', error.message);
-          return { success: false, message: error.message };
+          throw error;
       }
   };
 
@@ -81,10 +82,9 @@ export const InquiryProvider = ({ children }) => {
       if (error) throw error;
 
       setInquiries(prev => prev.filter(i => i.id !== id));
-      return { success: true };
     } catch (error) {
       console.error('Error deleting inquiry:', error.message);
-      return { success: false, message: error.message };
+      throw error;
     }
   };
 
@@ -97,12 +97,12 @@ export const InquiryProvider = ({ children }) => {
 
       if (error) throw error;
 
-      // Refetch all inquiries to get the updated list
-      fetchInquiries();
-      return { success: true };
+      // Instead of refetching, update state directly
+      setInquiries(prev => prev.filter(i => i.status !== 'archived'));
+
     } catch (error) {
       console.error('Error emptying archive:', error.message);
-      return { success: false, message: error.message };
+      throw error;
     }
   };
 

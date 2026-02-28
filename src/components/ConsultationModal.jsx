@@ -51,15 +51,11 @@ const ConsultationModal = ({ isOpen, onClose }) => {
         type: 'appointment'
       };
 
-      const result = await addInquiry(newInquiry);
-      
-      if (result.success) {
-        setSuccess(true);
-        setFormData({ name: '', email: '', phone: '', description: '', preferredTime: 'morning', image: null });
-        setImagePreview(null);
-      } else {
-        throw new Error(result.message || 'An unknown error occurred.');
-      }
+      await addInquiry(newInquiry);
+
+      setSuccess(true);
+      setFormData({ name: '', email: '', phone: '', description: '', preferredTime: 'morning', image: null });
+      setImagePreview(null);
     } catch (error) {
       console.error('Submission error:', error);
       alert('Failed to submit request. Please try again.');
