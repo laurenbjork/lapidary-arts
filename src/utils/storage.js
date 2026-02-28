@@ -33,19 +33,20 @@ export const uploadImage = async (file) => {
     console.log('[storage.js] 4. Supabase upload successful.');
 
     console.log('[storage.js] 5. Attempting to get public URL.');
-    const { data: publicUrlData } = supabase.storage
+    const publicUrlData = supabase.storage
       .from(BUCKET_NAME)
       .getPublicUrl(filePath);
 
     console.log('[storage.js] 6. Data from getPublicUrl:', publicUrlData);
 
-    if (!publicUrlData || !publicUrlData.publicUrl) {
+    if (!publicUrlData || !publicUrlData.data.publicUrl) {
       console.error('[storage.js] 7. Failed to get public URL from data. Data received:', publicUrlData);
       throw new Error('Failed to get public URL for the uploaded image.');
     }
 
-    console.log('[storage.js] 8. Public URL retrieved:', publicUrlData.publicUrl);
-    return publicUrlData.publicUrl;
+    const publicUrl = publicUrlData.data.publicUrl;
+    console.log('[storage.js] 8. Public URL retrieved:', publicUrl);
+    return publicUrl;
   } catch (error) {
     console.error('[storage.js] FINAL ERROR in uploadImage:', error);
     throw new Error(`Image upload failed: ${error.message}`);
