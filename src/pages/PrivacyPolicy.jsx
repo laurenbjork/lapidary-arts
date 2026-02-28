@@ -78,9 +78,10 @@ const PrivacyPolicy = () => {
           </p>
           <p>
             Lapidary Arts Jewelry<br />
-            [Your Company Address]<br />
-            [Your Email Address]<br />
-            [Your Phone Number]
+            3400 Preston Rd #250<br />
+            Plano, TX 75093<br />
+            <a href="mailto:lauren@lapidaryartsjewelry.com">lauren@lapidaryartsjewelry.com</a><br />
+            <a href="tel:9729641090">(972) 964-1090</a>
           </p>
         </div>
       </div>

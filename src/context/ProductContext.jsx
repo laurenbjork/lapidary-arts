@@ -25,9 +25,7 @@ export const ProductProvider = ({ children }) => {
       
       const mappedProducts = (data || []).map(p => {
         const gallery = (p.gallery || []).filter(img => img);
-        if (p.image && !gallery.includes(p.image)) {
-          gallery.unshift(p.image);
-        }
+       
         return {
           ...p,
           discountPrice: p.discount_price,

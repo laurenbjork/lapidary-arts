@@ -43,7 +43,7 @@ const TermsOfService = () => {
 
           <h2 className="text-xl font-semibold pt-4">4. GOVERNING LAW</h2>
           <p>
-            These Terms shall be governed and construed in accordance with the laws of the State of California, United States, without regard to its conflict of law provisions.
+            These Terms shall be governed and construed in accordance with the laws of the State of Texas, United States, without regard to its conflict of law provisions.
           </p>
 
           <h2 className="text-xl font-semibold pt-4">5. CHANGES</h2>
@@ -57,9 +57,10 @@ const TermsOfService = () => {
           </p>
           <p>
             Lapidary Arts Jewelry<br />
-            [Your Company Address]<br />
-            [Your Email Address]<br />
-            [Your Phone Number]
+            3400 Preston Rd #250<br />
+            Plano, TX 75093<br />
+            <a href="mailto:lauren@lapidaryartsjewelry.com">lauren@lapidaryartsjewelry.com</a><br />
+            <a href="tel:9729641090">(972) 964-1090</a>
           </p>
         </div>
       </div>
