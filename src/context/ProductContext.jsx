@@ -25,7 +25,12 @@ export const ProductProvider = ({ children }) => {
       
       const mappedProducts = (data || []).map(p => {
         const gallery = (p.gallery || []).filter(img => img);
-       
+
+        // Inject main image if it's missing from the gallery
+        if (p.image && !gallery.includes(p.image)) {
+            gallery.unshift(p.image);
+        }
+
         return {
           ...p,
           discountPrice: p.discount_price,
@@ -40,7 +45,7 @@ export const ProductProvider = ({ children }) => {
           details: p.details || [],
           inStore: p.in_store,
           stockNumber: p.stock_number,
-          gallery: gallery,
+          gallery: gallery, // Use the potentially modified gallery
           availabilityStatus: p.availability_status || 'available',
           subcategory: p.subcategory,
           secondaryDescription: p.secondary_description,
@@ -70,7 +75,8 @@ export const ProductProvider = ({ children }) => {
       // Handle Gallery Images
       let galleryUrls = product.gallery || [];
       if (product.galleryFiles && product.galleryFiles.length > 0) {
-        const uploadPromises = product.galleryFiles.map(file => uploadImage(file));
+        // CRITICAL FIX: Convert FileList to Array before using .map()
+        const uploadPromises = Array.from(product.galleryFiles).map(file => uploadImage(file));
         const newGalleryUrls = await Promise.all(uploadPromises);
         galleryUrls = [...galleryUrls, ...newGalleryUrls];
       }
@@ -168,32 +174,58 @@ export const ProductProvider = ({ children }) => {
 
   const updateProduct = async (id, updatedProduct) => {
     try {
-      let imageUrl = updatedProduct.image;
+      const oldProduct = products.find(p => p.id === id);
+      let imageUrl = oldProduct?.image;
+      let galleryUrls = oldProduct?.gallery || [];
 
-      // Upload image if it's a File object
+      // 1. Handle Main Image Update
       if (updatedProduct.imageFile) {
-        imageUrl = await uploadImage(updatedProduct.imageFile);
+        const newImageUrl = await uploadImage(updatedProduct.imageFile);
+        // If there was an old image and it's different from the new one, delete it
+        if (imageUrl && imageUrl !== newImageUrl) {
+          await deleteImage(imageUrl);
+        }
+        imageUrl = newImageUrl;
       }
 
-      // Handle Gallery Images
-      let galleryUrls = updatedProduct.gallery || [];
+      // 2. Handle Gallery Files Upload
       if (updatedProduct.galleryFiles && updatedProduct.galleryFiles.length > 0) {
-        const uploadPromises = updatedProduct.galleryFiles.map(file => uploadImage(file));
+        // CRITICAL FIX: Convert FileList to Array
+        const uploadPromises = Array.from(updatedProduct.galleryFiles).map(file => uploadImage(file));
         const newGalleryUrls = await Promise.all(uploadPromises);
         galleryUrls = [...galleryUrls, ...newGalleryUrls];
       }
-      
-      // If we are updating the main image, make sure it's in the gallery?
-      // Or if the user explicitly removed it from gallery, maybe we shouldn't.
-      // But typically main image is part of gallery.
-      if (imageUrl && !galleryUrls.includes(imageUrl)) {
-         galleryUrls = [imageUrl, ...galleryUrls];
+
+      // 3. Handle Gallery URL Updates (from Admin UI)
+      // This assumes updatedProduct.gallery is the complete, desired state of the gallery URLs
+      if (updatedProduct.gallery) {
+        const oldGallery = oldProduct?.gallery || [];
+        const newGallery = updatedProduct.gallery;
+
+        // Find images that were in the old gallery but are not in the new one
+        const imagesToDelete = oldGallery.filter(oldImg => !newGallery.includes(oldImg));
+        
+        // Also check if the old main image was removed via the gallery UI
+        if (oldProduct.image && !newGallery.includes(oldProduct.image) && oldProduct.image !== imageUrl) {
+            imagesToDelete.push(oldProduct.image);
+        }
+
+        const deletePromises = imagesToDelete.map(imgUrl => deleteImage(imgUrl));
+        await Promise.all(deletePromises);
+        
+        galleryUrls = newGallery; // Trust the new gallery state from the UI
       }
 
+      // 4. Ensure Main Image is in Gallery
+      if (imageUrl && !galleryUrls.includes(imageUrl)) {
+        galleryUrls.unshift(imageUrl);
+      }
+
+      // 5. Prepare and Update Database
       const dbUpdate = {
         name: updatedProduct.name,
         category: updatedProduct.category,
-        subcategory: updatedProduct.subcategory || null, // Add subcategory support
+        subcategory: updatedProduct.subcategory || null,
         price: parseFloat(updatedProduct.price),
         discount_price: updatedProduct.discountPrice ? parseFloat(updatedProduct.discountPrice) : null,
         description: updatedProduct.description,
@@ -224,7 +256,7 @@ export const ProductProvider = ({ children }) => {
 
       if (error) throw error;
 
-      // Map back to camelCase for state
+      // 6. Map back to camelCase and update state
       const mappedData = {
         ...data,
         discountPrice: data.discount_price,
