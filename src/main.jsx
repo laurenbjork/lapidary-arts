@@ -11,11 +11,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <HelmetProvider>
       <BrowserRouter>
-        <InquiryProvider>
-          <AuthProvider>
+        {/* AuthProvider moved to the top of the custom contexts */}
+        <AuthProvider>
+          <InquiryProvider>
             <App />
-          </AuthProvider>
-        </InquiryProvider>
+          </InquiryProvider>
+        </AuthProvider>
       </BrowserRouter>
     </HelmetProvider>
   </React.StrictMode>,
