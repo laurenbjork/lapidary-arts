@@ -177,121 +177,126 @@ export function ProductProvider({ children }) {
     } 
   };
 
-  const updateProduct = async (id, updatedProduct) => { 
-    try { 
-      // Safety Check 
-      if (!id) throw new Error("Attempted to update product, but ID is missing."); 
-
-      const oldProduct = products.find(p => p.id === id); 
-      let imageUrl = oldProduct?.image; 
-      let galleryUrls = oldProduct?.gallery || []; 
-
-      // 1. Handle Main Image Update 
-      if (updatedProduct.imageFile) { 
-        const newImageUrl = await uploadImage(updatedProduct.imageFile); 
-        if (imageUrl && imageUrl !== newImageUrl) { 
-          await deleteImage(imageUrl); 
-        } 
-        imageUrl = newImageUrl; 
-      } 
-
-      // 2. Handle Gallery Files Upload 
-      if (updatedProduct.galleryFiles && updatedProduct.galleryFiles.length > 0) { 
-        const uploadPromises = Array.from(updatedProduct.galleryFiles).map(file => uploadImage(file)); 
-        const newGalleryUrls = await Promise.all(uploadPromises); 
-        galleryUrls = [...galleryUrls, ...newGalleryUrls]; 
-      } 
-
-      // 3. Handle Gallery URL Updates 
-      if (updatedProduct.gallery) { 
-        const oldGallery = oldProduct?.gallery || []; 
-        const newGallery = updatedProduct.gallery; 
-        const imagesToDelete = oldGallery.filter(oldImg => !newGallery.includes(oldImg)); 
-        
-        if (oldProduct.image && !newGallery.includes(oldProduct.image) && oldProduct.image !== imageUrl) { 
-            imagesToDelete.push(oldProduct.image); 
-        } 
-
-        const deletePromises = imagesToDelete.map(imgUrl => deleteImage(imgUrl)); 
-        await Promise.all(deletePromises); 
-        galleryUrls = newGallery; 
-      } 
-
-      // 4. Ensure Main Image is in Gallery 
-      if (imageUrl && !galleryUrls.includes(imageUrl)) { 
-        galleryUrls.unshift(imageUrl); 
-      } 
-
-      // 5. Prepare and Update Database 
-      const dbUpdate = { 
-        name: updatedProduct.name, 
-        category: updatedProduct.category, 
-        subcategory: updatedProduct.subcategory || null, 
-        price: parseFloat(updatedProduct.price), 
-        discount_price: updatedProduct.discountPrice ? parseFloat(updatedProduct.discountPrice) : null, 
-        description: updatedProduct.description, 
-        image: imageUrl, 
-        is_visible: updatedProduct.isVisible, 
-        is_new_arrival: updatedProduct.isNewArrival, 
-        show_on_home: updatedProduct.showOnHome, 
-        brand: updatedProduct.brand, 
-        model_name: updatedProduct.modelName, 
-        model_number: updatedProduct.modelNumber, 
-        hide_price: updatedProduct.hidePrice, 
-        sub_title: updatedProduct.subTitle, 
-        details: updatedProduct.details, 
-        in_store: updatedProduct.inStore, 
-        stock_number: updatedProduct.stockNumber, 
-        gallery: galleryUrls, 
-        availability_status: updatedProduct.availabilityStatus, 
-        secondary_description: updatedProduct.secondaryDescription, 
-        additional_categories: updatedProduct.additionalCategories 
-      }; 
-
-      const { data, error } = await supabase 
-        .from('products') 
-        .update(dbUpdate) 
-        .eq('id', id) 
-        .select(); // Removed .single() 
-
-      if (error) throw error; 
-
-      // Safety check 
-      if (!data || data.length === 0) { 
-        console.warn(`Product update executed, but no data returned to read for ID: ${id}`); 
-        return { success: true }; // Database accepted the change, but blocked the read-back 
-      } 
-
-      const returnedData = data[0]; // Safely grab the first item 
-
-      // 6. Map back to camelCase and update state 
-      const mappedData = { 
-        ...returnedData, 
-        discountPrice: returnedData.discount_price, 
-        isVisible: returnedData.is_visible, 
-        isNewArrival: returnedData.is_new_arrival, 
-        showOnHome: returnedData.show_on_home, 
-        brand: returnedData.brand, 
-        modelName: returnedData.model_name, 
-        modelNumber: returnedData.model_number, 
-        hidePrice: returnedData.hide_price, 
-        subTitle: returnedData.sub_title, 
-        details: returnedData.details || [], 
-        inStore: returnedData.in_store, 
-        stockNumber: returnedData.stock_number, 
-        gallery: returnedData.gallery || [], 
-        availabilityStatus: returnedData.availability_status, 
-        secondaryDescription: returnedData.secondary_description, 
-        additionalCategories: returnedData.additional_categories || [] 
-      }; 
-
-      setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p))); 
-      return { success: true }; 
-    } catch (error) { 
-      console.error('Error updating product:', error.message); 
-      return { success: false, message: error.message }; 
-    } 
-  };
+ const updateProduct = async (id, updatedProduct) => { 
+     try { 
+       // Safety Check 
+       if (!id) throw new Error("Attempted to update product, but ID is missing."); 
+ 
+       const oldProduct = products.find(p => p.id === id); 
+       let imageUrl = oldProduct?.image; 
+ 
+       // 1. Handle Main Image Update 
+       if (updatedProduct.imageFile) { 
+         const newImageUrl = await uploadImage(updatedProduct.imageFile); 
+         if (imageUrl && imageUrl !== newImageUrl) { 
+           await deleteImage(imageUrl); 
+         } 
+         imageUrl = newImageUrl; 
+       } 
+ 
+       // 2 & 3. Handle Gallery Images (FIXED LOGIC) 
+       let finalGalleryUrls = []; 
+ 
+       // First, keep the existing gallery images that weren't deleted 
+       if (updatedProduct.gallery) { 
+         finalGalleryUrls = [...updatedProduct.gallery]; 
+         
+         // Cleanup storage for any images removed via the UI 
+         const oldGallery = oldProduct?.gallery || []; 
+         const imagesToDelete = oldGallery.filter(oldImg => !updatedProduct.gallery.includes(oldImg)); 
+         
+         if (oldProduct.image && !updatedProduct.gallery.includes(oldProduct.image) && oldProduct.image !== imageUrl) { 
+             imagesToDelete.push(oldProduct.image); 
+         } 
+ 
+         const deletePromises = imagesToDelete.map(imgUrl => deleteImage(imgUrl)); 
+         await Promise.all(deletePromises); 
+       } else { 
+         finalGalleryUrls = [...(oldProduct?.gallery || [])]; 
+       } 
+ 
+       // Next, upload brand new files and APPEND them to the list (No more overwriting!) 
+       if (updatedProduct.galleryFiles && updatedProduct.galleryFiles.length > 0) { 
+         const uploadPromises = Array.from(updatedProduct.galleryFiles).map(file => uploadImage(file)); 
+         const newGalleryUrls = await Promise.all(uploadPromises); 
+         finalGalleryUrls = [...finalGalleryUrls, ...newGalleryUrls]; 
+       } 
+ 
+       // 4. Ensure Main Image is in Gallery 
+       if (imageUrl && !finalGalleryUrls.includes(imageUrl)) { 
+         finalGalleryUrls.unshift(imageUrl); 
+       } 
+ 
+       // 5. Prepare and Update Database 
+       const dbUpdate = { 
+         name: updatedProduct.name, 
+         category: updatedProduct.category, 
+         subcategory: updatedProduct.subcategory || null, 
+         price: parseFloat(updatedProduct.price), 
+         discount_price: updatedProduct.discountPrice ? parseFloat(updatedProduct.discountPrice) : null, 
+         description: updatedProduct.description, 
+         image: imageUrl, 
+         is_visible: updatedProduct.isVisible, 
+         is_new_arrival: updatedProduct.isNewArrival, 
+         show_on_home: updatedProduct.showOnHome, 
+         brand: updatedProduct.brand, 
+         model_name: updatedProduct.modelName, 
+         model_number: updatedProduct.modelNumber, 
+         hide_price: updatedProduct.hidePrice, 
+         sub_title: updatedProduct.subTitle, 
+         details: updatedProduct.details, 
+         in_store: updatedProduct.inStore, 
+         stock_number: updatedProduct.stockNumber, 
+         gallery: finalGalleryUrls, // Using the safely combined list! 
+         availability_status: updatedProduct.availabilityStatus, 
+         secondary_description: updatedProduct.secondaryDescription, 
+         additional_categories: updatedProduct.additionalCategories 
+       }; 
+ 
+       const { data, error } = await supabase 
+         .from('products') 
+         .update(dbUpdate) 
+         .eq('id', id) 
+         .select(); 
+ 
+       if (error) throw error; 
+ 
+       // Safety check 
+       if (!data || data.length === 0) { 
+         console.warn(`Product update executed, but no data returned to read for ID: ${id}`); 
+         return { success: true }; 
+       } 
+ 
+       const returnedData = data[0]; 
+ 
+       // 6. Map back to camelCase and update state 
+       const mappedData = { 
+         ...returnedData, 
+         discountPrice: returnedData.discount_price, 
+         isVisible: returnedData.is_visible, 
+         isNewArrival: returnedData.is_new_arrival, 
+         showOnHome: returnedData.show_on_home, 
+         brand: returnedData.brand, 
+         modelName: returnedData.model_name, 
+         modelNumber: returnedData.model_number, 
+         hidePrice: returnedData.hide_price, 
+         subTitle: returnedData.sub_title, 
+         details: returnedData.details || [], 
+         inStore: returnedData.in_store, 
+         stockNumber: returnedData.stock_number, 
+         gallery: returnedData.gallery || [], 
+         availabilityStatus: returnedData.availability_status, 
+         secondaryDescription: returnedData.secondary_description, 
+         additionalCategories: returnedData.additional_categories || [] 
+       }; 
+ 
+       setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p))); 
+       return { success: true }; 
+     } catch (error) { 
+       console.error('Error updating product:', error.message); 
+       return { success: false, message: error.message }; 
+     } 
+   };
 
   const deleteProduct = async (id) => {
     try {
