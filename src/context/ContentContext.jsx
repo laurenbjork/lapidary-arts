@@ -7,13 +7,7 @@ const ContentContext = createContext();
 export const useContent = () => useContext(ContentContext);
 
 const initialContent = {
-  hero: {
-    image: '/images/home-hero-model.jpg',
-    title: "Valentine's Day Gift Guide",
-    subtitle: "",
-    buttonText: "Shop Now",
-    buttonLink: "/gifts"
-  },
+  hero: {},
   gifting: [
     { name: 'Daughters', link: '/gifts/daughters', image: '' },
     { name: 'Lovers', link: '/gifts/lovers', image: '' },
