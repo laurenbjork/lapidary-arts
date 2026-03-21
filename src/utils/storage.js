@@ -102,7 +102,7 @@ export const deleteImage = async (imageUrl) => {
   }
 };
 
-const BLOG_BUCKET_NAME = 'blog-images';
+const BLOG_BUCKET_NAME = 'product-images';
 
 /**
  * Uploads a blog image to Supabase storage.
