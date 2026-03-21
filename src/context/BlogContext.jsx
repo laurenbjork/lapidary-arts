@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../supabase';
-import { uploadImage, deleteImage } from '../utils/storage';
+import { uploadImage, deleteImage, uploadBlogImage } from '../utils/storage';
 
 const BlogContext = createContext();
 
@@ -100,7 +100,7 @@ export const BlogProvider = ({ children }) => {
       addPost, 
       updatePost, 
       deletePost,
-      uploadImage,
+      uploadBlogImage,
       deleteImage
     }}>
       {children}
