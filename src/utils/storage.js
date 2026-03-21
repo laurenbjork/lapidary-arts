@@ -100,7 +100,7 @@ export const deleteImage = async (imageUrl) => {
     // For now, we'll log it but not re-throw to avoid breaking UI flows
 '''    // if a deletion fails. In a real app, you might want to handle this more gracefully.
   }
-};
+};};
 
 const BLOG_BUCKET_NAME = 'blog-images';
 

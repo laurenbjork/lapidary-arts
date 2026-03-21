@@ -79,6 +79,7 @@ export default defineConfig(async () => {
         '@': path.resolve(__dirname, './src'),
       },
     },
+    publicDir: 'public',
     build: {
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
