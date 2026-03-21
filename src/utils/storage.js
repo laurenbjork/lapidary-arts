@@ -98,9 +98,9 @@ export const deleteImage = async (imageUrl) => {
     console.error('Error deleting image:', error.message);
     // Decide if you want to throw an error that the calling function needs to handle
     // For now, we'll log it but not re-throw to avoid breaking UI flows
-'''    // if a deletion fails. In a real app, you might want to handle this more gracefully.
+    // if a deletion fails. In a real app, you might want to handle this more gracefully.
   }
-};};
+};
 
 const BLOG_BUCKET_NAME = 'blog-images';
 
@@ -158,4 +158,4 @@ export const uploadBlogImage = async (file) => {
     console.error('[storage.js] FINAL ERROR in uploadBlogImage:', error);
     throw error;
   }
-};''};
+};
