@@ -9,7 +9,7 @@ import { useProducts } from '../context/ProductContext';
 import SEO from '../components/SEO';
 
 const Home = () => {
-  const { content } = useContent();
+  const { content, loading } = useContent();
   const { hero, categories, customDesign, watches, brandStory, pressCarousel, socials, instagramFeed } = content;
   const { getNewArrivals, products } = useProducts();
   const newArrivals = getNewArrivals();
@@ -141,38 +141,42 @@ const Home = () => {
       />
 
       {/* Hero Section */}
-      <section className="relative h-screen w-full overflow-hidden">
-        <motion.div 
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 2, ease: "easeOut" }}
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('${hero.image}')` }}
-        ></motion.div>
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 pt-20">
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-            className="font-serif text-5xl md:text-7xl lg:text-8xl text-white italic mb-8 drop-shadow-lg"
-          >
-            {hero.title}
-          </motion.h1>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
-          >
-            <Link 
-                to={hero.buttonLink} 
-                className="bg-black text-white px-10 py-4 uppercase tracking-[0.2em] text-xs font-semibold hover:bg-white hover:text-black transition-all duration-300"
+      {loading ? (
+        <div className="relative h-screen w-full bg-gray-200"></div>
+      ) : (
+        <section className="relative h-screen w-full overflow-hidden">
+          <motion.div 
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url('${hero.image}')` }}
+          ></motion.div>
+          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 pt-20">
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+              className="font-serif text-5xl md:text-7xl lg:text-8xl text-white italic mb-8 drop-shadow-lg"
             >
-                {hero.buttonText}
-            </Link>
-          </motion.div>
-        </div>
-      </section>
+              {hero.title}
+            </motion.h1>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
+            >
+              <Link 
+                  to={hero.buttonLink} 
+                  className="bg-black text-white px-10 py-4 uppercase tracking-[0.2em] text-xs font-semibold hover:bg-white hover:text-black transition-all duration-300"
+              >
+                  {hero.buttonText}
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* Category Trio */}
       <section className="py-12 px-4 max-w-[1920px] mx-auto w-full">
