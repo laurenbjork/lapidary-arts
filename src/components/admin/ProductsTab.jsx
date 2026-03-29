@@ -68,9 +68,8 @@ const ProductsTab = () => {
     ],
     bracelets: [
       { value: 'all-bracelets', label: 'All Bracelets' },
-      { value: 'chain', label: 'Chain' },
-      { value: 'cuffs', label: 'Cuffs' },
-      { value: 'charms', label: 'Charms' },
+      { value: 'chains', label: 'Chains' },
+      { value: 'bangles', label: 'Bangles' },
     ],
     'lab-grown': [
       { value: 'all-lab-grown', label: 'All Lab Grown' },
