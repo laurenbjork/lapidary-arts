@@ -1,6 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Quill Font Styles */
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Lora"]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Lora"]::before { font-family: "Lora", serif; content: "Lora"; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Merriweather"]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Merriweather"]::before { font-family: "Merriweather", serif; content: "Merriweather"; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Inter"]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Inter"]::before { font-family: "Inter", sans-serif; content: "Inter"; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Lato"]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Lato"]::before { font-family: "Lato", sans-serif; content: "Lato"; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Playfair Display"]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Playfair Display"]::before { font-family: "Playfair Display", serif; content: "Playfair Display"; }
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="Montserrat"]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="Montserrat"]::before { font-family: "Montserrat", sans-serif; content: "Montserrat"; }
+
+.ql-snow .ql-picker.ql-font .ql-picker-label { width: 10em; }
+
 
 @layer base {
   body {

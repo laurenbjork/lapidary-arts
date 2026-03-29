@@ -9,6 +9,8 @@ const shopMenu = {
   RINGS: ['All Rings', 'Gemstones', 'Cocktail', 'Diamond Bands', 'Bridal & Engagement'],
   NECKLACES: ['All Necklaces', 'Diamond', 'Gemstones', 'Coin', 'Gold'],
   EARRINGS: ['All Earrings', 'Hoops & Huggies', 'Studs', 'Drop Earrings'],
+  BRACELETS: ['All Bracelets', 'Chain', 'Cuffs', 'Charms'],
+  'LAB GROWN': ['All Lab Grown', 'Rings', 'Necklaces', 'Earrings', 'Bracelets'],
   STONE: ['All Stones', 'Emerald', 'Topaz', 'Sapphire', 'Spinel', 'Pearl', 'Opal', 'Tourmaline', 'Ruby', 'Garnet', 'Zircon', 'Tanzanite']
 };
 

@@ -41,6 +41,8 @@ const ProductsTab = () => {
     { value: 'rings', label: 'Rings' },
     { value: 'necklaces', label: 'Necklaces' },
     { value: 'earrings', label: 'Earrings' },
+    { value: 'bracelets', label: 'Bracelets' },
+    { value: 'lab-grown', label: 'Lab Grown' },
     { value: 'stones', label: 'Stones' },
     { value: 'watches', label: 'Watches' },
     { value: 'gifting', label: 'Gifting' },
@@ -63,6 +65,19 @@ const ProductsTab = () => {
       { value: 'hoops-&-huggies', label: 'Hoops & Huggies' },
       { value: 'studs', label: 'Studs' },
       { value: 'drop-earrings', label: 'Drop Earrings' },
+    ],
+    bracelets: [
+      { value: 'all-bracelets', label: 'All Bracelets' },
+      { value: 'chain', label: 'Chain' },
+      { value: 'cuffs', label: 'Cuffs' },
+      { value: 'charms', label: 'Charms' },
+    ],
+    'lab-grown': [
+      { value: 'all-lab-grown', label: 'All Lab Grown' },
+      { value: 'rings', label: 'Rings' },
+      { value: 'necklaces', label: 'Necklaces' },
+      { value: 'earrings', label: 'Earrings' },
+      { value: 'bracelets', label: 'Bracelets' },
     ],
     stones: [
       { value: 'emerald', label: 'Emerald' },

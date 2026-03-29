@@ -1,8 +1,15 @@
 import React, { useState, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import './quill-editor-styles.css';
 import { useBlog } from '../../context/BlogContext';
 import { Plus, Edit2, Trash2, Save, X, Upload, Image as ImageIcon } from 'lucide-react';
+
+// Add the fonts to the Quill editor
+const Quill = ReactQuill.Quill;
+const Font = Quill.import('formats/font');
+Font.whitelist = ['Lora', 'Merriweather', 'Inter', 'Lato', 'Playfair Display', 'Montserrat'];
+Quill.register(Font, true);
 
 const BlogTab = () => {
   const { posts, addPost, updatePost, deletePost, uploadBlogImage } = useBlog();
@@ -17,9 +24,7 @@ const BlogTab = () => {
     image: '',
     slug: '',
     is_visible: true
-  };
-
-  const [formData, setFormData] = useState(initialFormState);
+  };const [formData, setFormData] = useState(initialFormState);
   const quillRef = useRef(null);
 
   const handleContentChange = (content) => {
@@ -51,6 +56,7 @@ const BlogTab = () => {
     toolbar: {
       container: [
         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'font': Font.whitelist }],
         ['bold', 'italic', 'underline', 'strike'],
         [{'list': 'ordered'}, {'list': 'bullet'}],
         ['link', 'image']
