@@ -55,38 +55,22 @@ const Shop = () => {
         return allProductSubcategories.some(s => stoneSubcategories.includes(s));
       }
 
-      // Original logic for real categories like "Rings", "Earrings", etc.
-      const mainCategoryMatch = pCat === category.toLowerCase();
+      // Unified logic for main and additional categories
+      const urlCat = category.toLowerCase();
+      const urlSub = subcategory ? subcategory.toLowerCase() : null;
 
-      if (subcategory) {
-        // Handle "All" subcategories (e.g., /shop/rings/all-rings)
-        if (subcategory.toLowerCase().startsWith('all-')) {
-          if (mainCategoryMatch) return true;
-        } else {
-          // Handle specific subcategories (e.g., /shop/rings/gemstones)
-          const subCategoryMatch = pSub === subcategory.toLowerCase();
-          if (mainCategoryMatch && subCategoryMatch) return true;
+      const checkCategory = (cat, sub) => {
+        if (!cat || cat.toLowerCase() !== urlCat) return false;
+        if (urlSub) {
+          if (urlSub.startsWith('all-')) return true;
+          return sub && sub.toLowerCase() === urlSub;
         }
-      } else {
-        // Handle main category pages (e.g., /shop/rings)
-        if (mainCategoryMatch) return true;
-      }
+        return true;
+      };
 
-      // Fallback to check additional categories with the same logic
-      const additionalCats = p.additionalCategories || [];
-      return additionalCats.some(ac => {
-          const acCat = ac.category ? ac.category.toLowerCase() : '';
-          const acSub = ac.subcategory ? ac.subcategory.toLowerCase() : '';
-          const addCatMatch = acCat === category.toLowerCase();
+      if (checkCategory(p.category, p.subcategory)) return true;
 
-          if (subcategory) {
-            if (subcategory.toLowerCase().startsWith('all-')) {
-              return addCatMatch;
-            }
-            return addCatMatch && acSub === subcategory.toLowerCase();
-          } 
-          return addCatMatch;
-      });
+      return (p.additionalCategories || []).some(ac => checkCategory(ac.category, ac.subcategory));
     }
 
     return true;
