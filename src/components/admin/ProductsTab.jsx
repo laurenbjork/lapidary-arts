@@ -237,6 +237,7 @@ const ProductsTab = () => {
       ...formData,
       price: parseFloat(formData.price),
       discountPrice: formData.discountPrice ? parseFloat(formData.discountPrice) : null,
+      additionalCategories: formData.additionalCategories || []
     };
 
     let result;

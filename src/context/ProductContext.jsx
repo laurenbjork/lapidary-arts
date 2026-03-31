@@ -126,11 +126,11 @@ export function ProductProvider({ children }) {
         sub_title: cleanProduct.sub_title, 
         details: cleanProduct.details, 
         in_store: cleanProduct.in_store, 
-        stock_number: cleanProduct.stock_number, 
+        stock_number: cleanProduct.stockNumber, 
         gallery: galleryUrls, 
-        availability_status: cleanProduct.availability_status, 
+        availability_status: cleanProduct.availabilityStatus, 
         secondary_description: cleanProduct.secondaryDescription, 
-        additional_categories: cleanProduct.additionalCategories 
+        additional_categories: cleanProduct.additionalCategories
       }; 
 
       const { data, error } = await supabase 

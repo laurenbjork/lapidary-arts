@@ -35,31 +35,23 @@ const Shop = () => {
     if (category) {
       const pCat = p.category ? p.category.toLowerCase() : '';
       const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
-      const urlCat = category.toLowerCase();
-
-      // New unified logic for virtual categories
-      const VIRTUAL_CATEGORIES = { 
-        'stone': ['gemstone', 'diamond', 'emerald', 'topaz', 'sapphire', 'spinel', 'pearl', 'opal', 'tourmaline', 'ruby', 'garnet', 'zircon', 'tanzanite', 'gemstones'],
-        'lab-grown': ['all-lab-grown', 'rings', 'necklaces', 'earrings', 'bracelets'],
-        'bracelets': ['all-bracelets', 'chains', 'bangles'],
-      };
-
-      if (VIRTUAL_CATEGORIES[urlCat]) {
+      // Special handling for "Stone" category which is not a real category in the DB
+      if (category.toLowerCase() === 'stone') {
+        // Create a single, comprehensive list of all subcategories for the product.
         const allProductSubcategories = [
           p.subcategory,
           ...(p.additionalCategories || []).map(ac => ac.subcategory)
         ].filter(Boolean).map(s => s.toLowerCase());
 
+        // Handle specific subcategory URLs like /shop/stone/diamond
         if (subcategory && !subcategory.toLowerCase().startsWith('all-')) {
           const targetSub = subcategory.toLowerCase();
           return allProductSubcategories.includes(targetSub);
         }
-        
-        const primaryCategoryIsVirtual = VIRTUAL_CATEGORIES[urlCat].includes(pCat);
-        const subCategoryIsVirtual = VIRTUAL_CATEGORIES[urlCat].includes(pSub);
-        const additionalCategoryIsVirtual = (p.additionalCategories || []).some(ac => ac.category.toLowerCase() === urlCat);
 
-        return primaryCategoryIsVirtual || subCategoryIsVirtual || additionalCategoryIsVirtual;
+        // Handle general stone URLs like /shop/stone or /shop/stone/all-stones
+        const stoneSubcategories = ['gemstone', 'diamond', 'emerald', 'topaz', 'sapphire', 'spinel', 'pearl', 'opal', 'tourmaline', 'ruby', 'garnet', 'zircon', 'tanzanite', 'gemstones'];
+        return allProductSubcategories.some(s => stoneSubcategories.includes(s));
       }
 
       const mainCategoryMatch = pCat === urlCat;
@@ -75,11 +67,12 @@ const Shop = () => {
         if (mainCategoryMatch) return true;
       }
 
+      // Fallback to check additional categories with the same logic
       const additionalCats = p.additionalCategories || [];
       return additionalCats.some(ac => {
           const acCat = ac.category ? ac.category.toLowerCase() : '';
           const acSub = ac.subcategory ? ac.subcategory.toLowerCase() : '';
-          const addCatMatch = acCat === urlCat;
+          const addCatMatch = acCat === category.toLowerCase();
 
           if (subcategory) {
             if (subcategory.toLowerCase().startsWith('all-')) {
