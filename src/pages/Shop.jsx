@@ -35,42 +35,60 @@ const Shop = () => {
     if (category) {
       const pCat = p.category ? p.category.toLowerCase() : '';
       const pSub = p.subcategory ? p.subcategory.toLowerCase() : '';
-      
-      // Special handling for "Stone" category which is not a real category in the DB
-      if (category.toLowerCase() === 'stone') {
-        // Create a single, comprehensive list of all subcategories for the product.
+      const urlCat = category.toLowerCase();
+
+      // New unified logic for virtual categories
+      const VIRTUAL_CATEGORIES = { 
+        'stone': ['gemstone', 'diamond', 'emerald', 'topaz', 'sapphire', 'spinel', 'pearl', 'opal', 'tourmaline', 'ruby', 'garnet', 'zircon', 'tanzanite', 'gemstones'],
+        'lab-grown': ['all-lab-grown', 'rings', 'necklaces', 'earrings', 'bracelets'],
+        'bracelets': ['all-bracelets', 'chains', 'bangles'],
+      };
+
+      if (VIRTUAL_CATEGORIES[urlCat]) {
         const allProductSubcategories = [
           p.subcategory,
           ...(p.additionalCategories || []).map(ac => ac.subcategory)
         ].filter(Boolean).map(s => s.toLowerCase());
 
-        // Handle specific subcategory URLs like /shop/stone/diamond
         if (subcategory && !subcategory.toLowerCase().startsWith('all-')) {
           const targetSub = subcategory.toLowerCase();
           return allProductSubcategories.includes(targetSub);
         }
+        
+        const primaryCategoryIsVirtual = VIRTUAL_CATEGORIES[urlCat].includes(pCat);
+        const subCategoryIsVirtual = VIRTUAL_CATEGORIES[urlCat].includes(pSub);
+        const additionalCategoryIsVirtual = (p.additionalCategories || []).some(ac => ac.category.toLowerCase() === urlCat);
 
-        // Handle general stone URLs like /shop/stone or /shop/stone/all-stones
-        const stoneSubcategories = ['gemstone', 'diamond', 'emerald', 'topaz', 'sapphire', 'spinel', 'pearl', 'opal', 'tourmaline', 'ruby', 'garnet', 'zircon', 'tanzanite', 'gemstones'];
-        return allProductSubcategories.some(s => stoneSubcategories.includes(s));
+        return primaryCategoryIsVirtual || subCategoryIsVirtual || additionalCategoryIsVirtual;
       }
 
-      // Unified logic for main and additional categories
-      const urlCat = category.toLowerCase();
-      const urlSub = subcategory ? subcategory.toLowerCase() : null;
+      const mainCategoryMatch = pCat === urlCat;
 
-      const checkCategory = (cat, sub) => {
-        if (!cat || cat.toLowerCase() !== urlCat) return false;
-        if (urlSub) {
-          if (urlSub.startsWith('all-')) return true;
-          return sub && sub.toLowerCase() === urlSub;
+      if (subcategory) {
+        if (subcategory.toLowerCase().startsWith('all-')) {
+          if (mainCategoryMatch) return true;
+        } else {
+          const subCategoryMatch = pSub === subcategory.toLowerCase();
+          if (mainCategoryMatch && subCategoryMatch) return true;
         }
-        return true;
-      };
+      } else {
+        if (mainCategoryMatch) return true;
+      }
 
-      if (checkCategory(p.category, p.subcategory)) return true;
+      const additionalCats = p.additionalCategories || [];
+      return additionalCats.some(ac => {
+          const acCat = ac.category ? ac.category.toLowerCase() : '';
+          const acSub = ac.subcategory ? ac.subcategory.toLowerCase() : '';
+          const addCatMatch = acCat === urlCat;
 
-      return (p.additionalCategories || []).some(ac => checkCategory(ac.category, ac.subcategory));
+          if (subcategory) {
+            if (subcategory.toLowerCase().startsWith('all-')) {
+              return addCatMatch;
+            }
+            return addCatMatch && acSub === subcategory.toLowerCase();
+          } 
+          return addCatMatch;
+      });
     }
 
     return true;
