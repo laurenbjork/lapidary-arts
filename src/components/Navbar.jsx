@@ -252,7 +252,7 @@ const Navbar = () => {
                       {items.map((item) => (
                         <li key={item}>
                           <Link 
-                            to={`/shop/${category.toLowerCase()}/${item.toLowerCase().replace(/ /g, '-')}`} 
+                            to={`/shop/${category.toLowerCase().replace(/ /g, '-')}/${item.toLowerCase().replace(/ /g, '-')}`} 
                             className="text-[11px] text-gray-600 hover:text-black uppercase tracking-wider transition-colors"
                             onClick={handleLinkClick}
                           >
@@ -369,7 +369,7 @@ const Navbar = () => {
                                       {items.map((item) => (
                                         <li key={item}>
                                           <Link 
-                                            to={`/shop/${category.toLowerCase()}/${item.toLowerCase().replace(/ /g, '-')}`} 
+                                            to={`/shop/${category.toLowerCase().replace(/ /g, '-')}/${item.toLowerCase().replace(/ /g, '-')}`} 
                                             className="text-[11px] text-gray-600 block hover:text-black transition-colors"
                                             onClick={handleLinkClick}
                                           >

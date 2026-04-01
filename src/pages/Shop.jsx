@@ -54,7 +54,7 @@ const Shop = () => {
         return allProductSubcategories.some(s => stoneSubcategories.includes(s));
       }
 
-      const mainCategoryMatch = pCat === category.toLowerCase();
+      const mainCategoryMatch = pCat === category.toLowerCase();egory.toLowerCase();
 
       if (subcategory) {
         if (subcategory.toLowerCase().startsWith('all-')) {
@@ -68,7 +68,7 @@ const Shop = () => {
       }
 
       // Fallback to check additional categories with the same logic
-      const additionalCats = p.additionalCategories || [];
+      const additionalCats = p.additional_categories || [];
       return additionalCats.some(ac => {
           const acCat = ac.category ? ac.category.toLowerCase() : '';
           const acSub = ac.subcategory ? ac.subcategory.toLowerCase() : '';
