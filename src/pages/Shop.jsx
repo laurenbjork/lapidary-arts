@@ -54,7 +54,7 @@ const Shop = () => {
         return allProductSubcategories.some(s => stoneSubcategories.includes(s));
       }
 
-      const mainCategoryMatch = pCat === category.toLowerCase();egory.toLowerCase();
+      const mainCategoryMatch = pCat === category.toLowerCase();
 
       if (subcategory) {
         if (subcategory.toLowerCase().startsWith('all-')) {
