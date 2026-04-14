@@ -39,6 +39,7 @@ const Home = () => {
   
   // Infinite Scroll Logic
   const scrollContainerRef = useRef(null);
+  const hasBeenScrolled = useRef(false);
 
   // Create 3 sets for infinite illusion
   const infiniteArrivals = useMemo(() => {
@@ -48,32 +49,31 @@ const Home = () => {
 
   // Handle infinite scroll wrapping
   const handleScroll = () => {
-    const container = scrollContainerRef.current;
-    if (!container || newArrivals.length === 0) return;
+     const container = scrollContainerRef.current;
+     if (!container || newArrivals.length === 0) return;
 
-    const totalWidth = container.scrollWidth;
-    const oneSetWidth = totalWidth / 3;
-    const currentScroll = container.scrollLeft;
-
-    if (currentScroll >= (2 * oneSetWidth) - container.clientWidth) {
-      container.style.scrollBehavior = 'auto';
-      container.scrollLeft = oneSetWidth - container.clientWidth;
-      container.style.scrollBehavior = 'smooth';
-    } else if (currentScroll <= 0) {
-      container.style.scrollBehavior = 'auto';
-      container.scrollLeft = oneSetWidth;
-      container.style.scrollBehavior = 'smooth';
-    }
+     const totalWidth = container.scrollWidth;
+     const oneSetWidth = totalWidth / 3;
+     const currentScroll = container.scrollLeft;
+     
+     // Loop back to middle set when reaching edges
+     // Buffer of 10px to ensure we catch it
+     if (currentScroll <= 10) {
+         container.scrollLeft = oneSetWidth + currentScroll;
+     } else if (currentScroll >= (2 * oneSetWidth) - 10) {
+         container.scrollLeft = currentScroll - oneSetWidth;
+     }
   };
 
   // Initial scroll position to middle set
   useEffect(() => {
       const container = scrollContainerRef.current;
-      if (container && newArrivals.length > 0) {
+      if (container && newArrivals.length > 0 && !hasBeenScrolled.current) {
           // Use requestAnimationFrame to ensure layout is ready
           requestAnimationFrame(() => {
              const oneSetWidth = container.scrollWidth / 3;
              container.scrollLeft = oneSetWidth;
+             hasBeenScrolled.current = true;
           });
       }
   }, [newArrivals]);
