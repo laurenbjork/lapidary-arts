@@ -39,7 +39,6 @@ const Home = () => {
   
   // Infinite Scroll Logic
   const scrollContainerRef = useRef(null);
-  const scrollEndTimer = useRef(null);
 
   // Create 3 sets for infinite illusion
   const infiniteArrivals = useMemo(() => {
@@ -47,29 +46,24 @@ const Home = () => {
       return [...newArrivals, ...newArrivals, ...newArrivals];
   }, [newArrivals]);
 
-  // Handle infinite scroll wrapping with debounce
+  // Handle infinite scroll wrapping
   const handleScroll = () => {
     const container = scrollContainerRef.current;
     if (!container || newArrivals.length === 0) return;
 
-    if (scrollEndTimer.current) {
-      clearTimeout(scrollEndTimer.current);
+    const totalWidth = container.scrollWidth;
+    const oneSetWidth = totalWidth / 3;
+    const currentScroll = container.scrollLeft;
+
+    if (currentScroll >= (2 * oneSetWidth) - container.clientWidth) {
+      container.style.scrollBehavior = 'auto';
+      container.scrollLeft = oneSetWidth - container.clientWidth;
+      container.style.scrollBehavior = 'smooth';
+    } else if (currentScroll <= 0) {
+      container.style.scrollBehavior = 'auto';
+      container.scrollLeft = oneSetWidth;
+      container.style.scrollBehavior = 'smooth';
     }
-
-    scrollEndTimer.current = setTimeout(() => {
-      const totalWidth = container.scrollWidth;
-      const oneSetWidth = totalWidth / 3;
-      const currentScroll = container.scrollLeft;
-
-      // After scrolling stops, check if we are in the cloned sections
-      if (currentScroll < oneSetWidth) {
-        // Scrolled into the left clone, jump to the same spot in the middle set
-        container.scrollLeft = currentScroll + oneSetWidth;
-      } else if (currentScroll >= 2 * oneSetWidth) {
-        // Scrolled into the right clone, jump to the same spot in the middle set
-        container.scrollLeft = currentScroll - oneSetWidth;
-      }
-    }, 200); // Debounce delay in ms
   };
 
   // Initial scroll position to middle set
