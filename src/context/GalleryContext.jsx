@@ -51,6 +51,8 @@ export function GalleryProvider({ children }) {
       const updates = orderedImages.map((image, index) => ({
         id: image.id,
         position: index + 1,
+        image_url: image.image_url, // Ensure these are included
+        alt_text: image.alt_text,   // Ensure these are included
       }));
 
       const { error } = await supabase.from('gallery').upsert(updates);

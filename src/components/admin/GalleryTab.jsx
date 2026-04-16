@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGallery } from '../../context/GalleryContext';
 import { Upload, Trash2, Save, GripVertical } from 'lucide-react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 const GalleryTab = () => {
   const { images, loading, addGalleryImage, deleteGalleryImage, updateGalleryImageOrder } = useGallery();
@@ -71,27 +71,36 @@ const GalleryTab = () => {
           <p>Loading images...</p>
         ) : (
           <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="gallery-images">
+            <Droppable droppableId="gallery-images" direction="horizontal">
               {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <div {...provided.droppableProps} ref={provided.innerRef} className="flex flex-wrap -m-2">
                   {images.map((image, index) => (
                     <Draggable key={image.id} draggableId={image.id} index={index}>
                       {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
-                          className={`relative group bg-white rounded-lg shadow-sm overflow-hidden ${snapshot.isDragging ? 'ring-2 ring-burgundy' : ''}`}
+                          {...provided.dragHandleProps}
+                          className={`p-2 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5`}
                         >
-                          <div {...provided.dragHandleProps} className="absolute top-2 left-2 z-10 p-1 bg-white/50 rounded-full cursor-grab">
-                            <GripVertical size={16} className="text-gray-600" />
+                          <div
+                            className={`relative group bg-white rounded-lg shadow-sm overflow-hidden ${
+                              snapshot.isDragging ? 'ring-2 ring-burgundy' : ''
+                            }`}>
+                            <div className="absolute top-2 left-2 z-10 p-1 bg-white/50 rounded-full cursor-grab pointer-events-none">
+                              <GripVertical size={16} className="text-gray-600" />
+                            </div>
+                            <img src={image.image_url} alt={image.alt_text || ''} className="w-full h-48 object-cover" />
+                            <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2 text-white text-xs truncate">
+                              {image.alt_text}
+                            </div>
+                            <button 
+                              onClick={() => handleDelete(image.id, image.image_url)}
+                              onMouseDown={(e) => e.stopPropagation()}
+                              className="absolute top-2 right-2 z-10 p-1 bg-white/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Trash2 size={16} className="text-red-600" />
+                            </button>
                           </div>
-                          <img src={image.image_url} alt={image.alt_text || ''} className="w-full h-48 object-cover" />
-                          <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2 text-white text-xs truncate">
-                            {image.alt_text}
-                          </div>
-                          <button onClick={() => handleDelete(image.id, image.image_url)} className="absolute top-2 right-2 z-10 p-1 bg-white/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Trash2 size={16} className="text-red-600" />
-                          </button>
                         </div>
                       )}
                     </Draggable>
