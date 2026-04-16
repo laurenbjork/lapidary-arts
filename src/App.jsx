@@ -10,6 +10,7 @@ import Engagement from './pages/Engagement';
 import Diamonds from './pages/Diamonds';
 import CustomDesign from './pages/CustomDesign';
 import About from './pages/About';
+import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
@@ -27,6 +28,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { InquiryProvider } from './context/InquiryContext';
 import { BlogProvider } from './context/BlogContext';
 import { ContentProvider } from './context/ContentContext';
+import { GalleryProvider } from './context/GalleryContext';
 import NewsletterPopup from './components/NewsletterPopup';
 import FAQ from './pages/FAQ';
 import SizeGuide from './pages/SizeGuide';
@@ -69,6 +71,7 @@ function App() {
         <ContentProvider>
           <InquiryProvider>
             <BlogProvider>
+              <GalleryProvider>
             <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
               <ScrollToTop />
               <Analytics />
@@ -85,6 +88,7 @@ function App() {
                 <Route path="/diamonds" element={<Diamonds />} />
                 <Route path="/custom-design" element={<CustomDesign />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/gallery" element={<Gallery />} />
                 <Route path="/contact" element={<Contact />} />
                 
                 {/* Admin Routes */}
@@ -117,6 +121,7 @@ function App() {
               </main>
               {!isAdmin && <Footer />}
             </div>
+            </GalleryProvider>
             </BlogProvider>
           </InquiryProvider>
         </ContentProvider>

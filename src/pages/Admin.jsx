@@ -20,6 +20,7 @@ import ContentTab from '../components/admin/ContentTab';
 import SettingsTab from '../components/admin/SettingsTab';
 import BlogTab from '../components/admin/BlogTab';
 import InquiriesTab from '../components/admin/InquiriesTab';
+import GalleryTab from '../components/admin/GalleryTab';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -49,6 +50,7 @@ const Admin = () => {
       title: 'Content & Marketing',
       items: [
         { id: 'content', label: 'Site Content', icon: <Image size={20} /> },
+        { id: 'gallery', label: 'Gallery', icon: <Image size={20} /> },
         { id: 'blog', label: 'Blog', icon: <BookOpen size={20} /> },
       ]
     },
@@ -68,6 +70,7 @@ const Admin = () => {
       case 'inquiries': return <InquiriesTab />;
       case 'products': return <ProductsTab />;
       case 'content': return <ContentTab />;
+      case 'gallery': return <GalleryTab />;
       case 'blog': return <BlogTab />;
       case 'settings': return <SettingsTab />;
       default: return <DashboardTab />;

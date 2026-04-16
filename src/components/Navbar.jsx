@@ -167,6 +167,8 @@ const Navbar = () => {
 
                     <Link to="/blog" className="hover:opacity-70 transition-opacity py-3">Journal</Link>
 
+                    <Link to="/gallery" className="hover:opacity-70 transition-opacity py-3">Gallery</Link>
+
                     <Link to="/about" className="hover:opacity-70 transition-opacity py-3">About</Link>
                 </>
             ) : (
@@ -423,6 +425,7 @@ const Navbar = () => {
 
               <Link to="/custom-design" onClick={handleLinkClick}>Custom Designs</Link>
               <Link to="/blog" onClick={handleLinkClick}>Journal</Link>
+              <Link to="/gallery" onClick={handleLinkClick}>Gallery</Link>
               <Link to="/about" onClick={handleLinkClick}>About</Link>
             </div>
           </motion.div>
