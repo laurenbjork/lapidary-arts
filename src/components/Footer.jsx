@@ -46,32 +46,24 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-black text-white border-t border-gray-900 py-2">
+    <footer className="bg-black text-white border-t border-gray-900">
       <div className="max-w-[1920px] mx-auto px-6 lg:px-12">
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mb-4 items-start">
           
           {/* 1. Brand Logo (Standalone, Bigger) */}
-          <div className="lg:col-span-3 flex items-start">
+          <div className="lg:col-span-3 flex items-start pt-8">
             <Link to="/" className="block ml-24">
               <img 
-                src={footer?.logo || "/images/Home.png"} 
+                src="/images/footer-icon.svg" 
                 alt="Lapidary Art" 
-                className="h-56 object-contain"
-                onError={(e) => { 
-                  const target = e.target;
-                  if (target.src.includes('Home.png')) {
-                    target.src = '/images/logo.png';
-                  } else if (target.src.includes('logo.png')) {
-                    target.src = '/images/logo.svg';
-                  }
-                }}
+                className="h-36 object-contain"
               />
             </Link>
           </div>
 
           {/* 2. Visit Us Info (Moved from under logo) */}
-          <div className="lg:col-span-3 mt-10">
+          <div className="lg:col-span-3 mt-10 pl-8">
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-white mb-4">Visit Us</h4>
             <div className="text-[10px] uppercase tracking-widest text-white/70 space-y-2">
               <a 
@@ -93,7 +85,7 @@ const Footer = () => {
           </div>
 
           {/* 3. Explore Links */}
-          <div className="lg:col-span-2 mt-10">
+          <div className="lg:col-span-2 mt-10 -mr-8">
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-white mb-4">Explore</h4>
             <ul className="space-y-2 text-[10px] uppercase tracking-wider text-white/60">
               <li><Link to="/about" className="hover:text-white transition-colors">Our Story</Link></li>
@@ -157,15 +149,11 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-2 pb-2 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[9px] uppercase tracking-widest text-white/40">
             &copy; {new Date().getFullYear()} Lapidary Arts Jewelry. All rights reserved.
           </p>
-          <div className="flex items-center space-x-3 opacity-30 grayscale">
-             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Visa.svg/1200px-Visa.svg.png" className="h-2" alt="Visa" />
-             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/1200px-Mastercard_2019_logo.svg.png" className="h-3" alt="Mastercard" />
-             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/1200px-PayPal.svg.png" className="h-3" alt="PayPal" />
-          </div>
+
         </div>
 
       </div>

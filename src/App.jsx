@@ -119,7 +119,7 @@ function App() {
                 <Route path="/blog/:slug" element={<BlogPost />} />
               </Routes>
               </main>
-              {!isAdmin && <Footer />}
+              {!isAdmin && <Footer showSocials={true} showPaymentIcons={true} />}
             </div>
             </GalleryProvider>
             </BlogProvider>
