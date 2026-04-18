@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
 import { useInquiries } from '../context/InquiryContext';
+
 import { ChevronLeft, ChevronRight, Star, MapPin, Phone, Clock, X } from 'lucide-react';
-import InnerImageZoom from 'react-inner-image-zoom';
-import 'react-inner-image-zoom/lib/styles.min.css';
 import FadeIn from '../components/FadeIn';
 import SEO from '../components/SEO';
 
@@ -110,7 +109,7 @@ const ProductDetails = () => {
         {/* Image Gallery Section */}
         <FadeIn className="space-y-4 max-w-xl mx-auto w-full">
           <div className="aspect-square bg-gray-50 overflow-hidden rounded-sm relative group">
-             <InnerImageZoom src={`${activeImage || product.image}?width=1200&quality=80`} zoomSrc={`${activeImage || product.image}`} alt={`${product.name} - Main View`} className="w-full h-full object-cover" />
+             <img src={`${activeImage || product.image}?width=1200&quality=80`} alt={`${product.name} - Main View`} className="w-full h-full object-cover" />
 
           </div>
           {galleryImages.length > 0 && (

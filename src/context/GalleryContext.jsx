@@ -7,14 +7,14 @@ const GalleryContext = createContext();
 export const useGallery = () => useContext(GalleryContext);
 
 export function GalleryProvider({ children }) {
-  const [images, setImages] = useState([]);
+  const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchGalleryImages();
+    fetchGalleryMedia();
   }, []);
 
-  const fetchGalleryImages = async () => {
+  const fetchGalleryMedia = async () => {
     try {
       const { data, error } = await supabase
         .from('gallery')
@@ -23,53 +23,72 @@ export function GalleryProvider({ children }) {
 
       if (error) throw error;
       
-      setImages(data || []);
+      setMedia(data || []);
     } catch (error) {
-      console.error('Error fetching gallery images:', error.message);
+      console.error('Error fetching gallery media:', error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteGalleryImage = async (id, imageUrl) => {
+  const deleteGalleryMedia = async (id, mediaUrl) => {
     try {
-      await deleteImage(imageUrl);
+      // Only attempt to delete from storage if it's not a YouTube link
+      if (!mediaUrl.startsWith('https://www.youtube.com')) {
+        await deleteImage(mediaUrl);
+      }
       const { error } = await supabase.from('gallery').delete().eq('id', id);
 
       if (error) throw error;
 
-      setImages((prev) => prev.filter((img) => img.id !== id));
+      setMedia((prev) => prev.filter((item) => item.id !== id));
       return { success: true };
     } catch (error) {
-      console.error('Error deleting gallery image:', error.message);
+      console.error('Error deleting gallery media:', error.message);
       return { success: false, message: error.message };
     }
   };
 
-  const updateGalleryImageOrder = async (orderedImages) => {
+  const updateGalleryMediaOrder = async (orderedMedia) => {
     try {
-      const updates = orderedImages.map((image, index) => ({
-        id: image.id,
+      const updates = orderedMedia.map((item, index) => ({
+        id: item.id,
         position: index + 1,
-        image_url: image.image_url, // Ensure these are included
-        alt_text: image.alt_text,   // Ensure these are included
+        image_url: item.image_url, 
+        alt_text: item.alt_text,
+        media_type: item.media_type,
       }));
 
       const { error } = await supabase.from('gallery').upsert(updates);
 
       if (error) throw error;
 
-      setImages(orderedImages);
+      setMedia(orderedMedia);
       return { success: true };
     } catch (error) {
-      console.error('Error updating gallery image order:', error.message);
+      console.error('Error updating gallery media order:', error.message);
       return { success: false, message: error.message };
     }
   };
 
-  const addGalleryImage = async (imageFile, altText) => {
+  const addGalleryMedia = async (mediaData, altText, mediaType) => {
     try {
-      const imageUrl = await uploadImage(imageFile);
+      let mediaUrl;
+      let finalMediaType;
+
+      if (mediaType === 'file') {
+        const fileSize = mediaData.size / 1024 / 1024; // in MB
+        if (fileSize > 100) { // 100MB limit
+          alert('File size exceeds the 100MB limit.');
+          return { success: false, message: 'File size exceeds the 100MB limit.' };
+        }
+        mediaUrl = await uploadImage(mediaData);
+        finalMediaType = mediaData.type.startsWith('video') ? 'video' : 'image';
+      } else {
+        mediaUrl = mediaData;
+        finalMediaType = 'youtube';
+      }
+
       const { data: maxPositionData, error: positionError } = await supabase
         .from('gallery')
         .select('position')
@@ -77,7 +96,7 @@ export function GalleryProvider({ children }) {
         .limit(1)
         .single();
 
-      if (positionError && positionError.code !== 'PGRST116') { // Ignore error for empty table
+      if (positionError && positionError.code !== 'PGRST116') {
         throw positionError;
       }
 
@@ -85,26 +104,26 @@ export function GalleryProvider({ children }) {
 
       const { data, error } = await supabase
         .from('gallery')
-        .insert([{ image_url: imageUrl, alt_text: altText, position: newPosition }])
+        .insert([{ image_url: mediaUrl, alt_text: altText, position: newPosition, media_type: finalMediaType }])
         .select()
         .single();
 
       if (error) throw error;
 
-      setImages((prev) => [...prev, data]);
+      setMedia((prev) => [...prev, data]);
       return { success: true };
     } catch (error) {
-      console.error('Error adding gallery image:', error.message);
+      console.error('Error adding gallery media:', error.message);
       return { success: false, message: error.message };
     }
   };
 
   const value = {
-    images,
+    media,
     loading,
-    addGalleryImage,
-    updateGalleryImageOrder,
-    deleteGalleryImage,
+    addGalleryMedia,
+    updateGalleryMediaOrder,
+    deleteGalleryMedia,
   };
 
   return (

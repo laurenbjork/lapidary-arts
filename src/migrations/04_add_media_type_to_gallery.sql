@@ -1,0 +1,1 @@
+ALTER TABLE gallery ADD COLUMN media_type TEXT DEFAULT 'image';

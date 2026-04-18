@@ -101,38 +101,30 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className={`fixed w-full z-40 transition-all duration-500 ${
+        className={`fixed w-full z-50 transition-all duration-500 ${
           isDarkHeader ? 'bg-white/50 backdrop-blur-md text-gray-900 shadow-sm' : 'bg-transparent text-white'
         }`}
         onMouseLeave={handleMouseLeave}
       >
         <AnnouncementBar />
         <div className={`max-w-[1920px] mx-auto px-6 flex justify-between items-center relative transition-all duration-500 ${
-          isDarkHeader ? 'py-2' : 'py-2'
+          isDarkHeader ? 'py-0' : 'py-0'
         }`}>
           
           {/* Mobile Menu Button */}
-          <div className="md:hidden z-50">
+          <div className="md:hidden z-60">
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
 
           {/* Logo - Left Aligned on Desktop, Centered on Mobile */}
-          <div className="absolute left-0 right-0 flex justify-center md:static md:flex-1 md:justify-start items-center pointer-events-none md:pointer-events-auto md:-ml-[80px]">
+          <div className="absolute left-0 right-0 flex justify-center py-2 md:static md:flex-1 md:justify-start items-center pointer-events-none md:pointer-events-auto">
             <Link to="/" className="flex items-center text-2xl font-serif tracking-tighter pointer-events-auto">
                 <img 
-                src={isDarkHeader ? "/images/logo.png" : "/images/Home.png"}
+                src="/images/logo.svg"
                 alt="Lapidary Art" 
-                className="w-[240px] md:w-[400px] h-auto max-h-[120px] md:max-h-[150px] object-contain transition-all duration-300"
-                onError={(e) => { 
-                    const target = e.target;
-                    if (target.src.includes('Home.png')) {
-                    target.src = '/images/logo.png';
-                    } else if (target.src.includes('logo.png')) {
-                    target.src = '/images/logo.svg';
-                    }
-                }}
+                className="w-[173px] md:w-[361px] h-auto max-h-[43px] md:max-h-[58px] object-contain transition-all duration-300"
                 />
             </Link>
           </div>
@@ -141,35 +133,35 @@ const Navbar = () => {
           <div className="hidden md:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center space-x-8 text-[11px] font-medium uppercase tracking-[0.15em] h-full">
             {!isSearchOpen ? (
                 <>
-                    <Link to="/new-arrivals" className="hover:opacity-70 transition-opacity py-3">New Arrivals</Link>
+                    <Link to="/new-arrivals" className="hover:opacity-70 transition-opacity py-1">New Arrivals</Link>
                     
                     <div 
                     className="relative h-full flex items-center"
                     onMouseEnter={() => handleMouseEnter('shop')}
                     >
-                    <Link to="/shop" className="hover:opacity-70 transition-opacity py-3 flex items-center">
+                    <Link to="/shop" className="hover:opacity-70 transition-opacity py-1 flex items-center">
                         Shop <ChevronDown size={12} className="ml-1" />
                     </Link>
                     </div>
 
-                    <Link to="/watches" className="hover:opacity-70 transition-opacity py-3">Watches</Link>
+                    <Link to="/watches" className="hover:opacity-70 transition-opacity py-1">Watches</Link>
                     
                     <div 
                     className="relative h-full flex items-center"
                     onMouseEnter={() => handleMouseEnter('gifting')}
                     >
-                    <Link to="/gifts" className="hover:opacity-70 transition-opacity py-3 flex items-center">
+                    <Link to="/gifts" className="hover:opacity-70 transition-opacity py-1 flex items-center">
                         Gifting <ChevronDown size={12} className="ml-1" />
                     </Link>
                     </div>
                     
-                    <Link to="/custom-design" className="hover:opacity-70 transition-opacity py-3">Custom Designs</Link>
+                    <Link to="/custom-design" className="hover:opacity-70 transition-opacity py-1">Custom Designs</Link>
 
-                    <Link to="/blog" className="hover:opacity-70 transition-opacity py-3">Journal</Link>
+                    <Link to="/blog" className="hover:opacity-70 transition-opacity py-1">Journal</Link>
 
-                    <Link to="/gallery" className="hover:opacity-70 transition-opacity py-3">Gallery</Link>
+                    <Link to="/gallery" className="hover:opacity-70 transition-opacity py-1">Gallery</Link>
 
-                    <Link to="/about" className="hover:opacity-70 transition-opacity py-3">About</Link>
+                    <Link to="/about" className="hover:opacity-70 transition-opacity py-1">About</Link>
                 </>
             ) : (
                 <div className="relative">
@@ -194,7 +186,7 @@ const Navbar = () => {
                     
                     {/* Search Suggestions */}
                     {suggestions.length > 0 && (
-                        <div className={`absolute top-full left-0 w-full backdrop-blur-md text-gray-900 shadow-lg mt-1 max-h-[300px] overflow-y-auto z-50 transition-all duration-300 ${
+                        <div className={`absolute top-full left-0 w-full backdrop-blur-md text-gray-900 shadow-lg mt-1 max-h-[300px] overflow-y-auto z-60 transition-all duration-300 ${
                             isHome && !isScrolled
                             ? 'bg-white/40 border border-gray-100/30'
                             : 'bg-white/95 border border-gray-100'
@@ -238,7 +230,7 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
-              className={`absolute top-full left-0 w-full backdrop-blur-md text-gray-900 shadow-lg py-12 px-6 z-50 transition-all duration-300 ${
+              className={`absolute top-full left-0 w-full backdrop-blur-md text-gray-900 shadow-lg py-12 px-6 z-60 transition-all duration-300 ${
                 isHome && !isScrolled
                 ? 'bg-white/40 border-t border-gray-100/30'
                 : 'bg-white/95 border-t border-gray-100'
@@ -277,7 +269,7 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
-              className={`absolute top-full left-[50%] transform -translate-x-1/2 backdrop-blur-md text-gray-900 shadow-lg py-6 px-8 z-50 min-w-[250px] transition-all duration-300 ${
+              className={`absolute top-full left-[50%] transform -translate-x-1/2 backdrop-blur-md text-gray-900 shadow-lg py-6 px-8 z-60 min-w-[250px] transition-all duration-300 ${
                 isHome && !isScrolled
                 ? 'bg-white/40 border-t border-gray-100/30'
                 : 'bg-white/95 border-t border-gray-100'
@@ -311,7 +303,7 @@ const Navbar = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -300 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-white z-50 md:hidden pt-20 px-6"
+            className="fixed inset-0 bg-white z-60 md:hidden pt-20 px-6"
           >
             <button onClick={() => setIsMobileMenuOpen(false)} className="absolute top-6 right-6">
               <X size={24} className="text-black" />
@@ -439,7 +431,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-white z-50 md:hidden pt-24 px-6"
+            className="fixed inset-0 bg-white z-60 md:hidden pt-24 px-6"
           >
             <button 
                 onClick={() => setIsSearchOpen(false)} 
