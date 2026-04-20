@@ -124,7 +124,7 @@ const Navbar = () => {
                 <img 
                 src="/images/logo.svg"
                 alt="Lapidary Art" 
-                className="w-[173px] md:w-[361px] h-auto max-h-[43px] md:max-h-[58px] object-contain transition-all duration-300"
+                className="w-[173px] md:w-[361px] h-auto max-h-[43px] md:max-h-[58px] object-contain transition-all duration-300 transform [transform:scaleX(1.16)]"
                 />
             </Link>
           </div>
