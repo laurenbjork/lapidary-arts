@@ -10,7 +10,7 @@ const AnnouncementBar = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="bg-burgundy text-white text-[10px] uppercase tracking-widest text-center py-2.5 relative z-50 w-full">
+    <div className="bg-burgundy text-white text-[10px] uppercase tracking-widest text-center py-2.5 fixed top-0 z-50 w-full">
       <div className="max-w-[1920px] mx-auto px-4 flex justify-between items-center h-full">
         <button className="opacity-50 hover:opacity-100 transition-opacity p-1">
           <ChevronLeft size={14} />

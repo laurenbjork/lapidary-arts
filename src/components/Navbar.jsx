@@ -4,6 +4,7 @@ import { ShoppingBag, Search, Menu, X, ChevronDown, ChevronUp } from 'lucide-rea
 import { motion, AnimatePresence } from 'framer-motion';
 import AnnouncementBar from './AnnouncementBar';
 import { useProducts } from '../context/ProductContext';
+import { useContent } from '../context/ContentContext';
 
 const shopMenu = {
   RINGS: ['All Rings', 'Gemstones', 'Cocktail', 'Diamond Bands', 'Bridal & Engagement'],
@@ -32,6 +33,7 @@ const Navbar = () => {
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
   const { products } = useProducts();
+  const { content } = useContent();
   const location = useLocation();
   const isHome = location.pathname === '/';
   const isDarkHeader = isScrolled || !isHome || isSearchOpen;
@@ -103,13 +105,11 @@ const Navbar = () => {
         transition={{ duration: 0.5 }}
         className={`fixed w-full z-50 transition-all duration-500 ${
           isDarkHeader ? 'bg-white/50 backdrop-blur-md text-gray-900 shadow-sm' : 'bg-transparent text-white'
-        }`}
+        } ${content.announcement.isVisible ? 'pt-10' : ''}` }
         onMouseLeave={handleMouseLeave}
       >
         <AnnouncementBar />
-        <div className={`max-w-[1920px] mx-auto px-6 flex justify-between items-center relative transition-all duration-500 ${
-          isDarkHeader ? 'py-0' : 'py-0'
-        }`}>
+        <div className={`max-w-[1920px] mx-auto px-6 flex justify-between items-center relative transition-all duration-500 py-3 md:py-0`}>
           
           {/* Mobile Menu Button */}
           <div className="md:hidden z-60">
