@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         burgundy: {
-          DEFAULT: '#800020',
+          DEFAULT: '#6d0504',
           light: '#98304b',
           dark: '#4a0012',
         },

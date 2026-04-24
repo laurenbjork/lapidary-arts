@@ -7,6 +7,8 @@ import { ChevronLeft, ChevronRight, Star, MapPin, Phone, Clock, X } from 'lucide
 import FadeIn from '../components/FadeIn';
 import SEO from '../components/SEO';
 
+import ProductImageZoom from '../components/ProductImageZoom';
+
 const ProductDetails = () => {
   const { id } = useParams();
   const { products } = useProducts();
@@ -109,7 +111,7 @@ const ProductDetails = () => {
         {/* Image Gallery Section */}
         <FadeIn className="space-y-4 max-w-xl mx-auto w-full">
           <div className="aspect-square bg-gray-50 overflow-hidden rounded-sm relative group">
-             <img src={`${activeImage || product.image}?width=1200&quality=80`} alt={`${product.name} - Main View`} className="w-full h-full object-cover" />
+             <ProductImageZoom imageUrl={`${activeImage || product.image}?width=1200&quality=80`} altText={`${product.name} - Main View`} />
 
           </div>
           {galleryImages.length > 0 && (

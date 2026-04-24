@@ -55,7 +55,7 @@ const Footer = () => {
           <div className="lg:col-span-3 flex items-start pt-8">
             <Link to="/" className="block ml-24">
               <img 
-                src="/images/footer-icon.svg" 
+                src="/images/Footer-Icon2.svg" 
                 alt="Lapidary Art" 
                 className="h-36 object-contain"
               />

@@ -10,7 +10,7 @@ const shopMenu = {
   NECKLACES: ['All Necklaces', 'Diamond', 'Gemstones', 'Coin', 'Gold'],
   EARRINGS: ['All Earrings', 'Hoops & Huggies', 'Studs', 'Drop Earrings'],
   BRACELETS: ['All Bracelets', 'Chains', 'Bangles'],
-  'LAB GROWN': ['All Lab Grown', 'Rings', 'Necklaces', 'Earrings', 'Bracelets'],
+  'LAB GROWN': ['All Lab Grown', 'Rings', 'Necklaces', 'Earrings'],
   STONE: ['All Stones', 'Emerald', 'Topaz', 'Sapphire', 'Spinel', 'Pearl', 'Opal', 'Tourmaline', 'Ruby', 'Garnet', 'Zircon', 'Tanzanite']
 };
 
@@ -119,12 +119,12 @@ const Navbar = () => {
           </div>
 
           {/* Logo - Left Aligned on Desktop, Centered on Mobile */}
-          <div className="absolute left-0 right-0 flex justify-center py-2 md:static md:flex-1 md:justify-start items-center pointer-events-none md:pointer-events-auto">
-            <Link to="/" className="flex items-center text-2xl font-serif tracking-tighter pointer-events-auto">
+          <div className="h-[70px] md:h-[85px] overflow-hidden absolute left-0 right-0 flex justify-center md:static md:flex-1 md:justify-start items-center pointer-events-none md:pointer-events-auto md:ml-16">
+            <Link to="/" className="flex items-center h-full text-2xl font-serif tracking-tighter pointer-events-auto">
                 <img 
-                src="/images/logo.svg"
+                src={isDarkHeader ? "/images/logo.svg" : "/images/whitefooter-logo.svg"}
                 alt="Lapidary Art" 
-                className="w-[173px] md:w-[361px] h-auto max-h-[43px] md:max-h-[58px] object-contain transition-all duration-300 transform [transform:scaleX(1.16)]"
+                className="w-auto object-contain h-[90px] md:h-[110px] transition-all duration-300"
                 />
             </Link>
           </div>
