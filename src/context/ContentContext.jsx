@@ -171,6 +171,7 @@ export const ContentProvider = ({ children }) => {
     // Fix specific known array sections
     if (cleanData.instagramFeed) cleanData.instagramFeed = fixArray(cleanData.instagramFeed);
     if (cleanData.pressCarousel) cleanData.pressCarousel = fixArray(cleanData.pressCarousel);
+    if (cleanData.gifting) cleanData.gifting = fixArray(cleanData.gifting);
 
     const traverse = (obj) => {
       for (const key in obj) {

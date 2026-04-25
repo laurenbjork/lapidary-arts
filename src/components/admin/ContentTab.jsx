@@ -364,6 +364,14 @@ const ContentTab = () => {
     alert('About section updated!');
   };
 
+  const saveFooter = async (e) => {
+    e.preventDefault();
+    const dataToSave = await processUploads('footer', footerForm);
+    setFooterForm(dataToSave);
+    updateContent('footer', dataToSave);
+    alert('Footer section updated!');
+  };
+
   const saveGifting = async (e) => {
     e.preventDefault();
     const dataToSave = await processUploads('gifting', giftingForm);
@@ -515,22 +523,66 @@ const ContentTab = () => {
 
 
 
-      {activeSection === 'footer' && (
-        <form onSubmit={saveFooter} className="space-y-6 max-w-2xl">
+      {activeSection === 'about' && (
+        <form onSubmit={saveAbout} className="space-y-6 max-w-2xl">
           <div>
-            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Footer Logo</label>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">About Image</label>
             <div className="flex items-center space-x-4">
-              <div className="relative overflow-hidden w-48 h-32 bg-gray-800 rounded-md flex items-center justify-center">
-                <img src={footerForm.logo} alt="Footer Logo" className="h-16 mx-auto object-contain" />
+              <div className="relative overflow-hidden w-32 h-40 bg-gray-200 rounded-md">
+                <img src={aboutForm.image} alt="About" className="w-full h-full object-cover" />
               </div>
               <div className="flex-1">
                 <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors inline-flex items-center">
-                  <Upload size={16} className="mr-2" /> Change Logo
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'footer', 'logo')} className="hidden" />
+                  <Upload size={16} className="mr-2" /> Change Image
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'about')} className="hidden" />
                 </label>
-                <p className="text-[10px] text-gray-400 mt-1">Recommended: Transparent PNG or SVG, White/Light Color</p>
+                <p className="text-[10px] text-gray-400 mt-1">Recommended: 800 x 1000 px (Portrait)</p>
               </div>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Title</label>
+            <input 
+              type="text" 
+              name="title" 
+              value={aboutForm.title} 
+              onChange={handleAboutChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Subtitle</label>
+            <input 
+              type="text" 
+              name="subtitle" 
+              value={aboutForm.subtitle} 
+              onChange={handleAboutChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Paragraph 1</label>
+            <textarea 
+              name="paragraph1" 
+              value={aboutForm.paragraph1} 
+              onChange={handleAboutChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+              rows="4"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Paragraph 2</label>
+            <textarea 
+              name="paragraph2" 
+              value={aboutForm.paragraph2} 
+              onChange={handleAboutChange} 
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+              rows="4"
+            />
           </div>
 
           <button 
