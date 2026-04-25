@@ -72,7 +72,7 @@ function App() {
           <InquiryProvider>
             <BlogProvider>
               <GalleryProvider>
-            <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900">
+            <div className="min-h-screen bg-white flex flex-col font-sans text-gray-900 overflow-hidden">
               <ScrollToTop />
               <Analytics />
               {!isAdmin && <NewsletterPopup />}

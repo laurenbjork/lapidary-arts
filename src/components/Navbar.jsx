@@ -303,7 +303,7 @@ const Navbar = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -300 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-white z-60 md:hidden pt-20 px-6"
+            className="fixed inset-0 bg-white z-[100] md:hidden pt-20 px-6"
           >
             <button onClick={() => setIsMobileMenuOpen(false)} className="absolute top-6 right-6">
               <X size={24} className="text-black" />
