@@ -17,9 +17,9 @@ const shopMenu = {
 
 
 
-const giftingMenu = [
+export const giftingMenu = [
   'All Gifting', 'Daughters', 'Lovers', 'Friend', 'Mamas', 'The Minimalist', 'The Maximalist',
-  'Bridal Jewelry', 'Best Sellers', '$500 and under'
+  'Bridal Jewelry', 'Best Sellers'
 ];
 
 const Navbar = () => {

@@ -4,29 +4,23 @@ import FadeIn from '../components/FadeIn';
 import { useProducts } from '../context/ProductContext';
 import { useContent } from '../context/ContentContext';
 import ProductCard from '../components/ProductCard';
+import GiftingCategories from '../components/GiftingCategories';
 
 const Gifts = () => {
   const { guide } = useParams();
   const { products } = useProducts();
   const { content } = useContent();
 
-  const giftGuides = [
-    'Daughters', 'Lovers', 'Friend', 'Mamas', 'The Minimalist', 'The Maximalist',
-    'Bridal Jewelry', 'Best Sellers', '$500 and under'
-  ];
-
   if (guide) {
+    if (guide === 'all-gifting') {
+      return <GiftingCategories />;
+    }
+
     const displayTitle = guide.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     
     // Filter products for this guide
     const guideProducts = products.filter(p => {
       if (!p.isVisible) return false;
-      
-      // If "All Gifting", show all products in 'gifting' category
-      if (guide === 'all-gifting') {
-        if (p.category === 'gifting') return true;
-        return (p.additionalCategories || []).some(ac => ac.category === 'gifting');
-      }
 
       // Check main category/subcategory
       const mainMatch = (p.category === 'gifting' && p.subcategory === guide) || 
