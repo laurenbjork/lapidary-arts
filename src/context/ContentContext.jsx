@@ -162,16 +162,29 @@ export const ContentProvider = ({ children }) => {
 
     // Helper to fix corrupted arrays (e.g. if they were saved as objects)
     const fixArray = (val) => {
+        if (typeof val === 'string') {
+            try {
+                const parsed = JSON.parse(val);
+                if (Array.isArray(parsed)) return parsed;
+                if (parsed && typeof parsed === 'object') return Object.values(parsed);
+                return [];
+            } catch (e) {
+                return [];
+            }
+        }
       if (val && typeof val === 'object' && !Array.isArray(val)) {
         return Object.values(val);
       }
-      return val;
+      return Array.isArray(val) ? val : [];
     };
 
     // Fix specific known array sections
     if (cleanData.instagramFeed) cleanData.instagramFeed = fixArray(cleanData.instagramFeed);
     if (cleanData.pressCarousel) cleanData.pressCarousel = fixArray(cleanData.pressCarousel);
     if (cleanData.gifting) cleanData.gifting = fixArray(cleanData.gifting);
+    if (cleanData.customDesign && cleanData.customDesign.features) cleanData.customDesign.features = fixArray(cleanData.customDesign.features);
+    if (cleanData.customDesignPage && cleanData.customDesignPage.steps) cleanData.customDesignPage.steps = fixArray(cleanData.customDesignPage.steps);
+    if (cleanData.watches && cleanData.watches.items) cleanData.watches.items = fixArray(cleanData.watches.items);
 
     const traverse = (obj) => {
       for (const key in obj) {

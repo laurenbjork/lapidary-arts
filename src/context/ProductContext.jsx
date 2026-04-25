@@ -24,7 +24,22 @@ export function ProductProvider({ children }) {
       if (error) throw error;
       
       const mappedProducts = (data || []).map(p => {
-        const gallery = (p.gallery || []).filter(img => img);
+        // Safely parse JSON string fields
+        const safeParse = (jsonString) => {
+            if (typeof jsonString === 'string') {
+                try {
+                    const parsed = JSON.parse(jsonString);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+            return Array.isArray(jsonString) ? jsonString : [];
+        };
+
+        const details = safeParse(p.details);
+        let gallery = safeParse(p.gallery).filter(img => img);
+        const additionalCategories = safeParse(p.additional_categories);
 
         // Inject main image if it's missing from the gallery
         if (p.image && !gallery.includes(p.image)) {
@@ -42,14 +57,14 @@ export function ProductProvider({ children }) {
           modelNumber: p.model_number,
           hidePrice: p.hide_price,
           subTitle: p.sub_title,
-          details: p.details || [],
+          details: details,
           inStore: p.in_store,
           stockNumber: p.stock_number,
-          gallery: gallery, // Use the potentially modified gallery
+          gallery: gallery,
           availabilityStatus: p.availability_status || 'available',
           subcategory: p.subcategory,
           secondaryDescription: p.secondary_description,
-          additionalCategories: p.additional_categories || []
+          additionalCategories: additionalCategories
         };
       });
       
@@ -149,6 +164,18 @@ export function ProductProvider({ children }) {
       const returnedData = data[0]; // Safely grab the first item 
 
       // Map back to camelCase for state 
+      const safeParse = (jsonString) => {
+        if (typeof jsonString === 'string') {
+            try {
+                const parsed = JSON.parse(jsonString);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+        return Array.isArray(jsonString) ? jsonString : [];
+      };
+      
       const mappedData = { 
         ...returnedData, 
         discountPrice: returnedData.discount_price, 
@@ -160,13 +187,13 @@ export function ProductProvider({ children }) {
         modelNumber: returnedData.model_number, 
         hidePrice: returnedData.hide_price, 
         subTitle: returnedData.sub_title, 
-        details: returnedData.details || [], 
+        details: safeParse(returnedData.details), 
         inStore: returnedData.in_store, 
         stockNumber: returnedData.stock_number, 
-        gallery: returnedData.gallery || [], 
+        gallery: safeParse(returnedData.gallery), 
         availabilityStatus: returnedData.availability_status, 
         secondaryDescription: returnedData.secondary_description, 
-        additionalCategories: returnedData.additional_categories || [] 
+        additionalCategories: safeParse(returnedData.additional_categories) 
       }; 
 
       setProducts((prev) => [mappedData, ...prev]); 
@@ -270,6 +297,18 @@ export function ProductProvider({ children }) {
        const returnedData = data[0]; 
  
        // 6. Map back to camelCase and update state 
+      const safeParse = (jsonString) => {
+        if (typeof jsonString === 'string') {
+            try {
+                const parsed = JSON.parse(jsonString);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+        return Array.isArray(jsonString) ? jsonString : [];
+      };
+
        const mappedData = { 
          ...returnedData, 
          discountPrice: returnedData.discount_price, 
@@ -281,13 +320,13 @@ export function ProductProvider({ children }) {
          modelNumber: returnedData.model_number, 
          hidePrice: returnedData.hide_price, 
          subTitle: returnedData.sub_title, 
-         details: returnedData.details || [], 
+         details: safeParse(returnedData.details), 
          inStore: returnedData.in_store, 
          stockNumber: returnedData.stock_number, 
-         gallery: returnedData.gallery || [], 
+         gallery: safeParse(returnedData.gallery), 
          availabilityStatus: returnedData.availability_status, 
          secondaryDescription: returnedData.secondary_description, 
-         additionalCategories: returnedData.additional_categories || [] 
+         additionalCategories: safeParse(returnedData.additional_categories) 
        }; 
  
        setProducts((prev) => prev.map((p) => (p.id === id ? mappedData : p))); 

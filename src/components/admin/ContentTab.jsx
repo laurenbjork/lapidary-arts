@@ -233,7 +233,7 @@ const ContentTab = () => {
 
 
   const processUploads = async (section, currentData) => {
-    const updatedData = { ...currentData };
+    const updatedData = Array.isArray(currentData) ? [...currentData] : { ...currentData };
     let hasUploads = false;
 
     // Helper to upload and update field
