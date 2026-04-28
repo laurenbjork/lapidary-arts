@@ -163,6 +163,15 @@ const ContentTab = () => {
     setGiftingForm(newGifting);
   };
 
+  const handleGiftingAdd = () => {
+    setGiftingForm([...giftingForm, { name: '', link: '', image: '' }]);
+  };
+
+  const handleGiftingRemove = (index) => {
+    const newGifting = giftingForm.filter((_, i) => i !== index);
+    setGiftingForm(newGifting);
+  };
+
   const handleSocialsChange = (e) => {
     const { name, value } = e.target;
     setSocialsForm({ ...socialsForm, [name]: value });
@@ -598,7 +607,16 @@ const ContentTab = () => {
         <form onSubmit={saveGifting} className="space-y-6 max-w-4xl">
           <div className="space-y-4">
             {giftingForm.map((item, index) => (
-              <div key={index} className="bg-gray-50 p-4 rounded-md">
+              <div key={index} className="bg-gray-50 p-4 rounded-md relative">
+                {!item.isEssential && (
+                  <button
+                    type="button"
+                    onClick={() => handleGiftingRemove(index)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-xs"
+                  >
+                    Remove
+                  </button>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Image</label>
@@ -643,6 +661,14 @@ const ContentTab = () => {
               </div>
             ))}
           </div>
+
+          <button
+            type="button"
+            onClick={handleGiftingAdd}
+            className="w-full py-2 border-2 border-dashed border-gray-300 rounded-md text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors text-sm font-medium"
+          >
+            + Add New Card
+          </button>
 
           <button 
             type="submit" 

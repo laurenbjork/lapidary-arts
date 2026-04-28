@@ -20,7 +20,9 @@ const initialContent = {
     { name: 'Friend', link: '/gifts/friend', image: '' },
     { name: 'Mamas', link: '/gifts/mamas', image: '' },
     { name: 'The Minimalist', link: '/gifts/the-minimalist', image: '' },
-    { name: 'The Maximalist', link: '/gifts/the-maximalist', image: '' }
+    { name: 'The Maximalist', link: '/gifts/the-maximalist', image: '' },
+    { name: 'Bridal Jewelry', link: '/gifts/bridal-jewelry', image: '' },
+    { name: 'Best Sellers', link: '/gifts/best-sellers', image: '' }
   ],
   announcement: {
     text: "Complimentary shipping with code DAYGLOW at checkout",
@@ -232,7 +234,25 @@ export const ContentProvider = ({ children }) => {
         if (data && data.length > 0) {
           const newContent = { ...initialContent };
           data.forEach(row => {
-            if (row.section_name && row.content) {
+            if (row.section_name === 'gifting' && Array.isArray(row.content)) {
+                const dbItems = row.content;
+                const defaultItems = initialContent.gifting;
+                const defaultNames = new Set(defaultItems.map(item => item.name));
+        
+                const mergedItems = defaultItems.map(defaultItem => {
+                    const dbItem = dbItems.find(item => item.name === defaultItem.name);
+                    return { ...defaultItem, ...(dbItem || {}), isEssential: true };
+                });
+        
+                dbItems.forEach(dbItem => {
+                    if (!defaultNames.has(dbItem.name)) {
+                        mergedItems.push({ ...dbItem, isEssential: false });
+                    }
+                });
+        
+                newContent.gifting = mergedItems;
+        
+            } else if (row.section_name && row.content) {
               newContent[row.section_name] = row.content;
             }
           });

@@ -149,10 +149,40 @@ const Navbar = () => {
                     <div 
                     className="relative h-full flex items-center"
                     onMouseEnter={() => handleMouseEnter('gifting')}
+                    onMouseLeave={handleMouseLeave}
                     >
-                    <Link to="/gifts" className="hover:opacity-70 transition-opacity py-1 flex items-center">
-                        Gifting <ChevronDown size={12} className="ml-1" />
-                    </Link>
+                      <Link to="/gifts" className="hover:opacity-70 transition-opacity py-1 flex items-center">
+                          Gifting <ChevronDown size={12} className="ml-1" />
+                      </Link>
+                      <AnimatePresence>
+                        {activeDropdown === 'gifting' && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className={`absolute top-full left-1/2 -translate-x-1/2 backdrop-blur-md text-gray-900 shadow-lg py-6 px-8 z-60 min-w-[250px] transition-all duration-300 ${
+                              isHome && !isScrolled
+                              ? 'bg-white/40 border-t border-gray-100/30'
+                              : 'bg-white/95 border-t border-gray-100'
+                            }`}
+                          >
+                            <ul className="space-y-3">
+                              {giftingMenu.map((item) => (
+                                <li key={item}>
+                                  <Link 
+                                    to={`/gifts/${item.toLowerCase().replace(/ /g, '-')}`} 
+                                    className="text-[11px] text-gray-600 hover:text-black uppercase tracking-wider transition-all duration-300 block hover:translate-x-1"
+                                    onClick={handleLinkClick}
+                                  >
+                                    {item}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                     
                     <Link to="/custom-design" className="hover:opacity-70 transition-opacity py-1">Custom Designs</Link>
@@ -263,35 +293,7 @@ const Navbar = () => {
 
 
 
-          {activeDropdown === 'gifting' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.2 }}
-              className={`absolute top-full left-[50%] transform -translate-x-1/2 backdrop-blur-md text-gray-900 shadow-lg py-6 px-8 z-60 min-w-[250px] transition-all duration-300 ${
-                isHome && !isScrolled
-                ? 'bg-white/40 border-t border-gray-100/30'
-                : 'bg-white/95 border-t border-gray-100'
-              }`}
-              onMouseEnter={() => handleMouseEnter('gifting')}
-              onMouseLeave={handleMouseLeave}
-            >
-              <ul className="space-y-3">
-                {giftingMenu.map((item) => (
-                  <li key={item}>
-                    <Link 
-                      to={`/gifts/${item.toLowerCase().replace(/ /g, '-')}`} 
-                      className="text-[11px] text-gray-600 hover:text-black uppercase tracking-wider transition-all duration-300 block hover:translate-x-1"
-                      onClick={handleLinkClick}
-                    >
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
+
         </AnimatePresence>
       </motion.nav>
 
