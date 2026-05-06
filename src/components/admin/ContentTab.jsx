@@ -177,6 +177,18 @@ const ContentTab = () => {
     setSocialsForm({ ...socialsForm, [name]: value });
   };
 
+  const saveSocials = (e) => {
+    e.preventDefault();
+    updateContent('socials', socialsForm);
+    alert('Social media links updated!');
+  };
+
+  const savePressCarousel = (e) => {
+    e.preventDefault();
+    updateContent('pressCarousel', pressCarouselForm);
+    alert('Press carousel updated!');
+  };
+
   const handleAddPressBrand = (brand) => {
     if (brand && !pressCarouselForm.includes(brand)) {
         setPressCarouselForm([...pressCarouselForm, brand]);
