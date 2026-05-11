@@ -131,7 +131,7 @@ const NewsletterPopup = () => {
                 {newsletterPopup?.rightLogoImage ? (
                     <img src={newsletterPopup.rightLogoImage} alt="Logo" className="h-12 w-auto object-contain" />
                 ) : (
-                    <span className="font-serif text-3xl italic font-medium mb-1">LS</span>
+                    <span className="font-serif text-3xl italic font-medium mb-1">LA</span>
                 )}
               </div>
 
