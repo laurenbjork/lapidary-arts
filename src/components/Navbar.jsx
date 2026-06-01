@@ -109,17 +109,17 @@ const Navbar = () => {
         onMouseLeave={handleMouseLeave}
       >
         <AnnouncementBar />
-        <div className={`max-w-[1920px] mx-auto px-6 flex justify-between items-center relative transition-all duration-500 py-3 md:py-0`}>
+                                <div className={`max-w-[1440px] mx-auto px-12 flex justify-between items-center relative transition-all duration-500 py-3 md:py-0 gap-8`}>
           
           {/* Mobile Menu Button */}
-          <div className="md:hidden z-60">
+                    <div className="lg:hidden z-60">
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
 
           {/* Logo - Left Aligned on Desktop, Centered on Mobile */}
-          <div className="h-[70px] md:h-[85px] overflow-hidden absolute left-0 right-0 flex justify-center md:static md:flex-1 md:justify-start items-center pointer-events-none md:pointer-events-auto md:ml-16">
+                              <div className="h-[70px] md:h-[85px] overflow-hidden flex-1 flex justify-center lg:justify-start items-center">
             <Link to="/" className="flex items-center h-full text-2xl font-serif tracking-tighter pointer-events-auto">
                 <img 
                 src={isDarkHeader ? "/images/logo.svg" : "/images/whitefooter-logo.svg"}
@@ -130,7 +130,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation - Centered */}
-          <div className="hidden md:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center space-x-8 text-[11px] font-medium uppercase tracking-[0.15em] h-full">
+                              <div className="hidden lg:flex flex-1 justify-center items-center space-x-6 text-[11px] font-medium uppercase tracking-[0.15em] h-full">
             {!isSearchOpen ? (
                 <>
                     <Link to="/new-arrivals" className="hover:opacity-70 transition-opacity py-1">New Arrivals</Link>
@@ -304,8 +304,8 @@ const Navbar = () => {
             initial={{ opacity: 0, x: -300 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -300 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-white z-[100] md:hidden pt-20 px-6"
+                        transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-white z-[100] lg:hidden pt-20 px-6"
           >
             <button onClick={() => setIsMobileMenuOpen(false)} className="absolute top-6 right-6">
               <X size={24} className="text-black" />
