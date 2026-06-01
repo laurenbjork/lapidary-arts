@@ -109,7 +109,7 @@ const Navbar = () => {
         onMouseLeave={handleMouseLeave}
       >
         <AnnouncementBar />
-                                <div className={`max-w-[1440px] mx-auto px-12 flex justify-between items-center relative transition-all duration-500 py-3 md:py-0 gap-8`}>
+                                                <div className={`max-w-[1440px] mx-auto px-12 flex justify-between items-center relative transition-all duration-500 md:py-0 gap-8`}>
           
           {/* Mobile Menu Button */}
                     <div className="lg:hidden z-60">
@@ -119,7 +119,7 @@ const Navbar = () => {
           </div>
 
           {/* Logo - Left Aligned on Desktop, Centered on Mobile */}
-                              <div className="h-[70px] md:h-[85px] overflow-hidden flex-1 flex justify-center lg:justify-start items-center">
+                                        <div className="h-[60px] md:h-[70px] overflow-hidden flex-1 flex justify-center lg:justify-start items-center">
             <Link to="/" className="flex items-center h-full text-2xl font-serif tracking-tighter pointer-events-auto">
                 <img 
                 src={isDarkHeader ? "/images/logo.svg" : "/images/whitefooter-logo.svg"}
