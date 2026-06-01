@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useInquiries } from '../../context/InquiryContext';
-import { Mail, Calendar, MessageSquare, Trash2, StickyNote, X, ChevronDown, ChevronUp, Filter, Phone, Clock, Archive, Download, History } from 'lucide-react';
+import { Mail, Calendar, MessageSquare, Trash2, StickyNote, X, ChevronDown, ChevronUp, Filter, Phone, Clock, Archive, Download, History, ShieldCheck } from 'lucide-react';
 import TabButton from './TabButton';
 import Papa from 'papaparse';
 
@@ -166,6 +166,7 @@ const InquiriesTab = () => {
                     {inquiry.phone && <div className="flex items-center">
                         <Phone size={14} className="mr-2" />
                         <a href={`tel:${inquiry.phone}`} className="hover:text-burgundy">{inquiry.phone}</a>
+                                                {!!inquiry.sms_consent && <ShieldCheck size={14} className="ml-2 text-green-600" title="SMS Consent Given" />}
                     </div>}
                   </div>
                 </div>

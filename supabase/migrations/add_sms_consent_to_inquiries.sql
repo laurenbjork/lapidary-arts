@@ -1,0 +1,1 @@
+ALTER TABLE inquiries ADD COLUMN sms_consent BOOLEAN DEFAULT false;

@@ -24,7 +24,8 @@ const ProductDetails = () => {
     email: '',
     phone: '',
     description: '',
-    preferredTime: 'morning'
+    preferredTime: 'morning',
+    smsConsent: false
   });
   const [bookingStatus, setBookingStatus] = useState('idle'); // idle, submitting, success, error
 
@@ -84,6 +85,7 @@ const ProductDetails = () => {
         phone: bookingForm.phone,
         description: `Product Inquiry: ${product.name} (Stock #: ${product.stockNumber}) - Message: ${bookingForm.description}`,
         preferred_time: bookingForm.preferredTime,
+        sms_consent: bookingForm.smsConsent, // Add this line
         type: 'appointment'
     });
 
@@ -313,6 +315,19 @@ const ProductDetails = () => {
                                 onChange={handleBookingChange}
                                 className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-black"
                             />
+                        </div>
+                        <div className="flex items-start space-x-3 mt-4">
+                            <input 
+                                type="checkbox"
+                                id="sms-consent"
+                                name="smsConsent"
+                                checked={bookingForm.smsConsent}
+                                onChange={(e) => setBookingForm({...bookingForm, smsConsent: e.target.checked})}
+                                className="mt-1 h-4 w-4 rounded border-gray-300 text-burgundy focus:ring-burgundy"
+                            />
+                            <label htmlFor="sms-consent" className="text-xs text-gray-500">
+                                I agree to receive text messages from Lapidary Arts Jewelry regarding appointments, repair updates, order notifications, promotions, special events, and new arrivals. Message frequency varies. Message and data rates may apply. Reply STOP to opt out.
+                            </label>
                         </div>
                         <div>
                             <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Preferred Time to Reach Out</label>
