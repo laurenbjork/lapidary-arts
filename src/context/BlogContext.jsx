@@ -14,7 +14,11 @@ export const BlogProvider = ({ children }) => {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
-        .select('*')
+        .select(
+          'id, created_at, title, subtitle, content, image, is_visible, slug,
+          font_family, title_font_family, title_font_size, title_color,
+          subtitle_font_family, subtitle_font_size, subtitle_color'
+        )
         .order('created_at', { ascending: false });
 
       if (error) throw error;
