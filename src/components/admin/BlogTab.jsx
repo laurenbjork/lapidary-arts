@@ -23,8 +23,10 @@ const BlogTab = () => {
     content: '',
     image: '',
     slug: '',
-    is_visible: true
-  };const [formData, setFormData] = useState(initialFormState);
+    is_visible: true,
+    font_family: '' // Add font_family to initial state
+  };
+  const [formData, setFormData] = useState(initialFormState);
   const quillRef = useRef(null);
 
   const handleContentChange = (content) => {
@@ -94,12 +96,22 @@ const BlogTab = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const editor = quillRef.current?.getEditor();
+    let selectedFont = '';
+    if (editor) {
+      // Get the font of the first character, or the whole content if uniform
+      const format = editor.getFormat(0, editor.getLength());
+      selectedFont = format.font || '';
+    }
+
+    const dataToSave = { ...formData, font_family: selectedFont };
     
     let result;
     if (editingId) {
-      result = await updatePost(editingId, formData);
+      result = await updatePost(editingId, dataToSave);
     } else {
-      result = await addPost(formData);
+      result = await addPost(dataToSave);
     }
 
     if (result.success) {
@@ -119,7 +131,8 @@ const BlogTab = () => {
       content: post.content || '',
       image: post.image || '',
       slug: post.slug || '',
-      is_visible: post.is_visible
+      is_visible: post.is_visible,
+      font_family: post.font_family || '' // Populate font_family on edit
     });
     setPreviewImage(post.image);
     setEditingId(post.id);

@@ -105,7 +105,8 @@ const BlogPost = () => {
           </div>
 
           <div 
-            className="prose prose-lg mx-auto font-serif text-gray-800 leading-relaxed max-w-2xl"
+            className="prose prose-lg mx-auto text-gray-800 leading-relaxed max-w-2xl"
+            style={{ fontFamily: post.font_family ? `'${post.font_family}', serif` : undefined }}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </FadeIn>
