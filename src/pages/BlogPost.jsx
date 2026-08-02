@@ -84,22 +84,22 @@ const BlogPost = () => {
               <ArrowLeft size={14} className="mr-2" /> Back to Journal
             </Link>
             <h1 
-              className="mb-6 leading-tight"
+              className="text-3xl md:text-5xl text-gray-900 mb-6 leading-tight"
               style={{
                 fontFamily: post.title_font_family ? `'${post.title_font_family}', serif` : undefined,
-                fontSize: post.title_font_size ? `${post.title_font_size}px` : undefined,
-                color: post.title_color || undefined,
+                fontSize: post.title_font_size ? post.title_font_size : undefined,
+                color: post.title_color ? post.title_color : undefined,
               }}
             >
               {post.title}
             </h1>
             {post.subtitle && (
               <p 
-                className="max-w-2xl mx-auto mb-6"
+                className="text-lg text-gray-500 italic max-w-2xl mx-auto mb-6"
                 style={{
                   fontFamily: post.subtitle_font_family ? `'${post.subtitle_font_family}', serif` : undefined,
-                  fontSize: post.subtitle_font_size ? `${post.subtitle_font_size}px` : undefined,
-                  color: post.subtitle_color || undefined,
+                  fontSize: post.subtitle_font_size ? post.subtitle_font_size : undefined,
+                  color: post.subtitle_color ? post.subtitle_color : undefined,
                 }}
               >
                 {post.subtitle}

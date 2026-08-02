@@ -18,6 +18,8 @@ const BlogTab = () => {
   const [previewImage, setPreviewImage] = useState(null);
 
   const fontOptions = ['Lora', 'Merriweather', 'Inter', 'Lato', 'Playfair Display', 'Montserrat'];
+  const fontSizeOptions = ['16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '60px'];
+  const colorOptions = ['#000000', '#333333', '#555555', '#6b7280', '#ef4444', '#dc2626', '#f59e0b', '#eab308', '#10b981', '#059669', '#3b82f6', '#2563eb', '#6366f1', '#4f46e5', '#8b5cf6', '#7c3aed', '#ec4899', '#db2777'];
 
   const initialFormState = {
     title: '',
@@ -195,6 +197,48 @@ const BlogTab = () => {
                   required 
                 />
               </div>
+
+              {/* Title Styling Options */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Title Font</label>
+                  <select
+                    name="title_font_family"
+                    value={formData.title_font_family}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                  >
+                    <option value="">Default</option>
+                    {fontOptions.map(font => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Title Size</label>
+                  <select
+                    name="title_font_size"
+                    value={formData.title_font_size}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                  >
+                    <option value="">Default</option>
+                    {fontSizeOptions.map(size => (
+                      <option key={size} value={size}>{size}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Title Color</label>
+                  <input 
+                    type="color" 
+                    name="title_color" 
+                    value={formData.title_color}
+                    onChange={handleInputChange}
+                    className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                  />
+                </div>
+              </div>
               
               <div>
                 <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Subtitle</label>
@@ -207,56 +251,15 @@ const BlogTab = () => {
                 />
               </div>
 
-              {/* Title Styling Options */}
-              <div className="space-y-2 border-t border-gray-100 pt-4 mt-4">
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">Title Styling</h3>
-                <div>
-                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Font Family</label>
-                  <select
-                    name="title_font_family"
-                    value={formData.title_font_family}
-                    onChange={handleInputChange}
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-                  >
-                    <option value="">Default</option>
-                    {fontOptions.map(font => (
-                      <option key={font} value={font}>{font}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Font Size (px)</label>
-                  <input
-                    type="number"
-                    name="title_font_size"
-                    value={formData.title_font_size}
-                    onChange={handleInputChange}
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-                    placeholder="e.g., 36"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Color</label>
-                  <input
-                    type="color"
-                    name="title_color"
-                    value={formData.title_color}
-                    onChange={handleInputChange}
-                    className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:border-black"
-                  />
-                </div>
-              </div>
-
               {/* Subtitle Styling Options */}
-              <div className="space-y-2 border-t border-gray-100 pt-4 mt-4">
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">Subtitle Styling</h3>
+              <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Font Family</label>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Subtitle Font</label>
                   <select
                     name="subtitle_font_family"
                     value={formData.subtitle_font_family}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
                   >
                     <option value="">Default</option>
                     {fontOptions.map(font => (
@@ -265,21 +268,24 @@ const BlogTab = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Font Size (px)</label>
-                  <input
-                    type="number"
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Subtitle Size</label>
+                  <select
                     name="subtitle_font_size"
                     value={formData.subtitle_font_size}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
-                    placeholder="e.g., 18"
-                  />
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
+                  >
+                    <option value="">Default</option>
+                    {fontSizeOptions.map(size => (
+                      <option key={size} value={size}>{size}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Color</label>
-                  <input
-                    type="color"
-                    name="subtitle_color"
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Subtitle Color</label>
+                  <input 
+                    type="color" 
+                    name="subtitle_color" 
                     value={formData.subtitle_color}
                     onChange={handleInputChange}
                     className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:border-black"
