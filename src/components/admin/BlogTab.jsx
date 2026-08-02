@@ -236,7 +236,7 @@ const BlogTab = () => {
                   <input 
                     type="color" 
                     name="title_color" 
-                    value={formData.title_color}
+                    value={formData.title_color || '#000000'}
                     onChange={handleInputChange}
                     className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:border-black"
                   />
@@ -289,7 +289,7 @@ const BlogTab = () => {
                   <input 
                     type="color" 
                     name="subtitle_color" 
-                    value={formData.subtitle_color}
+                    value={formData.subtitle_color || '#000000'}
                     onChange={handleInputChange}
                     className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:border-black"
                   />

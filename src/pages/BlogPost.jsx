@@ -13,14 +13,12 @@ const BlogPost = () => {
 
   useEffect(() => {
     if (!loading) {
-      // Try finding by slug first, then by ID as fallback
       const foundPost = posts.find(p => p.slug === slug || p.id === slug);
       if (foundPost) {
         setPost(foundPost);
+        console.log("Fetched post data:", foundPost);
       } else {
-        // If not found in current state (e.g. direct link load), it might be fetching still or actually 404
-        // But since we have loading check, if we are here and not found, it's likely 404
-        // However, let's wait a bit or handle graceful "Not Found"
+        console.log("Post not found for slug/id:", slug);
       }
     }
   }, [slug, posts, loading]);
@@ -85,22 +83,30 @@ const BlogPost = () => {
             </Link>
             <h1 
               className="text-3xl md:text-5xl text-gray-900 mb-6 leading-tight"
-              style={{
-                fontFamily: post.title_font_family ? `'${post.title_font_family}', serif` : undefined,
-                fontSize: post.title_font_size || undefined,
-                color: post.title_color || undefined,
-              }}
+              style={(() => {
+                const titleStyle = {
+                  fontFamily: post.title_font_family ? `'${post.title_font_family}', serif` : undefined,
+                  fontSize: post.title_font_size || undefined,
+                  color: post.title_color || undefined,
+                };
+                console.log("Title Style:", titleStyle);
+                return titleStyle;
+              })()}
             >
               {post.title}
             </h1>
             {post.subtitle && (
               <p 
                 className="text-lg text-gray-500 italic max-w-2xl mx-auto mb-6"
-                style={{
-                  fontFamily: post.subtitle_font_family ? `'${post.subtitle_font_family}', serif` : undefined,
-                  fontSize: post.subtitle_font_size || undefined,
-                  color: post.subtitle_color || undefined,
-                }}
+                style={(() => {
+                  const subtitleStyle = {
+                    fontFamily: post.subtitle_font_family ? `'${post.subtitle_font_family}', serif` : undefined,
+                    fontSize: post.subtitle_font_size || undefined,
+                    color: post.subtitle_color || undefined,
+                  };
+                  console.log("Subtitle Style:", subtitleStyle);
+                  return subtitleStyle;
+                })()}
               >
                 {post.subtitle}
               </p>
