@@ -116,6 +116,7 @@ const BlogTab = () => {
     }
 
     const dataToSave = { ...formData, font_family: selectedFont };
+    console.log("Data to save:", dataToSave);
     
     let result;
     if (editingId) {
@@ -123,6 +124,8 @@ const BlogTab = () => {
     } else {
       result = await addPost(dataToSave);
     }
+
+    console.log("Result from post operation:", result);
 
     if (result.success) {
       setIsEditing(false);

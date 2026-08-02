@@ -62,7 +62,10 @@ export const BlogProvider = ({ children }) => {
             .update(updates)
             .eq('id', id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase updatePost error:', error.message);
+          throw error;
+        }
         
         setPosts(posts.map(p => p.id === id ? { ...p, ...updates } : p));
         return { success: true };
