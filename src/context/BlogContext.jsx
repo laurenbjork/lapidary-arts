@@ -48,6 +48,7 @@ export const BlogProvider = ({ children }) => {
 
         if (error) throw error;
         setPosts([data[0], ...posts]);
+        fetchPosts(); // Re-fetch all posts to ensure latest data is available
         return { success: true };
     } catch (error) {
         console.error('Error adding blog post:', error.message);
@@ -68,6 +69,7 @@ export const BlogProvider = ({ children }) => {
         }
         
         setPosts(posts.map(p => p.id === id ? { ...p, ...updates } : p));
+        fetchPosts(); // Re-fetch all posts to ensure latest data is available
         return { success: true };
     } catch (error) {
         console.error('Error updating blog post:', error.message);
