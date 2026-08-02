@@ -17,6 +17,8 @@ const BlogTab = () => {
   const [editingId, setEditingId] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
+  const fontOptions = ['Lora', 'Merriweather', 'Inter', 'Lato', 'Playfair Display', 'Montserrat'];
+
   const initialFormState = {
     title: '',
     subtitle: '',
@@ -24,7 +26,13 @@ const BlogTab = () => {
     image: '',
     slug: '',
     is_visible: true,
-    font_family: '' // Add font_family to initial state
+    font_family: '', // This is for the content body
+    title_font_family: '',
+    title_font_size: '',
+    title_color: '',
+    subtitle_font_family: '',
+    subtitle_font_size: '',
+    subtitle_color: '',
   };
   const [formData, setFormData] = useState(initialFormState);
   const quillRef = useRef(null);
@@ -132,7 +140,13 @@ const BlogTab = () => {
       image: post.image || '',
       slug: post.slug || '',
       is_visible: post.is_visible,
-      font_family: post.font_family || '' // Populate font_family on edit
+      font_family: post.font_family || '', // Populate font_family on edit
+      title_font_family: post.title_font_family || '',
+      title_font_size: post.title_font_size || '',
+      title_color: post.title_color || '',
+      subtitle_font_family: post.subtitle_font_family || '',
+      subtitle_font_size: post.subtitle_font_size || '',
+      subtitle_color: post.subtitle_color || '',
     });
     setPreviewImage(post.image);
     setEditingId(post.id);
@@ -191,6 +205,86 @@ const BlogTab = () => {
                   onChange={handleInputChange} 
                   className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
                 />
+              </div>
+
+              {/* Title Styling Options */}
+              <div className="space-y-2 border-t border-gray-100 pt-4 mt-4">
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">Title Styling</h3>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Font Family</label>
+                  <select
+                    name="title_font_family"
+                    value={formData.title_font_family}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                  >
+                    <option value="">Default</option>
+                    {fontOptions.map(font => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Font Size (px)</label>
+                  <input
+                    type="number"
+                    name="title_font_size"
+                    value={formData.title_font_size}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                    placeholder="e.g., 36"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Color</label>
+                  <input
+                    type="color"
+                    name="title_color"
+                    value={formData.title_color}
+                    onChange={handleInputChange}
+                    className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                  />
+                </div>
+              </div>
+
+              {/* Subtitle Styling Options */}
+              <div className="space-y-2 border-t border-gray-100 pt-4 mt-4">
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">Subtitle Styling</h3>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Font Family</label>
+                  <select
+                    name="subtitle_font_family"
+                    value={formData.subtitle_font_family}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                  >
+                    <option value="">Default</option>
+                    {fontOptions.map(font => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Font Size (px)</label>
+                  <input
+                    type="number"
+                    name="subtitle_font_size"
+                    value={formData.subtitle_font_size}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black"
+                    placeholder="e.g., 18"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Color</label>
+                  <input
+                    type="color"
+                    name="subtitle_color"
+                    value={formData.subtitle_color}
+                    onChange={handleInputChange}
+                    className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                  />
+                </div>
               </div>
 
               <div>
