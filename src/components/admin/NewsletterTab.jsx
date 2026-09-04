@@ -11,7 +11,7 @@ const NewsletterTab = () => {
   const [popupForm, setPopupForm] = useState({
     leftImage: '/images/necklace-2.jpg',
     leftTitle: 'Lapidary Arts',
-    leftSubtitle: 'Los Angeles',
+    leftSubtitle: 'Bespoke Jewelry',
     rightLogoImage: '',
     popupTitle: "Don't miss a thing",
     popupDescription: "Sign up for new arrivals, exclusive offers, events and more.",
@@ -147,7 +147,7 @@ const NewsletterTab = () => {
                             value={popupForm.leftSubtitle} 
                             onChange={handlePopupChange}
                             className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-black text-sm"
-                            placeholder="e.g. Los Angeles"
+                            placeholder="e.g. Bespoke Jewelry"
                         />
                     </div>
                 </div>

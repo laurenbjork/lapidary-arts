@@ -50,7 +50,7 @@ const ContentTab = () => {
   const [brandStoryForm, setBrandStoryForm] = useState(content.brandStory || {
     image: '/images/hero-bg.jpg',
     smallText: 'www.lapidaryart.com',
-    largeText: 'Future heirlooms designed and crafted in Los Angeles.'
+    largeText: 'Future heirlooms designed and crafted with passion.'
   });
 
   const [aboutForm, setAboutForm] = useState(content.about || {

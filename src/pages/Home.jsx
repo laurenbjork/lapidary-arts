@@ -14,24 +14,6 @@ const Home = () => {
   const { getNewArrivals, products } = useProducts();
   const newArrivals = getNewArrivals();
 
-  // Organization Schema for Structured Data
-  const organizationSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Lapidary Arts Jewelry',
-    url: 'https://www.lapidaryartsjewelry.com',
-    logo: 'https://www.lapidaryartsjewelry.com/images/logo.svg', // Make sure this path is correct
-    contactPoint: {
-      '@type': 'ContactPoint',
-      telephone: '+1-XXX-XXX-XXXX', // Add your phone number
-      contactType: 'customer service',
-    },
-    sameAs: [
-      socials?.instagram || "https://www.instagram.com/lapidaryartsjewelry/",
-      socials?.facebook || "https://www.facebook.com/LapidaryArtsCJ/"
-    ],
-  };
-
   // Filter watches to show on home page
   const featuredWatches = useMemo(() => {
     return products.filter(p => p.category === 'watches' && p.showOnHome && p.isVisible);
@@ -135,11 +117,7 @@ const Home = () => {
     <div className="w-full">
       <SEO 
         title="Bespoke & Custom Fine Jewelry"
-        description="Discover exquisite, handcrafted fine jewelry at Lapidary Arts. From custom engagement rings to timeless heirlooms and vintage Rolex watches, our Los Angeles artisans bring your vision to life."
-        keywords={['fine jewelry', 'custom engagement rings', 'vintage Rolex', 'Los Angeles jeweler', 'handcrafted jewelry']}
-        schema={organizationSchema}
         url="https://www.lapidaryartsjewelry.com"
-        image={hero.image}
       />
 
       {/* Hero Section */}
@@ -365,7 +343,7 @@ const Home = () => {
              <FadeIn direction="up">
                 <p className="text-xs text-white uppercase tracking-widest mb-4">{brandStory?.smallText || 'www.lapidaryart.com'}</p>
                 <h2 className="font-serif text-4xl md:text-6xl text-white max-w-4xl leading-tight whitespace-pre-line">
-                    {brandStory?.largeText || 'Future heirlooms designed \nand crafted in Los Angeles.'}
+                    {brandStory?.largeText || 'Future heirlooms designed \nand crafted with passion.'}
                 </h2>
              </FadeIn>
          </div>

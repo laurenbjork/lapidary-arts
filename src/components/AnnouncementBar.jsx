@@ -4,13 +4,17 @@ import { useContent } from '../context/ContentContext';
 import { Link } from 'react-router-dom';
 
 const AnnouncementBar = () => {
-  const { content } = useContent();
+  const { content, loading } = useContent();
   const { text, link, isVisible } = content.announcement;
 
   if (!isVisible) return null;
 
   return (
-    <div className="bg-burgundy text-white text-[10px] uppercase tracking-widest text-center py-2.5 w-full relative z-[60]">
+    <div 
+      className={`bg-burgundy text-white text-[10px] uppercase tracking-widest text-center py-2.5 w-full relative z-[60] transition-opacity duration-300 ${
+        loading ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      }`}
+    >
       <div className="max-w-[1920px] mx-auto px-4 flex justify-between items-center h-full">
         <button className="opacity-50 hover:opacity-100 transition-opacity p-1">
           <ChevronLeft size={14} />

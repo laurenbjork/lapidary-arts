@@ -25,7 +25,7 @@ const initialContent = {
     { name: 'Best Sellers', link: '/gifts/best-sellers', image: '' }
   ],
   announcement: {
-    text: "Complimentary shipping with code DAYGLOW at checkout",
+    text: "Explore New - Discover The Latest - Shop Now",
     link: "/shop",
     isVisible: true
   },
@@ -101,7 +101,7 @@ const initialContent = {
   brandStory: {
     image: '/images/hero-bg.jpg',
     smallText: 'www.lapidaryart.com',
-    largeText: 'Future heirlooms designed and crafted in Los Angeles.'
+    largeText: 'Future heirlooms designed and crafted with passion.'
   },
   about: {
     image: '/images/home-hero-model.jpg',
