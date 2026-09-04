@@ -90,6 +90,7 @@ const ProductsTab = () => {
       { value: 'garnet', label: 'Garnet' },
       { value: 'zircon', label: 'Zircon' },
       { value: 'tanzanite', label: 'Tanzanite' },
+      { value: 'peridot', label: 'Peridot' },
     ],
     watches: [
       { value: 'men', label: 'Men' },

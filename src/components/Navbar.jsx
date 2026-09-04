@@ -12,7 +12,7 @@ const shopMenu = {
   EARRINGS: ['All Earrings', 'Hoops & Huggies', 'Studs', 'Drop Earrings'],
   BRACELETS: ['All Bracelets', 'Chains', 'Bangles'],
   'LAB GROWN': ['All Lab Grown', 'Rings', 'Necklaces', 'Earrings'],
-  STONE: ['All Stones', 'Emerald', 'Topaz', 'Sapphire', 'Spinel', 'Pearl', 'Opal', 'Tourmaline', 'Ruby', 'Garnet', 'Zircon', 'Tanzanite']
+  STONE: ['All Stones', 'Emerald', 'Topaz', 'Sapphire', 'Spinel', 'Pearl', 'Opal', 'Tourmaline', 'Ruby', 'Garnet', 'Zircon', 'Tanzanite', 'Peridot']
 };
 
 
@@ -105,7 +105,7 @@ const Navbar = () => {
         transition={{ duration: 0.5 }}
         className={`fixed w-full z-50 transition-all duration-500 ${
           isDarkHeader ? 'bg-white/50 backdrop-blur-md text-gray-900 shadow-sm' : 'bg-transparent text-white'
-        } ${content.announcement.isVisible ? 'pt-10' : ''}` }
+        }`}
         onMouseLeave={handleMouseLeave}
       >
         <AnnouncementBar />

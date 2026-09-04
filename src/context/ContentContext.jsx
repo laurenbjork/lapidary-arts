@@ -145,7 +145,21 @@ const initialContent = {
 };
 
 export const ContentProvider = ({ children }) => {
-  const [content, setContent] = useState(initialContent);
+  // Pre-load from localStorage to avoid "old text" flicker
+  const getInitialContent = () => {
+    try {
+      const saved = localStorage.getItem('siteContent_v2');
+      if (saved) {
+        // We still use initialContent as base for structure, but overlay with saved data
+        return { ...initialContent, ...JSON.parse(saved) };
+      }
+    } catch (e) {
+      console.warn('Failed to parse cached content:', e);
+    }
+    return initialContent;
+  };
+
+  const [content, setContent] = useState(getInitialContent);
   const [loading, setLoading] = useState(true);
 
   // Helper to sanitize content and remove stale blob URLs

@@ -53,7 +53,7 @@ const Footer = () => {
           
           {/* 1. Brand Logo (Standalone, Bigger) */}
           <div className="lg:col-span-3 flex items-start pt-8">
-            <Link to="/" className="block ml-24">
+            <Link to="/" className="block lg:ml-24 ml-0">
               <img 
                 src="/images/Footer-Icon2.svg" 
                 alt="Lapidary Art" 
@@ -63,7 +63,7 @@ const Footer = () => {
           </div>
 
           {/* 2. Visit Us Info (Moved from under logo) */}
-          <div className="lg:col-span-3 mt-10 pl-8">
+          <div className="lg:col-span-3 mt-10 lg:pl-8 pl-0">
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-white mb-4">Visit Us</h4>
             <div className="text-[10px] uppercase tracking-widest text-white/70 space-y-2">
               <a 
@@ -85,7 +85,7 @@ const Footer = () => {
           </div>
 
           {/* 3. Explore Links */}
-          <div className="lg:col-span-2 mt-10 -mr-8">
+          <div className="lg:col-span-2 mt-10 lg:-mr-8">
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-white mb-4">Explore</h4>
             <ul className="space-y-2 text-[10px] uppercase tracking-wider text-white/60">
               <li><Link to="/about" className="hover:text-white transition-colors">Our Story</Link></li>
