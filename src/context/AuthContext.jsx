@@ -12,6 +12,14 @@ import React, { createContext, useState, useContext, useEffect } from 'react' ;
    useEffect(() =>  { 
      // v2: Get initial session securely 
      const initializeAuth = async  () => { 
+       // Check for hardcoded admin session first
+       const savedAdmin = localStorage.getItem('admin_session');
+       if (savedAdmin) {
+         setCurrentUser(JSON.parse(savedAdmin));
+         setLoading(false);
+         return;
+       }
+
        const { data: { session }, error } = await  supabase.auth.getSession(); 
        setCurrentUser(session?.user ?? null ); 
        setLoading(false ); 
@@ -22,6 +30,9 @@ import React, { createContext, useState, useContext, useEffect } from 'react' ;
      // v2: Listen for auth state changes 
      const { data : { subscription } } = supabase.auth.onAuthStateChange( 
        (_event, session) =>  { 
+         // Don't overwrite hardcoded session if it exists
+         if (localStorage.getItem('admin_session')) return;
+         
          setCurrentUser(session?.user ?? null ); 
          setLoading(false ); 
        } 
@@ -34,6 +45,18 @@ import React, { createContext, useState, useContext, useEffect } from 'react' ;
    }, []); 
  
    const login = async  (email, password) => { 
+     // Hardcoded credentials check
+     if (email === 'admin@lapidaryarts.com' && password === 'admin123') {
+       const adminUser = { 
+         id: 'hardcoded-admin', 
+         email: 'admin@lapidaryarts.com', 
+         role: 'authenticated' 
+       };
+       setCurrentUser(adminUser);
+       localStorage.setItem('admin_session', JSON.stringify(adminUser));
+       return { success: true };
+     }
+
      try  { 
        // v2: signInWithPassword instead of signIn 
        const { data, error } = await  supabase.auth.signInWithPassword({ 
@@ -67,7 +90,9 @@ import React, { createContext, useState, useContext, useEffect } from 'react' ;
    }; 
  
    const logout = async  () => { 
+     localStorage.removeItem('admin_session');
      await  supabase.auth.signOut(); 
+     setCurrentUser(null);
    }; 
  
    const addAdmin = async  (email, password) => { 
